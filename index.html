@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatística - Fernando Paes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+
+    <header class="bg-green-700 text-white shadow-md py-6">
+        <div class="container mx-auto px-6">
+            <h1 class="text-3xl font-bold">Sistema de Análise Estatística v16</h1>
+            <p class="text-green-200 mt-1">Desenvolvido por: Fernando Paes Lorena</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10 max-w-4xl">
+        
+        <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-100 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">1. Envie seus Dados (Fatorial em DBC)</h2>
+            <p class="text-sm text-gray-500 mb-4">O CSV deve conter 4 colunas na ordem: FatorA, FatorB, Bloco, Valor.</p>
+            
+            <div class="flex items-center space-x-4">
+                <input type="file" id="arquivoCsv" accept=".csv" 
+                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                <button onclick="enviarParaAnalise()" id="btnAnalisar" 
+                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200">
+                    Analisar
+                </button>
+            </div>
+            <p id="mensagem" class="mt-4 text-sm font-medium hidden"></p>
+        </div>
+
+        <div id="areaResultados" class="hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">2. Resultados da Análise</h2>
+            <div class="mb-4 text-sm bg-blue-50 text-blue-800 p-3 rounded">
+                <strong>Configuração Detectada:</strong> <span id="txtConfig"></span> | 
+                <strong>CV (%):</strong> <span id="txtCv"></span>%
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm whitespace-nowrap border-collapse">
+                    <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3">Fonte de Variação</th>
+                            <th class="px-4 py-3">GL</th>
+                            <th class="px-4 py-3">SQ</th>
+                            <th class="px-4 py-3">QM</th>
+                            <th class="px-4 py-3">F Calculado</th>
+                            <th class="px-4 py-3">Sig</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabelaAnova" class="divide-y divide-gray-100">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ATENÇÃO: Troque esta URL pelo link que o Render ou Fly.io te der!
+        // Deixei http://127.0.0.1:8000 para você testar no seu próprio PC primeiro.
+        const API_URL = "http://127.0.0.1:8000/api/analise/fatorial";
+
+        async function enviarParaAnalise() {
+            const inputArquivo = document.getElementById('arquivoCsv');
+            const mensagem = document.getElementById('mensagem');
+            const btn = document.getElementById('btnAnalisar');
+            
+            if (!inputArquivo.files[0]) {
+                mostrarMensagem("Por favor, selecione um arquivo CSV primeiro.", "text-red-600");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", inputArquivo.files[0]);
+
+            btn.innerText = "Processando...";
+            btn.disabled = true;
+
+            try {
+                // Enviando o arquivo para o seu Backend em Python
+                const resposta = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    throw new Error(dados.detail || "Erro desconhecido na API.");
+                }
+
+                // Se deu certo, preenche o HTML com os dados do Python
+                document.getElementById('txtConfig').innerText = dados.configuracao;
+                document.getElementById('txtCv').innerText = dados.cv;
+                
+                const tbody = document.getElementById('corpoTabelaAnova');
+                tbody.innerHTML = ''; // Limpa tabela anterior
+
+                dados.anova.forEach(linha => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium text-gray-900">${linha.FV}</td>
+                            <td class="px-4 py-3">${linha.GL}</td>
+                            <td class="px-4 py-3">${linha.SQ}</td>
+                            <td class="px-4 py-3">${linha.QM}</td>
+                            <td class="px-4 py-3">${linha["F Calc"]}</td>
+                            <td class="px-4 py-3 font-semibold ${linha.Sig.includes('*') ? 'text-green-600' : 'text-gray-500'}">${linha.Sig}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('areaResultados').classList.remove('hidden');
+                mostrarMensagem("Análise concluída com sucesso!", "text-green-600");
+
+            } catch (erro) {
+                mostrarMensagem("Erro: " + erro.message, "text-red-600");
+                console.error(erro);
+            } finally {
+                btn.innerText = "Analisar";
+                btn.disabled = false;
+            }
+        }
+
+        function mostrarMensagem(texto, corClasses) {
+            const msg = document.getElementById('mensagem');
+            msg.className = `mt-4 text-sm font-medium ${corClasses}`;
+            msg.innerText = texto;
+            msg.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
