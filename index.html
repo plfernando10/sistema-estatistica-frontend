@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solver Estatística Experimental - Fernando Paes</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>.menu-ativo { background-color: #dcfce7; color: #15803d; font-weight: bold; border-right: 4px solid #16a34a; }</style>
+    <style>
+        /* Estilo sutil para o menu ativo */
+        .menu-ativo { background-color: #dcfce7; color: #15803d; font-weight: bold; border-right: 4px solid #16a34a; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex h-screen overflow-hidden">
 
@@ -15,16 +18,45 @@
             <p class="text-xs text-green-200 mt-1">Por: Fernando Paes Lorena</p>
         </div>
         <nav class="flex-1 px-2 py-4 space-y-2">
-            <button onclick="mudarAba('aba-fatorial', this)" class="menu-btn menu-ativo w-full text-left px-4 py-3 rounded text-sm text-gray-600 hover:bg-green-50">📈 Fatorial (A x B)</button>
+            <button onclick="mudarAba('aba-inicio', this)" class="menu-btn menu-ativo w-full text-left px-4 py-3 rounded text-sm text-gray-600 hover:bg-green-50 hover:text-green-700 transition">
+                🏠 Início
+            </button>
+            <button onclick="mudarAba('aba-simples', this)" class="menu-btn w-full text-left px-4 py-3 rounded text-sm text-gray-600 hover:bg-green-50 hover:text-green-700 transition">
+                📊 DIC / DBC Simples
+            </button>
+            <button onclick="mudarAba('aba-fatorial', this)" class="menu-btn w-full text-left px-4 py-3 rounded text-sm text-gray-600 hover:bg-green-50 hover:text-green-700 transition">
+                📈 Fatorial (A x B)
+            </button>
+            <button onclick="mudarAba('aba-parcelas', this)" class="menu-btn w-full text-left px-4 py-3 rounded text-sm text-gray-600 hover:bg-green-50 hover:text-green-700 transition">
+                📑 Parcelas Subdivididas
+            </button>
         </nav>
     </aside>
 
     <main class="flex-1 overflow-y-auto p-8">
         
-        <section id="aba-fatorial" class="aba-conteudo block">
+        <section id="aba-inicio" class="aba-conteudo block">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo ao Solver Estatística</h2>
+            <p class="text-gray-600 mb-6">Selecione no menu lateral qual delineamento experimental você deseja analisar.</p>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <h3 class="font-bold text-blue-800">Instruções de Uso:</h3>
+                <ul class="list-disc ml-5 mt-2 text-sm text-blue-700 space-y-1">
+                    <li>Utilize o upload de arquivo <strong>.csv</strong> ou a <strong>Digitação Manual</strong>.</li>
+                    <li>Para arquivos, utilize o padrão brasileiro (separador por ponto e vírgula).</li>
+                    <li>Siga a ordem das colunas exigida por cada módulo no momento do upload.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="aba-simples" class="aba-conteudo hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Análise Simples (DIC, DBC, DQL)</h2>
+            <p class="text-gray-500 text-sm mb-6">Módulo em construção. Em breve você poderá processar experimentos de fator único aqui.</p>
+        </section>
+
+        <section id="aba-fatorial" class="aba-conteudo hidden">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Fatorial (A x B) em DBC</h2>
             
-            <div class="mb-6 flex space-x-4 border-b pb-2">
+            <div class="mb-6 flex space-x-4 border-b pb-2 mt-4">
                 <button onclick="alternarEntrada('csv')" id="btnAbaCsv" class="font-bold text-green-700 border-b-2 border-green-700 px-2 py-1">Upload de Arquivo (CSV)</button>
                 <button onclick="alternarEntrada('manual')" id="btnAbaManual" class="font-semibold text-gray-500 px-2 py-1">Digitação Manual Interativa</button>
             </div>
@@ -32,7 +64,7 @@
             <div id="entradaCsv" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8 max-w-2xl block">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Carregar arquivo (FatorA, FatorB, Bloco, Valor):</label>
                 <div class="flex items-center space-x-4">
-                    <input type="file" id="arquivoCsv" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:bg-green-50 file:text-green-700">
+                    <input type="file" id="arquivoCsv" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer">
                     <button onclick="enviarParaAnalise(false)" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded transition btn-calcular">Calcular ANOVA</button>
                 </div>
             </div>
@@ -40,16 +72,16 @@
             <div id="entradaManual" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8 max-w-3xl hidden">
                 <p class="text-sm text-gray-500 mb-4">Informe o tamanho do experimento para gerar a grade de digitação.</p>
                 <div class="flex space-x-4 mb-4">
-                    <div><label class="text-xs">Níveis Fator A:</label><input type="number" id="manA" class="border p-2 w-full rounded" min="2" value="2"></div>
-                    <div><label class="text-xs">Níveis Fator B:</label><input type="number" id="manB" class="border p-2 w-full rounded" min="2" value="2"></div>
-                    <div><label class="text-xs">Qtd. Blocos:</label><input type="number" id="manR" class="border p-2 w-full rounded" min="2" value="3"></div>
-                    <div class="flex items-end"><button onclick="gerarGradeManual()" class="bg-blue-600 text-white px-4 py-2 rounded">Gerar Grade</button></div>
+                    <div><label class="text-xs font-semibold text-gray-700">Níveis Fator A:</label><input type="number" id="manA" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" min="2" value="2"></div>
+                    <div><label class="text-xs font-semibold text-gray-700">Níveis Fator B:</label><input type="number" id="manB" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" min="2" value="2"></div>
+                    <div><label class="text-xs font-semibold text-gray-700">Qtd. Blocos:</label><input type="number" id="manR" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" min="2" value="3"></div>
+                    <div class="flex items-end"><button onclick="gerarGradeManual()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition">Gerar Grade</button></div>
                 </div>
                 
                 <div id="gradeManualContainer" class="overflow-x-auto"></div>
                 
                 <div class="mt-4 hidden" id="divBtnAnalisarManual">
-                    <button onclick="enviarParaAnalise(true)" class="bg-green-600 text-white font-bold py-2 px-6 rounded transition w-full btn-calcular">Calcular ANOVA a partir da Grade</button>
+                    <button onclick="enviarParaAnalise(true)" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded transition w-full btn-calcular">Calcular ANOVA a partir da Grade</button>
                 </div>
             </div>
 
@@ -58,11 +90,13 @@
             <div id="areaResultados" class="hidden bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-gray-800">Quadro da ANOVA</h3>
-                    <div class="text-sm bg-gray-100 px-3 py-1 rounded"><strong>CV:</strong> <span id="txtCv"></span>%</div>
+                    <div class="text-sm bg-gray-100 px-3 py-1 rounded border border-gray-200 text-gray-700"><strong>CV:</strong> <span id="txtCv"></span>%</div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-left text-sm whitespace-nowrap">
-                        <thead class="bg-gray-100 text-gray-700"><tr><th class="px-4 py-2">FV</th><th class="px-4 py-2">GL</th><th class="px-4 py-2">SQ</th><th class="px-4 py-2">QM</th><th class="px-4 py-2">F Calc</th><th class="px-4 py-2">Sig</th></tr></thead>
+                        <thead class="bg-gray-100 text-gray-700 border-b border-gray-200">
+                            <tr><th class="px-4 py-3">FV</th><th class="px-4 py-3">GL</th><th class="px-4 py-3">SQ</th><th class="px-4 py-3">QM</th><th class="px-4 py-3">F Calc</th><th class="px-4 py-3">Sig</th></tr>
+                        </thead>
                         <tbody id="corpoTabelaAnova" class="divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
@@ -71,45 +105,65 @@
             <div id="areaPostHoc" class="hidden bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Análises Posteriores</h3>
                 <div class="flex items-center space-x-4 mb-6">
-                    <select id="seletorPostHoc" onchange="verificarModelo()" class="block w-64 border border-gray-300 rounded p-2.5">
+                    <select id="seletorPostHoc" onchange="verificarModelo()" class="block w-64 border border-gray-300 rounded p-2.5 text-gray-800 bg-gray-50 focus:ring-green-500 focus:border-green-500">
                         <option value="tukey_a">Teste de Tukey (Fator A)</option>
                         <option value="tukey_b">Teste de Tukey (Fator B)</option>
                         <option value="regr_a">Regressão (Fator A)</option>
                         <option value="regr_b">Regressão (Fator B)</option>
                     </select>
                     
-                    <select id="seletorModeloRegr" class="hidden border border-gray-300 rounded p-2.5">
+                    <select id="seletorModeloRegr" class="hidden border border-gray-300 rounded p-2.5 text-gray-800 bg-gray-50 focus:ring-green-500 focus:border-green-500">
                         <option value="linear">Modelo Linear</option>
                         <option value="quadratica" selected>Modelo Quadrático</option>
                         <option value="logaritmica">Modelo Logarítmico</option>
                         <option value="exponencial">Modelo Exponencial</option>
                     </select>
 
-                    <button onclick="gerarPostHoc()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded shadow transition">Gerar</button>
+                    <button onclick="gerarPostHoc()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">Gerar Análise</button>
                 </div>
                 <div id="resultadoPostHoc" class="p-4 bg-gray-50 rounded border border-gray-100 hidden"></div>
             </div>
         </section>
+
+        <section id="aba-parcelas" class="aba-conteudo hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Parcelas Subdivididas</h2>
+            <p class="text-gray-500 text-sm mb-6">Módulo em construção. Necessário adequar a API de backend.</p>
+        </section>
+
     </main>
 
     <script>
         // =======================================================
-        // COLOQUE SUA URL DO RENDER AQUI:
+        // ATENÇÃO: NÃO ESQUEÇA DE COLAR SUA URL DO RENDER AQUI:
         const API_URL = "https://api-estatistica-xyz.onrender.com/api/analise/fatorial"; 
         // =======================================================
 
-        let arquivoCarregado = null; // Guarda o arquivo para usar no Post-Hoc
+        let arquivoCarregado = null; // Guarda o arquivo (físico ou gerado na mão) para usar no Post-Hoc
 
-        // Controle Visual das Abas
+        // === LÓGICA DE NAVEGAÇÃO DO MENU LATERAL ===
+        function mudarAba(idAba, botaoClicado) {
+            document.querySelectorAll('.aba-conteudo').forEach(aba => {
+                aba.classList.add('hidden');
+                aba.classList.remove('block');
+            });
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.classList.remove('menu-ativo');
+            });
+            document.getElementById(idAba).classList.remove('hidden');
+            document.getElementById(idAba).classList.add('block');
+            botaoClicado.classList.add('menu-ativo');
+        }
+
+        // === CONTROLE VISUAL DAS ABAS CSV vs MANUAL ===
         function alternarEntrada(tipo) {
             document.getElementById('entradaCsv').classList.toggle('hidden', tipo !== 'csv');
             document.getElementById('entradaManual').classList.toggle('hidden', tipo !== 'manual');
             
-            document.getElementById('btnAbaCsv').className = tipo === 'csv' ? 'font-bold text-green-700 border-b-2 border-green-700 px-2 py-1' : 'font-semibold text-gray-500 px-2 py-1';
-            document.getElementById('btnAbaManual').className = tipo === 'manual' ? 'font-bold text-green-700 border-b-2 border-green-700 px-2 py-1' : 'font-semibold text-gray-500 px-2 py-1';
+            document.getElementById('btnAbaCsv').className = tipo === 'csv' ? 'font-bold text-green-700 border-b-2 border-green-700 px-2 py-1' : 'font-semibold text-gray-500 px-2 py-1 hover:text-gray-700';
+            document.getElementById('btnAbaManual').className = tipo === 'manual' ? 'font-bold text-green-700 border-b-2 border-green-700 px-2 py-1' : 'font-semibold text-gray-500 px-2 py-1 hover:text-gray-700';
         }
 
-        // Exibe o dropdown de modelos se regressão for escolhida
+        // Exibe o dropdown de modelos se regressão for escolhida no Post-Hoc
         function verificarModelo() {
             const seletor = document.getElementById('seletorPostHoc').value;
             if(seletor.includes("regr")) document.getElementById('seletorModeloRegr').classList.remove('hidden');
@@ -122,15 +176,15 @@
             let nb = parseInt(document.getElementById('manB').value);
             let nr = parseInt(document.getElementById('manR').value);
             
-            let html = '<table class="w-full text-sm mt-4 border text-center"><thead><tr class="bg-gray-100"><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor Produção</th></tr></thead><tbody>';
+            let html = '<table class="w-full text-sm mt-4 border border-gray-300 text-center rounded overflow-hidden shadow-sm"><thead class="bg-gray-100 border-b border-gray-300"><tr class="text-gray-700"><th class="py-2">Fator A</th><th class="py-2">Fator B</th><th class="py-2">Bloco</th><th class="py-2 bg-green-50 text-green-800">Valor (Produção)</th></tr></thead><tbody class="divide-y divide-gray-200">';
             for(let a=1; a<=na; a++) {
                 for(let b=1; b<=nb; b++) {
                     for(let r=1; r<=nr; r++) {
                         html += `<tr>
-                            <td class="border p-1"><input type="text" value="A${a}" class="w-16 text-center font-bold outline-none text-blue-800" readonly></td>
-                            <td class="border p-1"><input type="text" value="B${b}" class="w-16 text-center font-bold outline-none text-blue-800" readonly></td>
-                            <td class="border p-1">R${r}</td>
-                            <td class="border p-1 bg-yellow-50 hover:bg-yellow-100"><input type="number" step="any" placeholder="0.00" class="w-24 text-center bg-transparent outline-none val-input"></td>
+                            <td class="border-r border-gray-200 p-2"><input type="text" value="A${a}" class="w-16 text-center font-bold outline-none text-blue-800 bg-transparent" readonly></td>
+                            <td class="border-r border-gray-200 p-2"><input type="text" value="B${b}" class="w-16 text-center font-bold outline-none text-blue-800 bg-transparent" readonly></td>
+                            <td class="border-r border-gray-200 p-2 text-gray-600">R${r}</td>
+                            <td class="p-0 bg-yellow-50 hover:bg-yellow-100 transition"><input type="number" step="any" placeholder="0.00" class="w-full h-full text-center bg-transparent outline-none py-2 text-gray-900 font-semibold val-input focus:ring-2 focus:ring-green-500 focus:bg-white"></td>
                         </tr>`;
                     }
                 }
@@ -140,7 +194,7 @@
             document.getElementById('divBtnAnalisarManual').classList.remove('hidden');
         }
 
-        // Transforma a tabela digitada em um CSV invisível
+        // Transforma a tabela digitada em um CSV invisível para o Python ler
         function extrairCsvDaGrade() {
             let linhas = document.querySelectorAll('#gradeManualContainer tbody tr');
             let csvContent = "FatorA;FatorB;Bloco;Valor\n";
@@ -149,7 +203,7 @@
                 let b = tr.cells[1].querySelector('input').value;
                 let bloco = tr.cells[2].innerText;
                 let valor = tr.cells[3].querySelector('input').value;
-                if(valor === "") throw new Error("Preencha todos os valores da grade antes de calcular.");
+                if(valor === "") throw new Error("Atenção: Preencha todos os valores da grade antes de calcular.");
                 csvContent += `${a};${b};${bloco};${valor.replace('.', ',')}\n`;
             }
             const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -159,40 +213,49 @@
         // === CHAMADA DA API (Serve tanto pro CSV quanto pro Manual) ===
         async function enviarParaAnalise(isManual) {
             try {
+                // Descobre de onde vem os dados com base em quem chamou a função
                 if(isManual) arquivoCarregado = extrairCsvDaGrade();
                 else {
                     let fileInput = document.getElementById('arquivoCsv');
-                    if (!fileInput.files[0]) throw new Error("Selecione um arquivo CSV.");
+                    if (!fileInput.files[0]) throw new Error("Atenção: Selecione um arquivo CSV primeiro.");
                     arquivoCarregado = fileInput.files[0];
                 }
 
-                mostrarMensagem("Processando...", "text-blue-500");
+                mostrarMensagem("Enviando dados para o servidor...", "text-blue-500 bg-blue-50");
                 const formData = new FormData();
                 formData.append("file", arquivoCarregado);
                 formData.append("tipo_teste", "anova");
+
+                // Desabilita os botões para evitar duplo clique
+                document.querySelectorAll('.btn-calcular').forEach(b => b.disabled = true);
 
                 const resposta = await fetch(API_URL, { method: 'POST', body: formData });
                 const dados = await resposta.json();
 
                 if (dados.status !== "sucesso") throw new Error(dados.mensagem || dados.detail);
 
+                // Preenche a tabela
                 document.getElementById('txtCv').innerText = dados.cv;
                 let tbody = document.getElementById('corpoTabelaAnova'); tbody.innerHTML = '';
                 dados.anova.forEach(linha => {
-                    tbody.innerHTML += `<tr class="border-b"><td class="px-4 py-2">${linha.FV}</td><td class="px-4 py-2">${linha.GL}</td><td class="px-4 py-2">${linha.SQ}</td><td class="px-4 py-2">${linha.QM}</td><td class="px-4 py-2">${linha["F Calc"]}</td><td class="px-4 py-2 font-bold ${linha.Sig.includes('*') ? 'text-green-600' : 'text-gray-400'}">${linha.Sig}</td></tr>`;
+                    tbody.innerHTML += `<tr class="hover:bg-gray-50 transition"><td class="px-4 py-3 border-r border-gray-100 font-medium">${linha.FV}</td><td class="px-4 py-3">${linha.GL}</td><td class="px-4 py-3">${linha.SQ}</td><td class="px-4 py-3">${linha.QM}</td><td class="px-4 py-3">${linha["F Calc"]}</td><td class="px-4 py-3 font-bold ${linha.Sig.includes('*') ? 'text-green-600' : 'text-gray-400'}">${linha.Sig}</td></tr>`;
                 });
 
+                // Mostra as áreas
                 document.getElementById('areaResultados').classList.remove('hidden');
                 document.getElementById('areaPostHoc').classList.remove('hidden');
                 document.getElementById('resultadoPostHoc').classList.add('hidden');
-                mostrarMensagem("Quadro da ANOVA gerado com sucesso!", "text-green-600");
+                
+                mostrarMensagem("Quadro da ANOVA calculado com sucesso!", "text-green-700 bg-green-50");
 
             } catch (erro) {
-                mostrarMensagem(erro.message, "text-red-600");
+                mostrarMensagem(erro.message, "text-red-700 bg-red-50");
+            } finally {
+                document.querySelectorAll('.btn-calcular').forEach(b => b.disabled = false);
             }
         }
 
-        // === PÓS-TESTE (TUKEY / REGRESSÃO) ===
+        // === PÓS-TESTE (TUKEY / REGRESSÃO COM MODELOS) ===
         async function gerarPostHoc() {
             const seletor = document.getElementById('seletorPostHoc').value;
             const modelo_escolhido = document.getElementById('seletorModeloRegr').value;
@@ -205,7 +268,7 @@
             formData.append("tipo_teste", seletor);
             if(seletor.includes("regr")) formData.append("modelo_regr", modelo_escolhido);
 
-            divResultado.innerHTML = "<p class='text-blue-500'>Calculando modelo...</p>";
+            divResultado.innerHTML = "<p class='text-blue-600 font-medium'>Calculando modelo matemático...</p>";
             divResultado.classList.remove('hidden');
 
             try {
@@ -216,29 +279,45 @@
 
                 if (dados.tipo === "regressao") {
                     divResultado.innerHTML = `
-                        <div class="mb-4 text-sm bg-blue-50 p-3 rounded">
-                            <p><strong>Equação (${dados.modelo}):</strong> ${dados.equacao}</p>
-                            <p><strong>R²:</strong> ${dados.r2}</p>
+                        <div class="mb-4 text-sm bg-blue-50 border border-blue-100 p-4 rounded text-blue-900">
+                            <p class="mb-1"><strong>Equação (${dados.modelo}):</strong> <span class="font-mono bg-white px-1 rounded">${dados.equacao}</span></p>
+                            <p><strong>R²:</strong> <span class="font-mono bg-white px-1 rounded">${dados.r2}</span></p>
                         </div>
-                        <img src="data:image/png;base64,${dados.img_png}" class="max-w-full border rounded mb-4">
-                        <a href="data:application/pdf;base64,${dados.img_pdf}" download="grafico.pdf" class="bg-gray-800 text-white py-2 px-4 rounded text-sm">📥 Baixar PDF</a>
+                        <div class="flex flex-col items-start">
+                            <img src="data:image/png;base64,${dados.img_png}" class="max-w-full border border-gray-200 rounded shadow-sm mb-4">
+                            <a href="data:application/pdf;base64,${dados.img_pdf}" download="grafico_${dados.modelo}.pdf" class="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-6 rounded text-sm shadow transition flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Baixar PDF (Alta Qualidade)
+                            </a>
+                        </div>
                     `;
                 } else if (dados.tipo === "tukey") {
-                    let linhasHtml = dados.tabela.map(l => `<tr class="border-t"><td class="p-2">${l['Nível']}</td><td class="p-2">${l['Média']}</td><td class="p-2 font-bold text-green-700">${l['Letra']}</td></tr>`).join('');
+                    let linhasHtml = dados.tabela.map(l => `<tr class="border-t border-gray-200 hover:bg-gray-50"><td class="p-3">${l['Nível']}</td><td class="p-3">${l['Média']}</td><td class="p-3 font-bold text-green-700">${l['Letra']}</td></tr>`).join('');
                     divResultado.innerHTML = `
-                        <div class="flex space-x-6 text-sm bg-green-50 p-3 rounded"><span><strong>q:</strong> ${dados.q}</span><span><strong>DMS:</strong> ${dados.dms}</span></div>
-                        <table class="w-full mt-4 bg-white border text-left text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Trat.</th><th class="p-2">Média</th><th class="p-2">Letra</th></tr></thead><tbody>${linhasHtml}</tbody></table>
+                        <div class="flex space-x-6 text-sm bg-green-50 border border-green-100 p-4 rounded text-green-900 mb-4">
+                            <span><strong>Nível de Significância:</strong> 5%</span>
+                            <span><strong>Valor tabelado (q):</strong> ${dados.q}</span>
+                            <span><strong>DMS:</strong> ${dados.dms}</span>
+                        </div>
+                        <div class="border border-gray-200 rounded overflow-hidden">
+                            <table class="w-full bg-white text-left text-sm whitespace-nowrap">
+                                <thead class="bg-gray-100 text-gray-700"><tr><th class="p-3">Tratamento</th><th class="p-3">Média</th><th class="p-3">Agrupamento</th></tr></thead>
+                                <tbody>${linhasHtml}</tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 italic">Médias seguidas da mesma letra não diferem estatisticamente entre si pelo Teste de Tukey.</p>
                     `;
                 }
             } catch (erro) {
-                divResultado.innerHTML = `<p class="text-red-600 font-bold p-3 bg-red-50 border border-red-200 rounded">${erro.message}</p>`;
+                divResultado.innerHTML = `<div class="p-4 bg-red-50 border-l-4 border-red-600 rounded"><p class="text-red-700 font-semibold">${erro.message}</p></div>`;
             }
         }
 
-        function mostrarMensagem(texto, cor) {
+        function mostrarMensagem(texto, classesCor) {
             const msg = document.getElementById('mensagem');
-            msg.className = `mt-3 text-sm font-medium p-2 rounded ${cor.includes('red') ? 'bg-red-50' : ''} ${cor}`;
-            msg.innerText = texto; msg.classList.remove('hidden');
+            msg.className = `mt-4 text-sm font-medium p-3 rounded border border-transparent transition-all ${classesCor}`;
+            msg.innerText = texto; 
+            msg.classList.remove('hidden');
         }
     </script>
 </body>
