@@ -2,17 +2,18 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Plataforma analítica para ensaios de campo. Análise estatística com ANOVA, testes de médias e F-Tabelado exato.">
-    <meta name="theme-color" content="#16a34a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solver Estatística | Plataforma Experimental Avançada</title>
     
+    <!-- Premium Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,6 +34,7 @@
         /* Custom Premium CSS */
         body { background-color: #f1f5f9; color: #334155; -webkit-font-smoothing: antialiased; }
         
+        /* Força a ocultação da página inativa */
         .hidden-page { display: none !important; }
         
         .saas-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
@@ -98,9 +100,10 @@
 
     <div id="toast-container"></div>
 
+    <!-- ==================== MANUAL MODAL ==================== -->
     <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-surface-900/60 backdrop-blur-sm transition-opacity" onclick="fecharManual()"></div>
-        <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+        <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-[fadeIn_0.2s_ease-out]">
             <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-20 rounded-t-2xl">
                 <h3 class="text-xl font-bold text-surface-900"><i class="fa-solid fa-book-open text-brand-500 mr-2"></i> Guia Rápido de Uso</h3>
                 <button onclick="fecharManual()" class="text-slate-400 hover:text-slate-700 bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
@@ -138,6 +141,7 @@
     </div>
 
 
+    <!-- ==================== LANDING PAGE ==================== -->
     <div id="landing-page" class="page flex flex-col fixed inset-0 z-50 bg-surface-50 overflow-y-auto w-full h-full">
         <nav class="w-full px-6 py-4 flex justify-between items-center z-10 shrink-0">
             <div class="flex items-center gap-3">
@@ -155,6 +159,7 @@
         </nav>
 
         <div class="flex-1 flex flex-col justify-center relative pb-12">
+            <!-- Background Decoration -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-brand-100/50 blur-3xl"></div>
                 <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-100/40 blur-3xl"></div>
@@ -202,8 +207,11 @@
     </div>
 
 
-    <div id="analysis-page" class="page hidden-page flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
+    <!-- ==================== APP PAGE ==================== -->
+    <!-- ADICIONADO A CLASSE FLEX AQUI PARA CORRIGIR O ALINHAMENTO -->
+    <div id="analysis-page" class="page hidden-page flex flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
         
+        <!-- Sidebar -->
         <aside id="sidebar" class="bg-surface-900 text-slate-300 w-72 flex-shrink-0 flex flex-col transition-transform duration-300 z-40 absolute md:relative h-full -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="p-6 border-b border-surface-800 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing-page')">
@@ -234,8 +242,10 @@
             </div>
         </aside>
 
+        <!-- Overlay Mobile -->
         <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-surface-900/50 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
 
+        <!-- Main Workspace -->
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-surface-50 relative">
             <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shrink-0 shadow-sm">
                 <div class="flex items-center gap-4">
@@ -251,8 +261,10 @@
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                 <div class="max-w-6xl mx-auto pb-20">
 
+                    <!-- Mobile Manual Button -->
                     <button onclick="abrirManual()" class="saas-btn saas-btn-outline w-full mb-6 sm:hidden bg-white"><i class="fa-solid fa-book text-slate-400"></i> Ver Guia Rápido de Uso</button>
 
+                    <!-- ================= MÓDULO 1: SIMPLES ================= -->
                     <div id="module-simples" class="module-section">
                         <div class="saas-card p-6 mb-6">
                             <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-gears text-slate-400"></i> Configuração do Ensaio</h3>
@@ -274,7 +286,7 @@
                                     <div><strong class="block mb-1 text-blue-900">Cabeçalho exigido no CSV:</strong><span id="lbl-formato-simples" class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">Tratamento;Bloco;Valor</span></div>
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4 items-center">
-                                    <input type="file" id="file-simples" accept=".csv" class="flex-1">
+                                    <input type="file" id="file-simples" accept=".csv" class="flex-1 w-full">
                                     <button class="saas-btn saas-btn-primary w-full sm:w-auto" onclick="processarSimples(false)">Processar ANOVA</button>
                                 </div>
                             </div>
@@ -309,6 +321,7 @@
                         </div>
                     </div>
 
+                    <!-- ================= MÓDULO 2: FATORIAL ================= -->
                     <div id="module-fatorial" class="module-section hidden">
                         <div class="saas-card p-6 mb-6 bg-gradient-to-br from-slate-800 to-surface-900 text-white border-none shadow-lg">
                             <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-layer-group text-brand-400"></i> Fatorial Duplo Cruzado (A x B)</h3>
@@ -359,11 +372,12 @@
                                     <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('fatorial')">Executar</button>
                                 </div>
                                 <div id="posthoc-fatorial-output" class="mt-6 hidden"></div>
-                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white" onclick="baixarLaudoCompleto('fatorial')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
+                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white" onclick="baixarLaudoCompleto('fatorial')">Exportar Laudo (.txt)</button></div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- ================= MÓDULO 3: PARCELAS ================= -->
                     <div id="module-parcelas" class="module-section hidden">
                         <div class="saas-card p-6 mb-6 bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-none shadow-lg">
                             <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-table-columns text-indigo-400"></i> Parcelas Subdivididas (Split-Plot)</h3>
@@ -388,7 +402,7 @@
                                 <div class="card p-4">
                                     <div style="display:flex; gap:1rem; flex-wrap:wrap;"><input type="number" id="inp-pa" value="2" placeholder="Parcelas A" class="saas-input"><input type="number" id="inp-pb" value="2" placeholder="Subparcelas B" class="saas-input"><input type="number" id="inp-pr" value="3" placeholder="Blocos" class="saas-input"></div>
                                     <button class="saas-btn saas-btn-outline w-full mt-4" onclick="gerarMatrizParcelas()">Montar Matriz</button>
-                                    <div id="matriz-parcelas" class="mt-6"></div>
+                                    <div id="grade-parcelas" style="margin-top:1.5rem;"></div>
                                     <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true)">Calcular Grade</button>
                                 </div>
                             </div>
@@ -423,10 +437,9 @@
         </main>
     </div>
 
+    <!-- Core Scripts -->
     <script>
-        // ====================================================================
         const API_URL = "https://api-estatistica.onrender.com/api/analise/";
-        // ====================================================================
 
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
 
@@ -490,7 +503,7 @@
             toast.innerHTML = `<div class="text-xl">${icone}</div> <div>${mensagem}</div>`; container.appendChild(toast);
             if(tipo !== 'info') { setTimeout(() => { toast.style.animation = 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards'; setTimeout(() => toast.remove(), 300); }, 4000); }
         }
-        function clearToasts() { document.getElementById('toast-container').innerHTML = ''; }
+        function limparMensagens() { document.getElementById('toast-container').innerHTML = ''; }
 
         function buildAnovaTable(dadosAnova) {
             let html = '<div class="table-wrapper"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>';
@@ -508,16 +521,16 @@
 
         function formatarPostHoc(d) {
             if(d.tipo === "regressao") {
-                let linesReg = d.anova_reg.map(l => `<tr><td class="font-medium">${l.FV}</td><td class="text-center data-mono">${l.GL}</td><td class="data-mono">${l.SQ}</td><td class="data-mono">${l.QM}</td><td class="data-mono bg-surface-50">${l['F Calc']}</td><td class="data-mono text-brand-600 bg-brand-50/30">${l['F Tab']}</td><td class="font-bold">${l.Sig}</td></tr>`).join('');
+                let linhasReg = d.anova_reg.map(l => `<tr><td class="font-medium">${l.FV}</td><td class="text-center data-mono">${l.GL}</td><td class="data-mono">${l.SQ}</td><td class="data-mono">${l.QM}</td><td class="data-mono bg-surface-50">${l['F Calc']}</td><td class="data-mono text-brand-600 bg-brand-50/30">${l['F Tab']}</td><td class="font-bold">${l.Sig}</td></tr>`).join('');
                 let optDose = d.dose_otima ? `<div class="mt-3 flex gap-3 flex-wrap"><div class="bg-brand-50 border border-brand-200 px-3 py-2 rounded-lg"><span class="text-xs uppercase text-brand-700 block mb-0.5">Ponto de Máxima (Dose Ótima)</span><span class="font-bold text-brand-900 text-lg">${d.dose_otima}</span></div><div class="bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg"><span class="text-xs uppercase text-blue-700 block mb-0.5">Resposta Máxima Calculada</span><span class="font-bold text-blue-900 text-lg">${d.resposta_otima}</span></div></div>` : '';
-                return `<div class="saas-card p-5 mb-6"><div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4"><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">f(x) =</span><span class="text-surface-900 font-bold">${d.equacao}</span></div><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">R² =</span><span class="text-brand-600 font-bold">${d.r2}</span></div></div>${optDose}</div><h4 class="font-bold text-surface-900 mb-3 ml-1"><i class="fa-solid fa-table-list text-slate-400 mr-2"></i> Quadro da Regressão</h4><div class="table-wrapper mb-6"><table><thead><tr><th>Causa</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>${linesReg}</tbody></table></div><div class="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center"><img src="data:image/png;base64,${d.img_png}" class="max-w-full h-auto rounded-lg mb-4" alt="Gráfico de Regressão"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_regressao.pdf" class="saas-btn saas-btn-outline"><i class="fa-solid fa-download"></i> Baixar Gráfico (PDF Alta Qualidade)</a></div>`;
+                return `<div class="saas-card p-5 mb-6"><div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4"><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">f(x) =</span><span class="text-surface-900 font-bold">${d.equacao}</span></div><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">R² =</span><span class="text-brand-600 font-bold">${d.r2}</span></div></div>${optDose}</div><h4 class="font-bold text-surface-900 mb-3 ml-1"><i class="fa-solid fa-table-list text-slate-400 mr-2"></i> Quadro da Regressão</h4><div class="table-wrapper mb-6"><table><thead><tr><th>Causa</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>${linhasReg}</tbody></table></div><div class="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center"><img src="data:image/png;base64,${d.img_png}" class="max-w-full h-auto rounded-lg mb-4" alt="Gráfico de Regressão"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_regressao.pdf" class="saas-btn saas-btn-outline"><i class="fa-solid fa-download"></i> Baixar Gráfico (PDF Alta Qualidade)</a></div>`;
             } else if(d.tipo === "tukey" || d.tipo === "duncan") {
                 let infoExtra = d.tipo === "tukey" ? `<span class="bg-white px-2 py-1 rounded border shadow-sm">DMS: <strong class="text-brand-700">${d.dms}</strong></span>` : '';
-                let linesTab = d.tabela.map(l => `<tr><td class="font-medium">${l['Nível']}</td><td class="data-mono">${l['Média']}</td><td class="text-center font-bold text-lg text-brand-600 bg-brand-50/50 uppercase tracking-widest border-l border-brand-100">${l['Letra']}</td></tr>`).join('');
-                return `<div class="bg-slate-50 border rounded-xl p-4 mb-6 flex gap-3 text-sm text-slate-600 items-center"><i class="fa-solid fa-circle-check text-brand-500 text-lg"></i>Teste processado com rigor de <strong>${d.alpha_txt}</strong> de probabilidade. ${infoExtra}</div><div class="max-w-md mx-auto table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média Observada</th><th class="text-center">Agrupamento</th></tr></thead><tbody>${linesTab}</tbody></table></div><p class="text-xs text-center text-slate-500 max-w-md mx-auto">* Médias seguidas pela mesma letra na coluna não diferem estatisticamente entre si pelo teste de ${d.nome_teste} a ${d.alpha_txt}.</p>`;
+                let linhasTab = d.tabela.map(l => `<tr><td class="font-medium">${l['Nível']}</td><td class="data-mono">${l['Média']}</td><td class="text-center font-bold text-lg text-brand-600 bg-brand-50/50 uppercase tracking-widest border-l border-brand-100">${l['Letra']}</td></tr>`).join('');
+                return `<div class="bg-slate-50 border rounded-xl p-4 mb-6 flex gap-3 text-sm text-slate-600 items-center"><i class="fa-solid fa-circle-check text-brand-500 text-lg"></i>Teste processado com rigor de <strong>${d.alpha_txt}</strong> de probabilidade. ${infoExtra}</div><div class="max-w-md mx-auto table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média Observada</th><th class="text-center">Agrupamento</th></tr></thead><tbody>${linhasTab}</tbody></table></div><p class="text-xs text-center text-slate-500 max-w-md mx-auto">* Médias seguidas pela mesma letra na coluna não diferem estatisticamente entre si pelo teste de ${d.nome_teste} a ${d.alpha_txt}.</p>`;
             } else if(d.tipo === "dunnett") {
-                let linesTab = d.resultados.map(l => `<tr><td class="font-medium">${l.Tratamento}</td><td class="data-mono">${l.Média}</td><td class="data-mono bg-blue-50/30">${l.Diferença}</td><td class="font-bold ${l.Sig.includes('*') ? 'text-brand-600' : 'text-slate-400'}">${l.Sig}</td></tr>`).join('');
-                return `<div class="bg-blue-50 border rounded-xl p-4 mb-6 flex flex-wrap gap-4 text-sm items-center shadow-sm"><div class="flex items-center gap-2"><i class="fa-solid fa-bullseye text-blue-500 text-lg"></i> <span class="text-blue-900">Testemunha: <strong>${d.testemunha}</strong> (Média: ${d.media_testemunha})</span></div><div class="bg-white px-3 py-1 rounded-md border text-blue-800 font-medium shadow-sm">DMS Restrito: ${d.dms}</div></div><div class="table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. Absoluta</th><th>Significância</th></tr></thead><tbody>${linesTab}</tbody></table></div><p class="text-xs text-slate-500">* Tratamentos marcados com asterisco diferem do controle (testemunha) a ${d.alpha_txt} de probabilidade.</p>`;
+                let linhasTab = d.resultados.map(l => `<tr><td class="font-medium">${l.Tratamento}</td><td class="data-mono">${l.Média}</td><td class="data-mono bg-blue-50/30">${l.Diferença}</td><td class="font-bold ${l.Sig.includes('*') ? 'text-brand-600' : 'text-slate-400'}">${l.Sig}</td></tr>`).join('');
+                return `<div class="bg-blue-50 border rounded-xl p-4 mb-6 flex flex-wrap gap-4 text-sm items-center shadow-sm"><div class="flex items-center gap-2"><i class="fa-solid fa-bullseye text-blue-500 text-lg"></i> <span class="text-blue-900">Testemunha: <strong>${d.testemunha}</strong> (Média: ${d.media_testemunha})</span></div><div class="bg-white px-3 py-1 rounded-md border text-blue-800 font-medium shadow-sm">DMS Restrito: ${d.dms}</div></div><div class="table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. Absoluta</th><th>Significância</th></tr></thead><tbody>${linhasTab}</tbody></table></div><p class="text-xs text-slate-500">* Tratamentos marcados com asterisco diferem do controle (testemunha) a ${d.alpha_txt} de probabilidade.</p>`;
             }
         }
 
@@ -525,7 +538,10 @@
             clearToasts();
             try {
                 let selMethod = document.getElementById(`metodo-${modulo}`).value;
-                let fd = new FormData(); fd.append("file", arquivosData[modulo]); fd.append("tipo_teste", selMethod);
+                let fd = new FormData();
+                fd.append("file", arquivosData[modulo]);
+                fd.append("tipo_teste", selMethod);
+                
                 if(modulo === 'simples') fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
                 if(selMethod.includes("regr")) fd.append("modelo_regr", document.getElementById(`eq-${modulo}`).value);
                 if(selMethod.includes("dunnett")) {
@@ -533,17 +549,22 @@
                     if(!testem) throw new Error("A Testemunha deve ser informada para o Teste de Dunnett.");
                     fd.append("testemunha", testem);
                 }
+                
                 const outDiv = document.getElementById(`posthoc-${modulo}-output`);
                 outDiv.innerHTML = '<div class="py-8 text-center text-slate-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-brand-500"></i><p>Processando cálculos estatísticos...</p></div>';
                 outDiv.classList.remove('hidden');
                 
                 let req = await fetch(API_URL + modulo, {method: 'POST', body: fd});
                 let data = await req.json();
+                
                 if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
                 
                 outDiv.innerHTML = formatarPostHoc(data);
                 showToast("Análise posterior concluída com sucesso!", "sucesso");
-            } catch(e) { document.getElementById(`posthoc-${modulo}-output`).classList.add('hidden'); clearToasts(); showToast(e.message, "erro"); }
+            } catch(e) { 
+                document.getElementById(`posthoc-${modulo}-output`).classList.add('hidden');
+                clearToasts(); showToast(e.message, "erro"); 
+            }
         }
 
         function baixarLaudoCompleto(modulo) {
@@ -630,7 +651,7 @@
             try {
                 if(isManual) {
                     let rows = document.querySelectorAll('#matriz-fatorial tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) { let v = r.cells[3].querySelector('input').value; if(!v) throw new Error("A matriz possui valores em branco."); csv += `${r.cells[0].querySelector('input').value};${r.cells[1].querySelector('input').value};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
+                    for(let r of rows) { let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value; csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
                     arquivosData.fatorial = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else { const input = document.getElementById('file-fatorial'); if(input.files.length === 0) throw new Error("Selecione um arquivo CSV."); arquivosData.fatorial = input.files[0]; }
                 showToast("Calculando ANOVA Fatorial...", "info");
@@ -654,7 +675,7 @@
             try {
                 if(isManual) {
                     let rows = document.querySelectorAll('#matriz-parcelas tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) { let v = r.cells[3].querySelector('input').value; if(!v) throw new Error("A matriz possui valores em branco."); csv += `${r.cells[0].querySelector('input').value};${r.cells[1].querySelector('input').value};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
+                    for(let r of rows) { let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value; csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
                     arquivosData.parcelas = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else { const input = document.getElementById('file-parcelas'); if(input.files.length === 0) throw new Error("Selecione um arquivo CSV."); arquivosData.parcelas = input.files[0]; }
                 showToast("Calculando Erro Combinado...", "info");
