@@ -9,7 +9,6 @@
         .menu-ativo { background-color: #dcfce7; color: #15803d; font-weight: bold; border-right: 4px solid #16a34a; }
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        /* Suaviza o deslizamento da barra lateral */
         .sidebar-transition { transition: transform 0.3s ease-in-out; }
     </style>
 </head>
@@ -41,18 +40,10 @@
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <button id="btnMenuInicio" onclick="mudarAba('aba-inicio', this)" class="menu-btn menu-ativo w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">
-                🏠 Início
-            </button>
-            <button id="btnMenuSimples" onclick="mudarAba('aba-simples', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">
-                📊 DIC / DBC / DQL
-            </button>
-            <button id="btnMenuFatorial" onclick="mudarAba('aba-fatorial', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">
-                📈 Fatorial (A x B)
-            </button>
-            <button id="btnMenuParcelas" onclick="mudarAba('aba-parcelas', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">
-                📑 Parcelas Subdivididas
-            </button>
+            <button id="btnMenuInicio" onclick="mudarAba('aba-inicio', this)" class="menu-btn menu-ativo w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">🏠 Início</button>
+            <button id="btnMenuSimples" onclick="mudarAba('aba-simples', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">📊 DIC / DBC / DQL</button>
+            <button id="btnMenuFatorial" onclick="mudarAba('aba-fatorial', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">📈 Fatorial (A x B)</button>
+            <button id="btnMenuParcelas" onclick="mudarAba('aba-parcelas', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">📑 Parcelas Subdivididas</button>
         </nav>
     </aside>
 
@@ -82,7 +73,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">🌱</div><h4 class="font-bold text-gray-800 mb-1">Delineamentos</h4><p class="text-xs text-gray-600">DIC, DBC, DQL, Fatoriais e Parcelas Subdivididas.</p></div>
                 <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">📊</div><h4 class="font-bold text-gray-800 mb-1">Testes de Médias</h4><p class="text-xs text-gray-600">Agrupamentos precisos com Tukey, Duncan e Dunnett.</p></div>
-                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">📈</div><h4 class="font-bold text-gray-800 mb-1">Regressões</h4><p class="text-xs text-gray-600">Modelos Linear, Quadrático, Exp e Log com gráficos.</p></div>
+                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">📈</div><h4 class="font-bold text-gray-800 mb-1">ANOVA de Regressão</h4><p class="text-xs text-gray-600">Desdobramento dos GL para Linear e Quadrática provando o ajuste.</p></div>
             </div>
         </section>
 
@@ -153,16 +144,16 @@
             <div id="areaPostHoc" class="hidden bg-white p-5 md:p-8 rounded-xl border border-gray-100 mt-6 shadow-sm">
                 <h3 class="text-lg md:text-xl font-bold mb-4 text-gray-800">Testes de Médias e Regressão</h3>
                 <div class="flex flex-col md:flex-row gap-3 mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <select id="selPostHoc" onchange="verificarCamposPostHoc()" class="border border-gray-300 p-3 rounded-lg bg-white w-full md:w-auto shadow-sm">
+                    <select id="selPostHoc" onchange="verificarCamposPostHoc()" class="border border-gray-300 p-3 rounded-lg bg-white w-full md:w-auto shadow-sm outline-none focus:ring-2 focus:ring-green-500">
+                        <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
                         <optgroup label="Tukey (a=5%)"><option value="tukey_a">Tukey (Fator A)</option><option value="tukey_b">Tukey (Fator B)</option></optgroup>
                         <optgroup label="Duncan (a=5%)"><option value="duncan_a">Duncan (Fator A)</option><option value="duncan_b">Duncan (Fator B)</option></optgroup>
                         <optgroup label="Dunnett"><option value="dunnett_a">Dunnett (Fator A)</option><option value="dunnett_b">Dunnett (Fator B)</option></optgroup>
-                        <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
                     </select>
-                    <select id="selModRegr" class="hidden border border-gray-300 p-3 rounded-lg bg-white shadow-sm w-full md:w-auto">
-                        <option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option><option value="logaritmica">Logarítmica</option><option value="exponencial">Exponencial</option>
+                    <select id="selModRegr" class="block border border-gray-300 p-3 rounded-lg bg-white shadow-sm w-full md:w-auto outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option>
                     </select>
-                    <input type="text" id="txtTestemunha" placeholder="Qual a Testemunha? Ex: C1" class="hidden border border-gray-300 p-3 rounded-lg bg-white shadow-sm w-full md:flex-1">
+                    <input type="text" id="txtTestemunha" placeholder="Qual a Testemunha? Ex: C1" class="hidden border border-gray-300 p-3 rounded-lg bg-white shadow-sm w-full md:flex-1 outline-none focus:ring-2 focus:ring-green-500">
                     <button onclick="calcularPostHoc()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold shadow transition-all w-full md:w-auto">Gerar Análise</button>
                 </div>
                 <div id="resPostHoc" class="mt-6 hidden"></div>
@@ -181,7 +172,7 @@
                 <label class="block text-sm mb-4 text-gray-600">CSV com 4 colunas: <strong>FatorA (Parcela); FatorB (Subparcela); Bloco; Valor</strong></label>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <input type="file" id="csvParcelas" accept=".csv" class="border border-gray-200 p-2 rounded-lg flex-1 text-sm bg-gray-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 cursor-pointer">
-                    <button onclick="calcularParcelas(false)" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold shadow transition-all w-full sm:w-auto">Calcular ANOVA</button>
+                    <button onclick="calcularParcelas(false)" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-lg font-bold shadow transition-all w-full sm:w-auto">Calcular ANOVA</button>
                 </div>
             </div>
 
@@ -211,13 +202,10 @@
 
         let arquivoFatorialGlobal = null;
 
-        // ----------------- NAVEGAÇÃO MOBILE (MENU) -----------------
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
-            // Toggle translate para mostrar/esconder na esquerda
             sidebar.classList.toggle('-translate-x-full');
-            // Overlay esmaecido
             overlay.classList.toggle('hidden');
         }
 
@@ -228,13 +216,9 @@
             btn.classList.add('menu-ativo', 'bg-green-50');
             document.getElementById('globalMsg').classList.add('hidden');
             
-            // Em telas menores, ao clicar numa aba, o menu fecha automaticamente
-            if (window.innerWidth < 768) {
-                toggleMenu();
-            }
+            if (window.innerWidth < 768) toggleMenu();
         }
 
-        // ----------------- INTERFACE GERAL -----------------
         function alternarEntrada(modulo, tipo) {
             const isCsv = tipo === 'csv';
             document.getElementById(`entrada${modulo.charAt(0).toUpperCase() + modulo.slice(1)}Csv`).classList.toggle('hidden', !isCsv);
@@ -273,10 +257,7 @@
             }
             m.innerHTML = `${icon} <span>${txt}</span>`;
             m.classList.remove('hidden');
-            
-            if(tipo !== 'processando') {
-                setTimeout(() => m.classList.add('hidden'), 4000);
-            }
+            if(tipo !== 'processando') setTimeout(() => m.classList.add('hidden'), 4500);
         }
 
         function montarTabelaAnovaHtml(anova, cvHtml) {
@@ -286,7 +267,6 @@
                     <tr><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">Causa de Variação</th><th class="p-3 sm:p-4 text-center border-r border-gray-200 font-bold">GL</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">SQ</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">QM</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">F Calc</th><th class="p-3 sm:p-4 text-indigo-700 border-r border-gray-200 font-bold">F Tab (5%)</th><th class="p-3 sm:p-4 font-bold">Significância</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
         }
 
-        // ----------------- MÓDULO 1: SIMPLES (DIC/DBC/DQL) -----------------
         function atualizarFormularioSimples() {
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
             if (d === 'dql') {
@@ -368,7 +348,6 @@
             } catch(e) { mostrarMsg(e.message, "erro"); }
         }
 
-        // ----------------- MÓDULO 2: FATORIAL -----------------
         function gerarGradeFatorial() {
             let na = parseInt(document.getElementById('fatA').value), nb = parseInt(document.getElementById('fatB').value), nr = parseInt(document.getElementById('fatR').value);
             let html = '<table class="w-full text-sm text-center min-w-[300px]"><thead><tr class="bg-gray-100 text-gray-700 border-b"><th class="p-3 border-r font-bold">Fator A</th><th class="p-3 border-r font-bold">Fator B</th><th class="p-3 border-r font-bold">Bloco</th><th class="bg-green-100 p-3 font-bold text-green-800">Valor</th></tr></thead><tbody>';
@@ -421,7 +400,7 @@
                     fd.append("testemunha", testVal);
                 }
                 
-                document.getElementById('resPostHoc').innerHTML = `<div class="flex items-center gap-2 text-blue-600 font-semibold"><svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Calculando análise...</div>`;
+                document.getElementById('resPostHoc').innerHTML = `<div class="flex items-center gap-2 text-blue-600 font-semibold"><svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Calculando análise rigorosa...</div>`;
                 document.getElementById('resPostHoc').classList.remove('hidden');
                 
                 let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
@@ -429,7 +408,24 @@
                 
                 let html = '';
                 if(d.tipo === "regressao") {
-                    html = `<div class="bg-blue-50 border border-blue-200 p-4 sm:p-5 rounded-xl mb-4 sm:mb-6 text-blue-900 shadow-sm overflow-x-auto"><p class="font-mono text-xs sm:text-sm mb-2 whitespace-nowrap"><strong>Eq (${d.modelo}):</strong> <span class="bg-white px-2 py-1 rounded border border-blue-100">${d.equacao}</span></p><p class="font-mono text-xs sm:text-sm whitespace-nowrap"><strong>R²:</strong> <span class="bg-white px-2 py-1 rounded border border-blue-100">${d.r2}</span></p></div><div class="bg-white p-2 sm:p-4 border border-gray-200 rounded-xl shadow-sm inline-block w-full overflow-x-auto"><img src="data:image/png;base64,${d.img_png}" class="rounded w-full h-auto min-w-[300px]"></div><div class="mt-4"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="inline-flex justify-center items-center gap-2 bg-gray-800 hover:bg-gray-900 transition-colors text-white px-6 py-3 rounded-lg text-sm font-bold shadow-md w-full sm:w-auto"> <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Baixar PDF (Alta Qualidade)</a></div>`;
+                    let linhasAnovaReg = d.anova_reg.map(l => `<tr class="border-b hover:bg-gray-50 transition-colors"><td class="p-3 font-medium border-r border-gray-200">${l.FV}</td><td class="p-3 text-center border-r border-gray-200">${l.GL}</td><td class="p-3 border-r border-gray-200">${l.SQ}</td><td class="p-3 border-r border-gray-200">${l.QM}</td><td class="p-3 border-r border-gray-200 bg-gray-50 font-medium">${l['F Calc']}</td><td class="p-3 font-bold text-indigo-600 border-r border-gray-200 bg-indigo-50">${l['F Tab']}</td><td class="p-3 font-bold ${l.Sig.includes('*') ? 'text-green-600' : 'text-gray-400'}">${l.Sig}</td></tr>`).join('');
+                    
+                    html = `
+                    <div class="bg-blue-50 border border-blue-200 p-4 sm:p-5 rounded-xl mb-4 sm:mb-6 text-blue-900 shadow-sm overflow-x-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <p class="font-mono text-sm mb-2 whitespace-nowrap"><strong>Eq (${d.modelo}):</strong> <span class="bg-white px-3 py-1.5 rounded border border-blue-100 font-bold">${d.equacao}</span></p>
+                            <p class="font-mono text-sm whitespace-nowrap"><strong>R²:</strong> <span class="bg-white px-3 py-1.5 rounded border border-blue-100 font-bold">${d.r2}</span></p>
+                        </div>
+                        <a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="inline-flex justify-center items-center gap-2 bg-gray-800 hover:bg-gray-900 transition-colors text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md w-full md:w-auto"> <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Baixar Gráfico PDF</a>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3 text-lg">ANOVA da Regressão (Ajuste do Modelo)</h4>
+                        <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm"><table class="w-full text-left text-sm whitespace-nowrap"><thead class="bg-gray-100 text-gray-700 border-b border-gray-200"><tr><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">Causa de Variação</th><th class="p-3 sm:p-4 text-center border-r border-gray-200 font-bold">GL</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">SQ</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">QM</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">F Calc</th><th class="p-3 sm:p-4 text-indigo-700 border-r border-gray-200 font-bold">F Tab (5%)</th><th class="p-3 sm:p-4 font-bold">Significância</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div>
+                        <p class="text-xs text-gray-500 mt-2 italic">Dica: Se a linha "Desvios da Regressão" for significativa (*), indica que o modelo escolhido não se ajusta perfeitamente aos dados.</p>
+                    </div>
+
+                    <div class="bg-white p-2 sm:p-4 border border-gray-200 rounded-xl shadow-sm inline-block w-full overflow-x-auto"><img src="data:image/png;base64,${d.img_png}" class="rounded w-full h-auto min-w-[300px]"></div>`;
                 } else if(d.tipo === "tukey" || d.tipo === "duncan") {
                     let desc = d.tipo === "tukey" ? `<strong class="text-green-800">q (Tukey):</strong> ${d.q} &nbsp;&bull;&nbsp; <strong class="text-green-800">DMS:</strong> ${d.dms}` : `<strong class="text-green-800">Alcances de Duncan (p):</strong> <div class="mt-2 flex flex-wrap gap-2">${Object.entries(d.alcances).map(([p, v]) => `<span class="bg-white px-2 py-1 rounded border border-green-100 shadow-sm text-xs">p=${p} ➔ <strong>${v}</strong></span>`).join('')}</div>`;
                     let rows = d.tabela.map(l => `<tr class="border-b hover:bg-gray-50"><td class="p-3 border-r font-medium">${l['Nível']}</td><td class="p-3 border-r">${l['Média']}</td><td class="p-3 font-bold text-green-700 bg-green-50 text-center">${l['Letra'] || 'a'}</td></tr>`).join('');
@@ -469,7 +465,7 @@
                     let csv = "FatorA;FatorB;Bloco;Valor\n";
                     for(let r of rows) {
                         let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, bl = r.cells[2].innerText, v = r.cells[3].querySelector('input').value;
-                        if(!v) throw new Error("Preencha todas as células de valor.");
+                        if(!v) throw new Error("Preencha todas as células de valor na grade.");
                         csv += `${a};${b};${bl};${v.replace('.', ',')}\n`;
                     }
                     file = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
