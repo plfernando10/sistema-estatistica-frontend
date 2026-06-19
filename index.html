@@ -6,9 +6,8 @@
     <meta name="description" content="Plataforma analítica para ensaios de campo. Análise estatística com ANOVA, testes de médias e F-Tabelado exato.">
     <meta name="theme-color" content="#16a34a">
     <title>Solver Estatística - Análise Experimental Avançada</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { font-family: 'Geist', system-ui, -apple-system, sans-serif; scroll-behavior: smooth; }
@@ -24,7 +23,6 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes slideInFromLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
         header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid #e5e7eb; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
         .header-content { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
@@ -58,9 +56,6 @@
         .btn-secondary { border: 2px solid #dcfce7; color: #16a34a; background-color: transparent; }
         .btn-secondary:hover { background-color: #f0fdf4; }
 
-        .hero-social { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #6b7280; }
-        .hero-avatars { display: flex; gap: -0.5rem; }
-        .avatar { width: 2rem; height: 2rem; border-radius: 9999px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: 2px solid white; margin-right: -0.5rem; }
         .hero-illustration { position: relative; height: 24rem; }
         @media (min-width: 768px) { .hero-illustration { height: 100%; } }
         .illustration-bg { position: absolute; inset: 0; background: linear-gradient(to bottom right, #dcfce7, #f0fdf4); border-radius: 1rem; opacity: 0.5; }
@@ -73,9 +68,6 @@
         .chart-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
         .label { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem; text-align: center; font-size: 0.875rem; font-weight: 600; color: #16a34a; }
 
-        .decoration-1 { position: absolute; top: 0; right: 0; width: 24rem; height: 24rem; background: #dcfce7; border-radius: 9999px; filter: blur(80px); opacity: 0.2; z-index: -1; }
-        .decoration-2 { position: absolute; bottom: 0; left: 0; width: 24rem; height: 24rem; background: #bfdbfe; border-radius: 9999px; filter: blur(80px); opacity: 0.2; z-index: -1; }
-
         .features { padding: 4rem 0; background-color: white; }
         @media (min-width: 768px) { .features { padding: 6rem 0; } }
         .features-header { text-align: center; margin-bottom: 4rem; }
@@ -86,26 +78,6 @@
         .feature-card { background: white; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 2rem; transition: all 0.3s ease; cursor: pointer; }
         .feature-card:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); border-color: #dcfce7; transform: translateY(-4px); }
         .feature-icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
-        .feature-card h3 { margin-bottom: 0.75rem; color: #1f2937; }
-        .feature-card p { color: #6b7280; font-size: 0.875rem; line-height: 1.6; }
-
-        .cta { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; padding: 4rem 0; text-align: center; }
-        @media (min-width: 768px) { .cta { padding: 6rem 0; } }
-        .cta h2 { color: white; margin-bottom: 1rem; }
-        .cta p { font-size: 1.125rem; color: #dcfce7; margin-bottom: 2rem; max-width: 42rem; margin-left: auto; margin-right: auto; }
-        .btn-cta { background-color: white; color: #16a34a; }
-        .btn-cta:hover { background-color: #f0fdf4; }
-
-        footer { border-top: 1px solid #e5e7eb; background-color: #f9fafb; padding: 3rem 0; }
-        .footer-content { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem; }
-        @media (min-width: 768px) { .footer-content { grid-template-columns: repeat(4, 1fr); } }
-        .footer-section h4 { font-size: 0.875rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .footer-section ul { list-style: none; }
-        .footer-section ul li { margin-bottom: 0.5rem; }
-        .footer-section a { color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
-        .footer-section a:hover { color: #16a34a; }
-        .footer-bottom { border-top: 1px solid #e5e7eb; padding-top: 2rem; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 1rem; font-size: 0.875rem; color: #6b7280; }
-        @media (min-width: 768px) { .footer-bottom { flex-direction: row; } }
 
         .sidebar { position: fixed; top: 0; left: 0; width: 16rem; height: 100vh; background: white; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; overflow-y: auto; display: none; }
         .sidebar.active { transform: translateX(0); }
@@ -155,26 +127,12 @@
         tbody tr:hover { background-color: #f9fafb; }
 
         .info-box { background-color: #dbeafe; border: 1px solid #93c5fd; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.875rem; color: #1e40af; }
-        .info-box strong { color: #1e3a8a; }
-
-        /* Estilos de mensagens de sucesso/erro integrados do seu CSS */
         .success-msg { background-color: #dcfce7; color: #15803d; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #86efac; font-weight: 500; font-size: 0.875rem; }
         .error-msg { background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #fca5a5; font-weight: 500; font-size: 0.875rem; }
         .info-msg { background-color: #e0f2fe; color: #1e40af; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #bfdbfe; font-weight: 500; font-size: 0.875rem; }
 
-        .text-center { text-align: center; } .text-sm { font-size: 0.875rem; } .text-muted { color: #6b7280; }
-        .mt-4 { margin-top: 1.5rem; } .mb-4 { margin-bottom: 1.5rem; } .hidden { display: none !important; }
-        .flex { display: flex; } .gap-2 { gap: 0.5rem; } .gap-4 { gap: 1.5rem; } .w-full { width: 100%; }
-        .items-center { align-items: center; } .justify-between { justify-content: space-between; }
-
-        @media (max-width: 767px) {
-            h1 { font-size: 1.875rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.25rem; }
-            .hero-text h1 { font-size: 1.875rem; } .hero-text p { font-size: 1rem; }
-            .btn { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
-        }
-        
-        /* Container flutuante para avisos */
         #globalMsgContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; max-width: 400px; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -186,197 +144,43 @@
             <div class="container">
                 <div class="header-content">
                     <a href="#" class="logo" onclick="showPage('home-page')">
-                        <div class="logo-icon">S</div>
-                        <div class="logo-text">
-                            <h1>Solver</h1>
-                            <p>Estatística</p>
-                        </div>
+                        <div class="logo-icon">S</div><div class="logo-text"><h1>Solver</h1><p>Estatística</p></div>
                     </a>
-                    <nav class="nav">
-                        <a href="#features">Recursos</a>
-                        <a href="#about">Sobre</a>
-                    </nav>
-                    <button class="menu-btn" onclick="toggleSidebar()">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
+                    <button class="menu-btn" onclick="toggleSidebar()"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
                 </div>
             </div>
         </header>
 
         <section class="hero">
-            <div class="decoration-1"></div>
-            <div class="decoration-2"></div>
+            <div class="decoration-1"></div><div class="decoration-2"></div>
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-text">
                         <h1>Análise Estatística<br><span class="green">Experimental<br>Avançada</span></h1>
-                        <p>A plataforma analítica para ensaios de campo. Processe dados, avalie cultivares e obtenha laudos estatísticos com F-Tabelado exato.</p>
+                        <p>A plataforma analítica para ensaios de campo. Processe dados quantitativos e qualitativos com segurança e exatidão estatística.</p>
                         <div class="hero-buttons">
-                            <button class="btn btn-primary" onclick="showPage('analysis-page')">
-                                Iniciar Análise
-                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </button>
-                            <button class="btn btn-secondary">Saiba Mais</button>
-                        </div>
-                        <div class="hero-social">
-                            <div class="hero-avatars">
-                                <div class="avatar"></div>
-                                <div class="avatar"></div>
-                                <div class="avatar"></div>
-                            </div>
-                            <span>Confiável por pesquisadores em todo o Brasil</span>
-                        </div>
-                    </div>
-                    <div class="hero-illustration">
-                        <div class="illustration-bg"></div>
-                        <div class="illustration-content">
-                            <div class="chart-demo">
-                                <div class="chart-box">
-                                    <div class="chart-bars">
-                                        <div class="bar" style="height: 60%;"></div>
-                                        <div class="bar" style="height: 80%;"></div>
-                                        <div class="bar" style="height: 40%;"></div>
-                                        <div class="bar" style="height: 90%;"></div>
-                                        <div class="bar" style="height: 50%;"></div>
-                                    </div>
-                                </div>
-                                <div class="chart-labels">
-                                    <div class="label">ANOVA</div>
-                                    <div class="label">Tukey</div>
-                                </div>
-                            </div>
+                            <button class="btn btn-primary" onclick="showPage('analysis-page')">Iniciar Análise</button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <section class="features" id="features">
-            <div class="container">
-                <div class="features-header">
-                    <h2>Recursos Poderosos</h2>
-                    <p>Tudo que você precisa para análise estatística rigorosa de experimentos agrícolas</p>
-                </div>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🌱</div>
-                        <h3>Delineamentos</h3>
-                        <p>DIC, DBC, DQL, Fatoriais e Parcelas Subdivididas.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Testes de Médias</h3>
-                        <p>Agrupamentos precisos com Tukey, Duncan e Dunnett.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📈</div>
-                        <h3>ANOVA de Regressão</h3>
-                        <p>Desdobramento dos GL para Linear e Quadrática provando o ajuste.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta">
-            <div class="container">
-                <h2>Pronto para começar?</h2>
-                <p>Carregue seus dados e obtenha análises estatísticas completas em segundos</p>
-                <button class="btn btn-cta" onclick="showPage('analysis-page')">
-                    Iniciar Análise Agora
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
-            </div>
-        </section>
-
-        <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h4>Sobre</h4>
-                        <ul>
-                            <li><a href="#">Solver Estatística</a></li>
-                            <li><a href="#">Análise experimental</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-section">
-                        <h4>Recursos</h4>
-                        <ul>
-                            <li><a href="#">Documentação</a></li>
-                            <li><a href="#">Tutoriais</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-section">
-                        <h4>Suporte</h4>
-                        <ul>
-                            <li><a href="#">FAQ</a></li>
-                            <li><a href="#">Contato</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-section">
-                        <h4>Legal</h4>
-                        <ul>
-                            <li><a href="#">Privacidade</a></li>
-                            <li><a href="#">Termos</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <p>&copy; 2026 Solver Estatística. Todos os direitos reservados.</p>
-                    <p>Por: Fernando Paes Lorena</p>
-                </div>
-            </div>
-        </footer>
     </div>
 
-    <div id="analysis-page" class="page hidden fade-in">
+    <div id="analysis-page" class="page hidden">
         <div class="main-layout">
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-header">
-                    <div class="logo">
-                        <div class="logo-icon">S</div>
-                        <div class="logo-text">
-                            <h1>Solver</h1>
-                            <p>Estatística</p>
-                        </div>
-                    </div>
+                    <div class="logo"><div class="logo-icon">S</div><div class="logo-text"><h1>Solver</h1><p>Estatística</p></div></div>
                     <p class="text-sm text-muted" style="margin-top: 0.5rem;">Por: Fernando Paes Lorena</p>
                 </div>
                 <nav class="sidebar-nav">
-                    <button class="nav-item active" onclick="switchModule('simples')">
-                        <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📊</div>
-                        <div>
-                            <div style="font-weight: 600;">Análise Simples</div>
-                            <div style="font-size: 0.75rem; color: #9ca3af;">DIC / DBC / DQL</div>
-                        </div>
-                    </button>
-                    <button class="nav-item" onclick="switchModule('fatorial')">
-                        <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📈</div>
-                        <div>
-                            <div style="font-weight: 600;">Fatorial (A x B)</div>
-                            <div style="font-size: 0.75rem; color: #9ca3af;">Duplo em DBC</div>
-                        </div>
-                    </button>
-                    <button class="nav-item" onclick="switchModule('parcelas')">
-                        <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📑</div>
-                        <div>
-                            <div style="font-weight: 600;">Parcelas Subdivididas</div>
-                            <div style="font-size: 0.75rem; color: #9ca3af;">Em DBC</div>
-                        </div>
-                    </button>
+                    <button class="nav-item active" onclick="switchModule('simples')"><div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📊</div><div><div style="font-weight: 600;">Análise Simples</div><div style="font-size: 0.75rem; color: #9ca3af;">DIC / DBC / DQL</div></div></button>
+                    <button class="nav-item" onclick="switchModule('fatorial')"><div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📈</div><div><div style="font-weight: 600;">Fatorial (A x B)</div><div style="font-size: 0.75rem; color: #9ca3af;">Duplo em DBC</div></div></button>
+                    <button class="nav-item" onclick="switchModule('parcelas')"><div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📑</div><div><div style="font-weight: 600;">Parcelas Subdivididas</div><div style="font-size: 0.75rem; color: #9ca3af;">Em DBC</div></div></button>
                 </nav>
                 <div style="padding: 1rem; border-top: 1px solid #e5e7eb; margin-top: auto;">
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: flex-start;" onclick="showPage('home-page')">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                        Voltar ao Início
-                    </button>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: flex-start;" onclick="showPage('home-page')">Voltar ao Início</button>
                 </div>
             </aside>
 
@@ -384,15 +188,8 @@
 
             <div class="main-content">
                 <div class="top-bar">
-                    <button class="menu-btn" onclick="toggleSidebar()">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                    <div>
-                        <h2 id="module-title" style="margin: 0; font-size: 1.5rem;">Análise Simples</h2>
-                        <p id="module-subtitle" class="text-sm text-muted" style="margin: 0;">DIC / DBC / DQL</p>
-                    </div>
+                    <button class="menu-btn" onclick="toggleSidebar()"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                    <div><h2 id="module-title" style="margin: 0; font-size: 1.5rem;">Análise Simples</h2><p id="module-subtitle" class="text-sm text-muted" style="margin: 0;">DIC / DBC / DQL</p></div>
                 </div>
 
                 <div class="content-area">
@@ -400,9 +197,7 @@
                         
                         <div id="module-simples" class="module-content fade-in">
                             <div class="card">
-                                <div class="card-header">
-                                    <h3>Tipo de Delineamento</h3>
-                                </div>
+                                <div class="card-header"><h3>Tipo de Delineamento</h3></div>
                                 <div class="radio-group">
                                     <div class="radio-item"><input type="radio" id="dbc" name="delinSimples" value="dbc" checked onchange="atualizarFormularioSimples()"><label for="dbc" style="margin:0; font-weight:normal;">DBC</label></div>
                                     <div class="radio-item"><input type="radio" id="dic" name="delinSimples" value="dic" onchange="atualizarFormularioSimples()"><label for="dic" style="margin:0; font-weight:normal;">DIC</label></div>
@@ -425,9 +220,9 @@
 
                             <div id="manual-simples" class="tab-content">
                                 <div class="card">
-                                    <div class="flex gap-4 mb-4">
-                                        <div class="form-group flex-1"><label id="lblSimplesT">Qtd. Tratamentos</label><input type="number" id="simples-t" value="4" min="2"></div>
-                                        <div class="form-group flex-1" id="divSimplesR"><label>Blocos/Repetições</label><input type="number" id="simples-r" value="3" min="2"></div>
+                                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+                                        <div class="form-group" style="flex:1;"><label id="lblSimplesT">Qtd. Tratamentos</label><input type="number" id="simples-t" value="4" min="2"></div>
+                                        <div class="form-group" style="flex:1;" id="divSimplesR"><label>Blocos/Repetições</label><input type="number" id="simples-r" value="3" min="2"></div>
                                     </div>
                                     <button class="btn btn-primary w-full" onclick="gerarGradeSimples()">Gerar Grade</button>
                                     <div id="grade-simples" style="margin-top: 1.5rem;"></div>
@@ -437,15 +232,30 @@
 
                             <div id="resultado-simples" class="card hidden fade-in">
                                 <h3>Resultados da ANOVA</h3>
-                                <div id="resultado-simples-content" class="mt-4"></div>
+                                <div id="resultado-simples-content" style="margin-top: 1rem;"></div>
+                            </div>
+
+                            <div id="areaPostHocSimples" class="card hidden fade-in">
+                                <h3>Análises Posteriores (Tratamento)</h3>
+                                <p class="text-sm text-muted" style="margin-bottom: 1rem;">Se a ANOVA foi significativa (*), aplique testes de médias ou ajuste de regressão.</p>
+                                <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+                                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                                        <label>Selecione a Análise</label>
+                                        <select id="selPostHocSimples" onchange="verificarCamposPostHocSimples()">
+                                            <optgroup label="Regressão Quantitativa"><option value="regr">Regressão de Doses</option></optgroup>
+                                            <optgroup label="Testes de Médias (a=5%)"><option value="tukey">Tukey</option><option value="duncan">Duncan</option><option value="dunnett">Dunnett (Vs. Testemunha)</option></optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hidden" id="divModRegrSimples" style="flex:1; margin-bottom:0;"><label>Modelo</label><select id="selModRegrSimples"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunhaSimples" style="flex:1; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaSimples" placeholder="Ex: T1"></div>
+                                    <button class="btn btn-primary" onclick="calcularPostHocSimples()">Gerar Análise</button>
+                                </div>
+                                <div id="resPostHocSimples" class="hidden fade-in" style="margin-top: 1rem;"></div>
                             </div>
                         </div>
 
                         <div id="module-fatorial" class="module-content hidden fade-in">
-                            <div class="card">
-                                <div class="info-box"><strong>Fatorial Duplo (A × B) em DBC:</strong> Analisa dois fatores simultaneamente com blocos casualizados.</div>
-                            </div>
-
+                            <div class="card"><div class="info-box"><strong>Fatorial Duplo (A × B) em DBC</strong></div></div>
                             <div class="tabs">
                                 <button class="tab-btn active" onclick="switchTab(this, 'csv-fatorial')">📥 Upload CSV</button>
                                 <button class="tab-btn" onclick="switchTab(this, 'manual-fatorial')">✏️ Digitação Manual</button>
@@ -461,10 +271,10 @@
 
                             <div id="manual-fatorial" class="tab-content">
                                 <div class="card">
-                                    <div class="flex gap-4 mb-4">
-                                        <div class="form-group flex-1"><label>Fator A</label><input type="number" id="fat-a" value="2" min="2"></div>
-                                        <div class="form-group flex-1"><label>Fator B</label><input type="number" id="fat-b" value="2" min="2"></div>
-                                        <div class="form-group flex-1"><label>Blocos</label><input type="number" id="fat-r" value="3" min="2"></div>
+                                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+                                        <div class="form-group" style="flex:1;"><label>Fator A</label><input type="number" id="fat-a" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1;"><label>Fator B</label><input type="number" id="fat-b" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1;"><label>Blocos</label><input type="number" id="fat-r" value="3" min="2"></div>
                                     </div>
                                     <button class="btn btn-primary w-full" onclick="gerarGradeFatorial()">Gerar Grade</button>
                                     <div id="grade-fatorial" style="margin-top: 1.5rem;"></div>
@@ -474,59 +284,30 @@
 
                             <div id="resultado-fatorial" class="card hidden fade-in">
                                 <h3>Resultados da ANOVA</h3>
-                                <div id="resultado-fatorial-content" class="mt-4"></div>
+                                <div id="resultado-fatorial-content" style="margin-top: 1rem;"></div>
                             </div>
                             
                             <div id="areaPostHoc" class="card hidden fade-in">
                                 <h3>Análises Posteriores</h3>
-                                <p class="text-sm text-muted mb-4">Testes de médias ou Ajuste de Regressão.</p>
-                                <div class="flex flex-wrap gap-4 items-end">
-                                    <div class="form-group flex-1" style="margin-bottom:0;">
+                                <p class="text-sm text-muted" style="margin-bottom: 1rem;">Apenas realize testes adicionais para fatores cujo valor de F tenha sido significativo (*).</p>
+                                <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+                                    <div class="form-group" style="flex:1; margin-bottom:0;">
                                         <label>Selecione a Análise</label>
                                         <select id="selPostHoc" onchange="verificarCamposPostHoc()">
-                                            <optgroup label="Regressão Quantitativa">
-                                                <option value="regr_a">Regressão (Fator A)</option>
-                                                <option value="regr_b">Regressão (Fator B)</option>
-                                            </optgroup>
-                                            <optgroup label="Tukey (a=5%)">
-                                                <option value="tukey_a">Tukey (Fator A)</option>
-                                                <option value="tukey_b">Tukey (Fator B)</option>
-                                            </optgroup>
-                                            <optgroup label="Duncan (a=5%)">
-                                                <option value="duncan_a">Duncan (Fator A)</option>
-                                                <option value="duncan_b">Duncan (Fator B)</option>
-                                            </optgroup>
-                                            <optgroup label="Dunnett">
-                                                <option value="dunnett_a">Dunnett (Fator A)</option>
-                                                <option value="dunnett_b">Dunnett (Fator B)</option>
-                                            </optgroup>
+                                            <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
+                                            <optgroup label="Testes de Médias"><option value="tukey_a">Tukey (Fator A)</option><option value="tukey_b">Tukey (Fator B)</option><option value="duncan_a">Duncan (Fator A)</option><option value="duncan_b">Duncan (Fator B)</option><option value="dunnett_a">Dunnett (Fator A)</option><option value="dunnett_b">Dunnett (Fator B)</option></optgroup>
                                         </select>
                                     </div>
-                                    
-                                    <div class="form-group flex-1" id="divModRegr" style="margin-bottom:0;">
-                                        <label>Modelo Matemático</label>
-                                        <select id="selModRegr">
-                                            <option value="linear">Linear</option>
-                                            <option value="quadratica" selected>Quadrática</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group flex-1 hidden" id="divTestemunha" style="margin-bottom:0;">
-                                        <label>Nome da Testemunha</label>
-                                        <input type="text" id="txtTestemunha" placeholder="Ex: C1">
-                                    </div>
-                                    
+                                    <div class="form-group hidden" id="divModRegr" style="flex:1; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegr"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunha" style="flex:1; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunha" placeholder="Ex: C1"></div>
                                     <button class="btn btn-primary" onclick="calcularPostHoc()">Gerar Análise</button>
                                 </div>
-                                <div id="resPostHoc" class="mt-4 hidden fade-in"></div>
+                                <div id="resPostHoc" class="hidden fade-in" style="margin-top: 1rem;"></div>
                             </div>
                         </div>
 
                         <div id="module-parcelas" class="module-content hidden fade-in">
-                            <div class="card">
-                                <div class="info-box"><strong>Parcelas Subdivididas em DBC:</strong> Analisa dois fatores com estrutura hierárquica.</div>
-                            </div>
-
+                            <div class="card"><div class="info-box"><strong>Parcelas Subdivididas em DBC</strong></div></div>
                             <div class="tabs">
                                 <button class="tab-btn active" onclick="switchTab(this, 'csv-parcelas')">📥 Upload CSV</button>
                                 <button class="tab-btn" onclick="switchTab(this, 'manual-parcelas')">✏️ Digitação Manual</button>
@@ -534,7 +315,7 @@
 
                             <div id="csv-parcelas" class="tab-content active">
                                 <div class="card">
-                                    <div class="info-box"><strong>Formato esperado:</strong><br>FatorA (Parcela);FatorB (Subparcela);Bloco;Valor</div>
+                                    <div class="info-box"><strong>Formato:</strong><br>FatorA (Parcela);FatorB (Subparcela);Bloco;Valor</div>
                                     <div class="form-group"><label>Selecione o arquivo CSV</label><input type="file" id="csv-input-parcelas" accept=".csv"></div>
                                     <button class="btn btn-primary w-full" onclick="calcularParcelas(false)">Calcular ANOVA</button>
                                 </div>
@@ -542,20 +323,38 @@
 
                             <div id="manual-parcelas" class="tab-content">
                                 <div class="card">
-                                    <div class="flex gap-4 mb-4">
-                                        <div class="form-group flex-1"><label>Níveis Parcela (A)</label><input type="number" id="sub-a" value="2" min="2"></div>
-                                        <div class="form-group flex-1"><label>Níveis Subparcela (B)</label><input type="number" id="sub-b" value="2" min="2"></div>
-                                        <div class="form-group flex-1"><label>Blocos</label><input type="number" id="sub-r" value="3" min="2"></div>
+                                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+                                        <div class="form-group" style="flex:1;"><label>Níveis Parcela (A)</label><input type="number" id="sub-a" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1;"><label>Níveis Subparcela (B)</label><input type="number" id="sub-b" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1;"><label>Blocos</label><input type="number" id="sub-r" value="3" min="2"></div>
                                     </div>
                                     <button class="btn btn-primary w-full" onclick="gerarGradeParcelas()">Gerar Grade</button>
                                     <div id="grade-parcelas" style="margin-top: 1.5rem;"></div>
-                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-parcelas" onclick="calcularParcelas(true)">Calcular ANOVA da Grade</button>
+                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-parcelas" onclick="calcularParcelas(true)">Calcular ANOVA</button>
                                 </div>
                             </div>
 
                             <div id="resultado-parcelas" class="card hidden fade-in">
                                 <h3>Resultados da ANOVA</h3>
-                                <div id="resultado-parcelas-content" class="mt-4"></div>
+                                <div id="resultado-parcelas-content" style="margin-top: 1rem;"></div>
+                            </div>
+
+                            <div id="areaPostHocParcelas" class="card hidden fade-in">
+                                <h3>Análises Posteriores</h3>
+                                <p class="text-sm text-muted" style="margin-bottom: 1rem;">Lembre-se: O sistema usará o Erro A para testar a Parcela e o Erro B para a Subparcela automaticamente.</p>
+                                <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+                                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                                        <label>Selecione a Análise</label>
+                                        <select id="selPostHocParcelas" onchange="verificarCamposPostHocParcelas()">
+                                            <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão - Parcela (A)</option><option value="regr_b">Regressão - Subparcela (B)</option></optgroup>
+                                            <optgroup label="Testes de Médias"><option value="tukey_a">Tukey - Parcela (A)</option><option value="tukey_b">Tukey - Subparcela (B)</option><option value="duncan_a">Duncan - Parcela (A)</option><option value="duncan_b">Duncan - Subparcela (B)</option><option value="dunnett_a">Dunnett - Parcela (A)</option><option value="dunnett_b">Dunnett - Subparcela (B)</option></optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hidden" id="divModRegrParcelas" style="flex:1; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegrParcelas"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunhaParcelas" style="flex:1; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaParcelas" placeholder="Ex: C1"></div>
+                                    <button class="btn btn-primary" onclick="calcularPostHocParcelas()">Gerar Análise</button>
+                                </div>
+                                <div id="resPostHocParcelas" class="hidden fade-in" style="margin-top: 1rem;"></div>
                             </div>
                         </div>
 
@@ -568,34 +367,22 @@
     <script>
         // ====================================================================
         // COLOQUE A SUA URL DO RENDER AQUI:
-        // ====================================================================
         const API_URL = "https://api-estatistica.onrender.com/api/analise/";
+        // ====================================================================
 
+        let arquivoSimplesGlobal = null;
         let arquivoFatorialGlobal = null;
+        let arquivoParcelasGlobal = null;
 
-        // --- NAVEGAÇÃO E UI ---
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-            closeSidebar();
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
+        function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); document.getElementById(pageId).classList.remove('hidden'); closeSidebar(); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
 
         function switchModule(module) {
             document.querySelectorAll('.module-content').forEach(m => m.classList.add('hidden'));
             document.getElementById('module-' + module).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             event.target.closest('.nav-item').classList.add('active');
-
             const titles = { simples: 'Análise Simples', fatorial: 'Fatorial (A x B)', parcelas: 'Parcelas Subdivididas' };
             const subtitles = { simples: 'DIC / DBC / DQL', fatorial: 'Duplo em DBC', parcelas: 'Em DBC' };
             document.getElementById('module-title').textContent = titles[module];
@@ -611,45 +398,41 @@
             document.getElementById(contentId).classList.remove('hidden');
         }
 
+        function verificarCamposPostHocSimples() {
+            const val = document.getElementById('selPostHocSimples').value;
+            document.getElementById('divModRegrSimples').classList.toggle('hidden', !val.includes('regr'));
+            document.getElementById('divTestemunhaSimples').classList.toggle('hidden', !val.includes('dunnett'));
+        }
+
         function verificarCamposPostHoc() {
             const val = document.getElementById('selPostHoc').value;
             document.getElementById('divModRegr').classList.toggle('hidden', !val.includes('regr'));
             document.getElementById('divTestemunha').classList.toggle('hidden', !val.includes('dunnett'));
         }
 
-        // --- SISTEMA DE TOAST NOTIFICATIONS (MENSAGENS) ---
+        function verificarCamposPostHocParcelas() {
+            const val = document.getElementById('selPostHocParcelas').value;
+            document.getElementById('divModRegrParcelas').classList.toggle('hidden', !val.includes('regr'));
+            document.getElementById('divTestemunhaParcelas').classList.toggle('hidden', !val.includes('dunnett'));
+        }
+
         function mostrarMsg(txt, tipo) {
             const container = document.getElementById('globalMsgContainer');
             const toast = document.createElement('div');
-            
             if(tipo === 'sucesso') toast.className = 'success-msg fade-in';
             else if (tipo === 'erro') toast.className = 'error-msg fade-in';
-            else toast.className = 'info-msg fade-in'; // Para status "Processando"
-            
-            toast.innerHTML = txt;
-            container.appendChild(toast);
-            
-            // Remove o aviso automaticamente após 4 segundos (se não for "processando")
-            if(tipo !== 'info') {
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 300);
-                }, 4000);
-            }
+            else toast.className = 'info-msg fade-in';
+            toast.innerHTML = txt; container.appendChild(toast);
+            if(tipo !== 'info') { setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000); }
         }
+        function limparMensagens() { document.getElementById('globalMsgContainer').innerHTML = ''; }
 
-        function limparMensagens() {
-            document.getElementById('globalMsgContainer').innerHTML = '';
-        }
-
-        // --- FORMATADOR DA TABELA ANOVA ---
         function montarTabelaAnovaHtml(anova, cvHtml) {
             let linhas = anova.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-            return `<div style="margin-bottom:1rem;">${cvHtml}</div>
-                    <div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Significância</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+            return `<div style="margin-bottom:1rem;">${cvHtml}</div><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
         }
 
-        // ================= MÓDULO 1: SIMPLES =================
+        // ================= SIMPLES =================
         function atualizarFormularioSimples() {
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
             if (d === 'dql') {
@@ -669,22 +452,13 @@
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
             let t = parseInt(document.getElementById('simples-t').value);
             let html = '<div class="table-container"><table>';
-
             if (d === 'dql') {
                 html += '<thead><tr><th>Linha</th><th>Coluna</th><th>Tratamento</th><th>Valor</th></tr></thead><tbody>';
-                for(let l=1; l<=t; l++) {
-                    for(let c=1; c<=t; c++) {
-                        html += `<tr><td>L${l}</td><td>C${c}</td><td><input type="text" placeholder="Ex: T1" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`;
-                    }
-                }
+                for(let l=1; l<=t; l++) { for(let c=1; c<=t; c++) { html += `<tr><td>L${l}</td><td>C${c}</td><td><input type="text" placeholder="Ex: T1" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`; } }
             } else {
                 let r = parseInt(document.getElementById('simples-r').value);
                 html += '<thead><tr><th>Tratamento</th><th>Bloco/Rep</th><th>Valor</th></tr></thead><tbody>';
-                for(let i=1; i<=t; i++) {
-                    for(let j=1; j<=r; j++) {
-                        html += `<tr><td>T${i}</td><td>R${j}</td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`;
-                    }
-                }
+                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td><input type="text" value="T${i}" style="width:100%; padding:0.5rem; border:none; background:transparent; font-weight:bold;"></td><td>R${j}</td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`; } }
             }
             html += '</tbody></table></div>';
             document.getElementById('grade-simples').innerHTML = html;
@@ -694,7 +468,6 @@
         async function calcularSimples(isManual) {
             limparMensagens();
             try {
-                let file;
                 const d = document.querySelector('input[name="delinSimples"]:checked').value;
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-simples tbody tr');
@@ -706,24 +479,64 @@
                             if(!tr || !v) throw new Error("Preencha todos os campos da grade.");
                             csv += `${tr};${r.cells[0].innerText};${r.cells[1].innerText};${v.replace('.', ',')}\n`;
                         } else {
+                            let tr = r.cells[0].querySelector('input').value;
                             let v = r.cells[2].querySelector('input').value;
                             if(!v) throw new Error("Preencha todos os valores.");
-                            csv += `${r.cells[0].innerText};${r.cells[1].innerText};${v.replace('.', ',')}\n`;
+                            csv += `${tr};${r.cells[1].innerText};${v.replace('.', ',')}\n`;
                         }
                     }
-                    file = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
+                    arquivoSimplesGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
                 } else {
-                    file = document.getElementById('csv-input-simples').files[0];
-                    if(!file) throw new Error("Selecione um arquivo CSV.");
+                    arquivoSimplesGlobal = document.getElementById('csv-input-simples').files[0];
+                    if(!arquivoSimplesGlobal) throw new Error("Selecione um arquivo CSV.");
                 }
-                mostrarMsg("Processando ANOVA na nuvem...", "info");
-                let fd = new FormData(); fd.append("file", file); fd.append("tipo_delineamento", d);
+                mostrarMsg("Processando ANOVA...", "info");
+                let fd = new FormData(); fd.append("file", arquivoSimplesGlobal); fd.append("tipo_delineamento", d); fd.append("tipo_teste", "anova");
                 let res = await fetch(API_URL + "simples", {method:'POST', body:fd}), data = await res.json();
-                if(data.status !== "sucesso") throw new Error(data.detail);
+                if(data.status !== "sucesso") throw new Error(data.detail || data.mensagem);
                 
                 document.getElementById('resultado-simples-content').innerHTML = montarTabelaAnovaHtml(data.anova, `<span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold;">CV (%): ${data.cv}</span>`);
                 document.getElementById('resultado-simples').classList.remove('hidden'); 
+                document.getElementById('areaPostHocSimples').classList.remove('hidden');
+                document.getElementById('resPostHocSimples').classList.add('hidden');
                 limparMensagens(); mostrarMsg("Análise concluída com sucesso!", "sucesso");
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
+        }
+
+        async function calcularPostHocSimples() {
+            limparMensagens();
+            try {
+                let th = document.getElementById('selPostHocSimples').value;
+                let fd = new FormData(); fd.append("file", arquivoSimplesGlobal); fd.append("tipo_teste", th);
+                fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
+                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegrSimples').value);
+                if(th.includes("dunnett")) {
+                    const testVal = document.getElementById('txtTestemunhaSimples').value.trim();
+                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
+                    fd.append("testemunha", testVal);
+                }
+                
+                mostrarMsg("Gerando análise avançada...", "info");
+                document.getElementById('resPostHocSimples').innerHTML = '';
+                document.getElementById('resPostHocSimples').classList.remove('hidden');
+                
+                let res = await fetch(API_URL + "simples", {method:'POST', body:fd}), d = await res.json();
+                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
+                
+                let html = '';
+                if(d.tipo === "regressao") {
+                    let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
+                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
+                    let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
+                    let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+                } else if(d.tipo === "dunnett") {
+                    let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+                }
+                document.getElementById('resPostHocSimples').innerHTML = html;
+                limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
@@ -731,13 +544,7 @@
         function gerarGradeFatorial() {
             const a = parseInt(document.getElementById('fat-a').value), b = parseInt(document.getElementById('fat-b').value), r = parseInt(document.getElementById('fat-r').value);
             let html = '<div class="table-container"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) {
-                for(let j=1; j<=b; j++) {
-                    for(let k=1; k<=r; k++) {
-                        html += `<tr><td>A${i}</td><td>B${j}</td><td>R${k}</td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`;
-                    }
-                }
-            }
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td><input type="text" value="A${i}" style="width:100%; border:none; background:transparent; font-weight:bold;" readonly></td><td><input type="text" value="B${j}" style="width:100%; border:none; background:transparent; font-weight:bold;" readonly></td><td>R${k}</td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`; } } }
             html += '</tbody></table></div>';
             document.getElementById('grade-fatorial').innerHTML = html;
             document.getElementById('btn-calc-fatorial').classList.remove('hidden');
@@ -749,9 +556,10 @@
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-fatorial tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
                     for(let r of rows) {
+                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value;
                         let v = r.cells[3].querySelector('input').value;
                         if(!v) throw new Error("Preencha todas as células de valor.");
-                        csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
+                        csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
                     }
                     arquivoFatorialGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
                 } else {
@@ -761,7 +569,7 @@
                 mostrarMsg("Calculando ANOVA...", "info");
                 let fd = new FormData(); fd.append("file", arquivoFatorialGlobal); fd.append("tipo_teste", "anova");
                 let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.detail);
+                if(d.status !== "sucesso") throw new Error(d.detail || d.mensagem);
                 
                 document.getElementById('resultado-fatorial-content').innerHTML = montarTabelaAnovaHtml(d.anova, `<span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold;">CV (%): ${d.cv}</span>`);
                 document.getElementById('resultado-fatorial').classList.remove('hidden'); 
@@ -793,32 +601,15 @@
                 let html = '';
                 if(d.tipo === "regressao") {
                     let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `
-                    <div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;">
-                        <strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}
-                    </div>
-                    <div style="margin-bottom:1.5rem;">
-                        <h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4>
-                        <div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div>
-                    </div>
-                    <div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;">
-                        <img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;">
-                        <br>
-                        <a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a>
-                    </div>`;
+                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
                 } else if(d.tipo === "tukey" || d.tipo === "duncan") {
                     let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
                     let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td><td style="font-weight:bold; color:#15803d; background:#dcfce7; text-align:center;">${l['Letra'] || 'a'}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div>
-                            <div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th><th style="text-align:center;">Agrupamento</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th><th style="text-align:center;">Agrupamento</th></tr></thead><tbody>${rows}</tbody></table></div>`;
                 } else if(d.tipo === "dunnett") {
                     let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;">
-                                <strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}
-                            </div>
-                            <div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
                 }
-                
                 document.getElementById('resPostHoc').innerHTML = html;
                 limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
@@ -828,13 +619,7 @@
         function gerarGradeParcelas() {
             const a = parseInt(document.getElementById('sub-a').value), b = parseInt(document.getElementById('sub-b').value), r = parseInt(document.getElementById('sub-r').value);
             let html = '<div class="table-container"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) {
-                for(let j=1; j<=b; j++) {
-                    for(let k=1; k<=r; k++) {
-                        html += `<tr><td>A${i}</td><td>B${j}</td><td>R${k}</td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`;
-                    }
-                }
-            }
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td><input type="text" value="A${i}" style="width:100%; border:none; background:transparent; font-weight:bold;" readonly></td><td><input type="text" value="B${j}" style="width:100%; border:none; background:transparent; font-weight:bold;" readonly></td><td>R${k}</td><td><input type="number" step="any" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:0.25rem;"></td></tr>`; } } }
             html += '</tbody></table></div>';
             document.getElementById('grade-parcelas').innerHTML = html;
             document.getElementById('btn-calc-parcelas').classList.remove('hidden');
@@ -843,28 +628,66 @@
         async function calcularParcelas(isManual) {
             limparMensagens();
             try {
-                let file;
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-parcelas tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
                     for(let r of rows) {
+                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value;
                         let v = r.cells[3].querySelector('input').value;
                         if(!v) throw new Error("Preencha todas as células de valor.");
-                        csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
+                        csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
                     }
-                    file = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
+                    arquivoParcelasGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
                 } else {
-                    file = document.getElementById('csv-input-parcelas').files[0];
-                    if(!file) throw new Error("Selecione um arquivo CSV.");
+                    arquivoParcelasGlobal = document.getElementById('csv-input-parcelas').files[0];
+                    if(!arquivoParcelasGlobal) throw new Error("Selecione um arquivo CSV.");
                 }
                 mostrarMsg("Calculando ANOVA...", "info");
-                let fd = new FormData(); fd.append("file", file);
+                let fd = new FormData(); fd.append("file", arquivoParcelasGlobal); fd.append("tipo_teste", "anova");
                 let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.detail);
+                if(d.status !== "sucesso") throw new Error(d.detail || d.mensagem);
                 
                 let cvsHtml = `<div style="display:flex; gap:1rem;"><span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV Parcela (A): ${d.cv_a}%</span><span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV Subparcela (B): ${d.cv_b}%</span></div>`;
                 document.getElementById('resultado-parcelas-content').innerHTML = montarTabelaAnovaHtml(d.anova, cvsHtml);
                 document.getElementById('resultado-parcelas').classList.remove('hidden');
+                document.getElementById('areaPostHocParcelas').classList.remove('hidden');
+                document.getElementById('resPostHocParcelas').classList.add('hidden');
                 limparMensagens(); mostrarMsg("ANOVA calculada com sucesso!", "sucesso");
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
+        }
+
+        async function calcularPostHocParcelas() {
+            limparMensagens();
+            try {
+                let th = document.getElementById('selPostHocParcelas').value;
+                let fd = new FormData(); fd.append("file", arquivoParcelasGlobal); fd.append("tipo_teste", th);
+                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegrParcelas').value);
+                if(th.includes("dunnett")) {
+                    const testVal = document.getElementById('txtTestemunhaParcelas').value.trim();
+                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
+                    fd.append("testemunha", testVal);
+                }
+                
+                mostrarMsg("Gerando análise avançada...", "info");
+                document.getElementById('resPostHocParcelas').innerHTML = '';
+                document.getElementById('resPostHocParcelas').classList.remove('hidden');
+                
+                let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
+                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
+                
+                let html = '';
+                if(d.tipo === "regressao") {
+                    let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
+                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
+                    let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
+                    let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+                } else if(d.tipo === "dunnett") {
+                    let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+                }
+                document.getElementById('resPostHocParcelas').innerHTML = html;
+                limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
     </script>
