@@ -33,6 +33,8 @@
         /* Custom Premium CSS */
         body { background-color: #f1f5f9; color: #334155; -webkit-font-smoothing: antialiased; }
         
+        .hidden-page { display: none !important; }
+        
         .saas-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
         
         .saas-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.875rem; transition: all 0.2s; background-color: #f8fafc; color: #0f172a; }
@@ -90,7 +92,6 @@
 
         .nav-item { border-left: 3px solid transparent; }
         .nav-item.active { background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-left-color: #10b981; }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden selection:bg-brand-500 selection:text-white relative">
@@ -99,7 +100,7 @@
 
     <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-surface-900/60 backdrop-blur-sm transition-opacity" onclick="fecharManual()"></div>
-        <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-[fadeIn_0.2s_ease-out]">
+        <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
             <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-20 rounded-t-2xl">
                 <h3 class="text-xl font-bold text-surface-900"><i class="fa-solid fa-book-open text-brand-500 mr-2"></i> Guia Rápido de Uso</h3>
                 <button onclick="fecharManual()" class="text-slate-400 hover:text-slate-700 bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
@@ -137,7 +138,7 @@
     </div>
 
 
-    <div id="landing-page" class="page absolute inset-0 z-20 bg-surface-50 overflow-y-auto w-full h-full flex flex-col">
+    <div id="landing-page" class="page flex flex-col fixed inset-0 z-50 bg-surface-50 overflow-y-auto w-full h-full">
         <nav class="w-full px-6 py-4 flex justify-between items-center z-10 shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-glow">
@@ -164,7 +165,7 @@
                     <i class="fa-solid fa-flask text-brand-500 mr-1"></i> Software de Nível Científico
                 </div>
                 <h2 class="text-5xl md:text-7xl font-extrabold text-surface-900 tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
-                    Experimentação Agrícola com <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-brand-400">Precisão Absoluta</span>.
+                    Experimentação Agrícola com <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-700 to-brand-500">Precisão Absoluta.</span>
                 </h2>
                 <p class="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                     A plataforma SaaS definitiva para pesquisadores e agrônomos. Processe delineamentos complexos, desdobramentos de interação e laudos completos em segundos.
@@ -201,11 +202,11 @@
     </div>
 
 
-    <div id="analysis-page" class="page hidden absolute inset-0 w-full h-full z-10 flex bg-surface-50">
+    <div id="analysis-page" class="page hidden-page flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
         
-        <aside id="sidebar" class="bg-surface-900 text-slate-300 w-72 flex-shrink-0 flex flex-col transition-transform duration-300 z-40 fixed md:relative h-full -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
+        <aside id="sidebar" class="bg-surface-900 text-slate-300 w-72 flex-shrink-0 flex flex-col transition-transform duration-300 z-40 absolute md:relative h-full -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="p-6 border-b border-surface-800 flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing-page')">
                     <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-glow"><i class="fa-solid fa-seedling"></i></div>
                     <div>
                         <h1 class="font-bold text-xl text-white leading-tight">Solver</h1>
@@ -229,7 +230,7 @@
                     <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs text-white border border-slate-600">FP</div>
                     <div class="text-sm"><p class="text-white font-medium">Fernando Paes</p><p class="text-xs text-slate-400">Desenvolvedor</p></div>
                 </div>
-                <button onclick="showPage('landing-page')" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors w-full p-2 rounded hover:bg-surface-800"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair do Painel</button>
+                <button onclick="showPage('landing-page')" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors w-full p-2 rounded hover:bg-surface-800"><i class="fa-solid fa-arrow-right-from-bracket"></i> Voltar ao Início</button>
             </div>
         </aside>
 
@@ -330,11 +331,11 @@
                             </div>
                             <div id="tab-fatorial-manual" class="hidden">
                                 <div class="flex flex-wrap gap-4 mb-4">
-                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase text-slate-500">Níveis Fator A</label><input type="number" id="inp-fa" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase text-slate-500">Níveis Fator B</label><input type="number" id="inp-fb" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase text-slate-500">Nº Blocos</label><input type="number" id="inp-fr" class="saas-input" value="3"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase text-slate-500">Níveis Fator A</label><input type="number" id="inp-fa" class="saas-input" value="2"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase text-slate-500">Níveis Fator B</label><input type="number" id="inp-fb" class="saas-input" value="2"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase text-slate-500">Nº Blocos</label><input type="number" id="inp-fr" class="saas-input" value="3"></div>
                                 </div>
-                                <button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizFatorial()">Montar Matriz</button>
+                                <button class="saas-btn saas-btn-outline w-full mt-4" onclick="gerarMatrizFatorial()">Montar Matriz</button>
                                 <div id="matriz-fatorial" class="mt-6"></div>
                                 <button id="btn-calc-matriz-fatorial" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarFatorial(true)">Calcular Matriz</button>
                             </div>
@@ -384,14 +385,12 @@
                                 </div>
                             </div>
                             <div id="tab-parcelas-manual" class="hidden">
-                                <div class="flex flex-wrap gap-4 mb-4">
-                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase text-slate-500">Parcelas (A)</label><input type="number" id="inp-pa" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase text-slate-500">Subparcelas (B)</label><input type="number" id="inp-pb" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase text-slate-500">Blocos</label><input type="number" id="inp-pr" class="saas-input" value="3"></div>
+                                <div class="card p-4">
+                                    <div style="display:flex; gap:1rem; flex-wrap:wrap;"><input type="number" id="inp-pa" value="2" placeholder="Parcelas A" class="saas-input"><input type="number" id="inp-pb" value="2" placeholder="Subparcelas B" class="saas-input"><input type="number" id="inp-pr" value="3" placeholder="Blocos" class="saas-input"></div>
+                                    <button class="saas-btn saas-btn-outline w-full mt-4" onclick="gerarMatrizParcelas()">Montar Matriz</button>
+                                    <div id="matriz-parcelas" class="mt-6"></div>
+                                    <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true)">Calcular Grade</button>
                                 </div>
-                                <button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizParcelas()">Montar Matriz</button>
-                                <div id="matriz-parcelas" class="mt-6"></div>
-                                <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true)">Calcular Grade</button>
                             </div>
                         </div>
 
@@ -414,7 +413,7 @@
                                     <button class="saas-btn saas-btn-primary" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="rodarPostHoc('parcelas')">Executar</button>
                                 </div>
                                 <div id="posthoc-parcelas-output" class="mt-6 hidden"></div>
-                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" onclick="baixarLaudoCompleto('parcelas')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
+                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" onclick="baixarLaudoCompleto('parcelas')">Exportar Laudo (.txt)</button></div>
                             </div>
                         </div>
                     </div>
@@ -432,8 +431,8 @@
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
 
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => { p.classList.remove('page-active'); p.classList.add('page-hidden'); });
-            document.getElementById(pageId).classList.remove('page-hidden'); document.getElementById(pageId).classList.add('page-active');
+            document.querySelectorAll('.page').forEach(p => { p.classList.add('hidden-page'); });
+            document.getElementById(pageId).classList.remove('hidden-page');
         }
 
         function toggleSidebar() {
@@ -509,16 +508,16 @@
 
         function formatarPostHoc(d) {
             if(d.tipo === "regressao") {
-                let linhasReg = d.anova_reg.map(l => `<tr><td class="font-medium">${l.FV}</td><td class="text-center data-mono">${l.GL}</td><td class="data-mono">${l.SQ}</td><td class="data-mono">${l.QM}</td><td class="data-mono bg-surface-50">${l['F Calc']}</td><td class="data-mono text-brand-600 bg-brand-50/30">${l['F Tab']}</td><td class="font-bold">${l.Sig}</td></tr>`).join('');
+                let linesReg = d.anova_reg.map(l => `<tr><td class="font-medium">${l.FV}</td><td class="text-center data-mono">${l.GL}</td><td class="data-mono">${l.SQ}</td><td class="data-mono">${l.QM}</td><td class="data-mono bg-surface-50">${l['F Calc']}</td><td class="data-mono text-brand-600 bg-brand-50/30">${l['F Tab']}</td><td class="font-bold">${l.Sig}</td></tr>`).join('');
                 let optDose = d.dose_otima ? `<div class="mt-3 flex gap-3 flex-wrap"><div class="bg-brand-50 border border-brand-200 px-3 py-2 rounded-lg"><span class="text-xs uppercase text-brand-700 block mb-0.5">Ponto de Máxima (Dose Ótima)</span><span class="font-bold text-brand-900 text-lg">${d.dose_otima}</span></div><div class="bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg"><span class="text-xs uppercase text-blue-700 block mb-0.5">Resposta Máxima Calculada</span><span class="font-bold text-blue-900 text-lg">${d.resposta_otima}</span></div></div>` : '';
-                return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6 shadow-sm"><div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4"><div class="bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm font-mono text-sm"><span class="text-slate-500 mr-2">f(x) =</span><span class="text-surface-900 font-bold">${d.equacao}</span></div><div class="bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm font-mono text-sm"><span class="text-slate-500 mr-2">R² =</span><span class="text-brand-600 font-bold">${d.r2}</span></div></div>${optDose}</div><h4 class="font-bold text-surface-900 mb-3 ml-1"><i class="fa-solid fa-table-list text-slate-400 mr-2"></i> Quadro da Regressão</h4><div class="table-wrapper mb-6"><table><thead><tr><th>Causa</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>${linhasReg}</tbody></table></div><div class="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center"><img src="data:image/png;base64,${d.img_png}" class="max-w-full h-auto rounded-lg mb-4" alt="Gráfico de Regressão"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_regressao.pdf" class="saas-btn saas-btn-outline"><i class="fa-solid fa-download"></i> Baixar Gráfico (PDF Alta Qualidade)</a></div>`;
+                return `<div class="saas-card p-5 mb-6"><div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4"><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">f(x) =</span><span class="text-surface-900 font-bold">${d.equacao}</span></div><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">R² =</span><span class="text-brand-600 font-bold">${d.r2}</span></div></div>${optDose}</div><h4 class="font-bold text-surface-900 mb-3 ml-1"><i class="fa-solid fa-table-list text-slate-400 mr-2"></i> Quadro da Regressão</h4><div class="table-wrapper mb-6"><table><thead><tr><th>Causa</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>${linesReg}</tbody></table></div><div class="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center"><img src="data:image/png;base64,${d.img_png}" class="max-w-full h-auto rounded-lg mb-4" alt="Gráfico de Regressão"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_regressao.pdf" class="saas-btn saas-btn-outline"><i class="fa-solid fa-download"></i> Baixar Gráfico (PDF Alta Qualidade)</a></div>`;
             } else if(d.tipo === "tukey" || d.tipo === "duncan") {
                 let infoExtra = d.tipo === "tukey" ? `<span class="bg-white px-2 py-1 rounded border shadow-sm">DMS: <strong class="text-brand-700">${d.dms}</strong></span>` : '';
-                let linhasTab = d.tabela.map(l => `<tr><td class="font-medium">${l['Nível']}</td><td class="data-mono">${l['Média']}</td><td class="text-center font-bold text-lg text-brand-600 bg-brand-50/50 uppercase tracking-widest border-l border-brand-100">${l['Letra']}</td></tr>`).join('');
-                return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 flex gap-3 text-sm text-slate-600 items-center"><i class="fa-solid fa-circle-check text-brand-500 text-lg"></i>Teste processado com rigor de <strong>${d.alpha_txt}</strong> de probabilidade. ${infoExtra}</div><div class="max-w-md mx-auto table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média Observada</th><th class="text-center">Agrupamento</th></tr></thead><tbody>${linhasTab}</tbody></table></div><p class="text-xs text-center text-slate-500 max-w-md mx-auto">* Médias seguidas pela mesma letra na coluna não diferem estatisticamente entre si pelo teste de ${d.nome_teste} a ${d.alpha_txt}.</p>`;
+                let linesTab = d.tabela.map(l => `<tr><td class="font-medium">${l['Nível']}</td><td class="data-mono">${l['Média']}</td><td class="text-center font-bold text-lg text-brand-600 bg-brand-50/50 uppercase tracking-widest border-l border-brand-100">${l['Letra']}</td></tr>`).join('');
+                return `<div class="bg-slate-50 border rounded-xl p-4 mb-6 flex gap-3 text-sm text-slate-600 items-center"><i class="fa-solid fa-circle-check text-brand-500 text-lg"></i>Teste processado com rigor de <strong>${d.alpha_txt}</strong> de probabilidade. ${infoExtra}</div><div class="max-w-md mx-auto table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média Observada</th><th class="text-center">Agrupamento</th></tr></thead><tbody>${linesTab}</tbody></table></div><p class="text-xs text-center text-slate-500 max-w-md mx-auto">* Médias seguidas pela mesma letra na coluna não diferem estatisticamente entre si pelo teste de ${d.nome_teste} a ${d.alpha_txt}.</p>`;
             } else if(d.tipo === "dunnett") {
-                let linhasTab = d.resultados.map(l => `<tr><td class="font-medium">${l.Tratamento}</td><td class="data-mono">${l.Média}</td><td class="data-mono bg-blue-50/30">${l.Diferença}</td><td class="font-bold ${l.Sig.includes('*') ? 'text-brand-600' : 'text-slate-400'}">${l.Sig}</td></tr>`).join('');
-                return `<div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex flex-wrap gap-4 text-sm items-center shadow-sm"><div class="flex items-center gap-2"><i class="fa-solid fa-bullseye text-blue-500 text-lg"></i> <span class="text-blue-900">Testemunha: <strong>${d.testemunha}</strong> (Média: ${d.media_testemunha})</span></div><div class="bg-white px-3 py-1 rounded-md border border-blue-100 text-blue-800 font-medium shadow-sm">DMS Restrito: ${d.dms}</div></div><div class="table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. Absoluta</th><th>Significância</th></tr></thead><tbody>${linhasTab}</tbody></table></div><p class="text-xs text-slate-500">* Tratamentos marcados com asterisco diferem do controle (testemunha) a ${d.alpha_txt} de probabilidade.</p>`;
+                let linesTab = d.resultados.map(l => `<tr><td class="font-medium">${l.Tratamento}</td><td class="data-mono">${l.Média}</td><td class="data-mono bg-blue-50/30">${l.Diferença}</td><td class="font-bold ${l.Sig.includes('*') ? 'text-brand-600' : 'text-slate-400'}">${l.Sig}</td></tr>`).join('');
+                return `<div class="bg-blue-50 border rounded-xl p-4 mb-6 flex flex-wrap gap-4 text-sm items-center shadow-sm"><div class="flex items-center gap-2"><i class="fa-solid fa-bullseye text-blue-500 text-lg"></i> <span class="text-blue-900">Testemunha: <strong>${d.testemunha}</strong> (Média: ${d.media_testemunha})</span></div><div class="bg-white px-3 py-1 rounded-md border text-blue-800 font-medium shadow-sm">DMS Restrito: ${d.dms}</div></div><div class="table-wrapper mb-4"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. Absoluta</th><th>Significância</th></tr></thead><tbody>${linesTab}</tbody></table></div><p class="text-xs text-slate-500">* Tratamentos marcados com asterisco diferem do controle (testemunha) a ${d.alpha_txt} de probabilidade.</p>`;
             }
         }
 
@@ -577,7 +576,7 @@
             showToast("Laudo baixado para o seu dispositivo!", "sucesso");
         }
 
-        // ================= MÓDULO 1 =================
+        // ================= CONFIGURAÇÕES DE INTERFACE INTERNA =================
         function configurarSimples() {
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
             const lblFormat = document.getElementById('lbl-formato-simples'), lblT = document.getElementById('lbl-t-simples'), divR = document.getElementById('div-r-simples');
@@ -594,7 +593,7 @@
             } else {
                 const r = parseInt(document.getElementById('inp-r-simples').value);
                 html += '<thead><tr><th>Tratamento</th><th>Rep/Bloco</th><th>Valor numérico</th></tr></thead><tbody>';
-                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td class="bg-surface-50"><input type="text" value="T${i}" class="grid-input font-bold text-brand-600 uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500">R${j}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
+                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td class="bg-surface-50 p-0"><input type="text" value="T${i}" class="grid-input font-bold text-brand-600 uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500">R${j}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
             }
             document.getElementById('matriz-simples').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-simples').classList.remove('hidden');
         }
@@ -613,18 +612,17 @@
                 showToast("Processando Matemática na Nuvem...", "info");
                 let fd = new FormData(); fd.append("file", arquivosData.simples); fd.append("tipo_delineamento", delin); fd.append("tipo_teste", "anova");
                 let req = await fetch(API_URL + "simples", {method: 'POST', body: fd}); let data = await req.json();
-                clearToasts(); if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
+                clearToasts(); if(data.status !== "sucesso") throw new Error(data.detail);
                 document.getElementById('anova-simples-table').innerHTML = buildAnovaTable(data.anova); document.getElementById('cv-simples-badge').innerHTML = buildBadgeCV(data.cv);
                 document.getElementById('res-simples-container').classList.remove('hidden'); document.getElementById('posthoc-simples-output').innerHTML = ''; document.getElementById('posthoc-simples-output').classList.add('hidden');
                 showToast("Laudo da ANOVA gerado com sucesso!", "sucesso");
             } catch(e) { clearToasts(); showToast(e.message, "erro"); }
         }
 
-        // ================= MÓDULO 2 =================
         function gerarMatrizFatorial() {
             const a = parseInt(document.getElementById('inp-fa').value), b = parseInt(document.getElementById('inp-fb').value), r = parseInt(document.getElementById('inp-fr').value);
             let html = '<div class="table-wrapper"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r border-e2e8f0"><input type="text" value="A${i}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r border-e2e8f0"><input type="text" value="B${j}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r"><input type="text" value="A${i}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r"><input type="text" value="B${j}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
             document.getElementById('matriz-fatorial').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-fatorial').classList.remove('hidden');
         }
         async function processarFatorial(isManual) {
@@ -645,11 +643,10 @@
             } catch(e) { clearToasts(); showToast(e.message, "erro"); }
         }
 
-        // ================= MÓDULO 3 =================
         function gerarMatrizParcelas() {
             const a = parseInt(document.getElementById('inp-pa').value), b = parseInt(document.getElementById('inp-pb').value), r = parseInt(document.getElementById('inp-pr').value);
             let html = '<div class="table-wrapper"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r border-e2e8f0"><input type="text" value="A${i}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r border-e2e8f0"><input type="text" value="B${j}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r"><input type="text" value="A${i}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r"><input type="text" value="B${j}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
             document.getElementById('matriz-parcelas').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-parcelas').classList.remove('hidden');
         }
         async function processarParcelas(isManual) {
