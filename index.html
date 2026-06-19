@@ -2,18 +2,17 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Plataforma analítica para ensaios de campo. Análise estatística com ANOVA, testes de médias e F-Tabelado exato.">
+    <meta name="theme-color" content="#16a34a">
     <title>Solver Estatística | Plataforma Experimental Avançada</title>
     
-    <!-- Premium Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -34,7 +33,6 @@
         /* Custom Premium CSS */
         body { background-color: #f1f5f9; color: #334155; -webkit-font-smoothing: antialiased; }
         
-        /* Força a ocultação da página inativa */
         .hidden-page { display: none !important; }
         
         .saas-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
@@ -44,11 +42,12 @@
         
         .saas-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; font-size: 0.875rem; transition: all 0.2s ease; cursor: pointer; border: none; text-decoration: none; }
         .saas-btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
-        .saas-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3); }
-        .saas-btn-primary:active { transform: translateY(0); }
+        .saas-btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3); }
+        .saas-btn-primary:active:not(:disabled) { transform: translateY(0); }
+        .saas-btn:disabled { opacity: 0.7; cursor: not-allowed; }
         
         .saas-btn-outline { background: white; border: 1px solid #cbd5e1; color: #475569; }
-        .saas-btn-outline:hover { border-color: #10b981; color: #10b981; background: #ecfdf5; }
+        .saas-btn-outline:hover:not(:disabled) { border-color: #10b981; color: #10b981; background: #ecfdf5; }
 
         input[type="file"] { border: 1px dashed #cbd5e1; padding: 0.5rem; border-radius: 8px; background: #f8fafc; cursor: pointer; width: 100%; }
         input[type="file"]::file-selector-button { background: #e2e8f0; border: none; padding: 0.5rem 1rem; border-radius: 6px; color: #475569; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-right: 1rem; }
@@ -100,7 +99,6 @@
 
     <div id="toast-container"></div>
 
-    <!-- ==================== MANUAL MODAL ==================== -->
     <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-surface-900/60 backdrop-blur-sm transition-opacity" onclick="fecharManual()"></div>
         <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-[fadeIn_0.2s_ease-out]">
@@ -141,7 +139,6 @@
     </div>
 
 
-    <!-- ==================== LANDING PAGE ==================== -->
     <div id="landing-page" class="page flex flex-col fixed inset-0 z-50 bg-surface-50 overflow-y-auto w-full h-full">
         <nav class="w-full px-6 py-4 flex justify-between items-center z-10 shrink-0">
             <div class="flex items-center gap-3">
@@ -159,7 +156,6 @@
         </nav>
 
         <div class="flex-1 flex flex-col justify-center relative pb-12">
-            <!-- Background Decoration -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-brand-100/50 blur-3xl"></div>
                 <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-100/40 blur-3xl"></div>
@@ -207,11 +203,8 @@
     </div>
 
 
-    <!-- ==================== APP PAGE ==================== -->
-    <!-- ADICIONADO A CLASSE FLEX AQUI PARA CORRIGIR O ALINHAMENTO -->
-    <div id="analysis-page" class="page hidden-page flex flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
+    <div id="analysis-page" class="page hidden-page flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
         
-        <!-- Sidebar -->
         <aside id="sidebar" class="bg-surface-900 text-slate-300 w-72 flex-shrink-0 flex flex-col transition-transform duration-300 z-40 absolute md:relative h-full -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="p-6 border-b border-surface-800 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing-page')">
@@ -242,10 +235,8 @@
             </div>
         </aside>
 
-        <!-- Overlay Mobile -->
         <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-surface-900/50 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
 
-        <!-- Main Workspace -->
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-surface-50 relative">
             <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shrink-0 shadow-sm">
                 <div class="flex items-center gap-4">
@@ -261,10 +252,8 @@
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                 <div class="max-w-6xl mx-auto pb-20">
 
-                    <!-- Mobile Manual Button -->
                     <button onclick="abrirManual()" class="saas-btn saas-btn-outline w-full mb-6 sm:hidden bg-white"><i class="fa-solid fa-book text-slate-400"></i> Ver Guia Rápido de Uso</button>
 
-                    <!-- ================= MÓDULO 1: SIMPLES ================= -->
                     <div id="module-simples" class="module-section">
                         <div class="saas-card p-6 mb-6">
                             <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-gears text-slate-400"></i> Configuração do Ensaio</h3>
@@ -287,17 +276,17 @@
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4 items-center">
                                     <input type="file" id="file-simples" accept=".csv" class="flex-1 w-full">
-                                    <button class="saas-btn saas-btn-primary w-full sm:w-auto" onclick="processarSimples(false)">Processar ANOVA</button>
+                                    <button class="saas-btn saas-btn-primary w-full sm:w-auto" onclick="processarSimples(false, this)"><i class="fa-solid fa-microchip"></i> Processar ANOVA</button>
                                 </div>
                             </div>
                             <div id="tab-simples-manual" class="hidden">
                                 <div class="flex flex-col sm:flex-row gap-4 mb-4">
                                     <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500" id="lbl-t-simples">Nº Tratamentos</label><input type="number" id="inp-t-simples" class="saas-input" value="4"></div>
                                     <div class="flex-1" id="div-r-simples"><label class="text-xs uppercase tracking-wider text-slate-500">Nº Repetições/Blocos</label><input type="number" id="inp-r-simples" class="saas-input" value="3"></div>
-                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizSimples()">Montar Matriz</button></div>
+                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizSimples()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
                                 <div id="matriz-simples" class="mt-6"></div>
-                                <button id="btn-calc-matriz-simples" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarSimples(true)">Calcular Matriz</button>
+                                <button id="btn-calc-matriz-simples" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarSimples(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Matriz</button>
                             </div>
                         </div>
 
@@ -313,7 +302,7 @@
                                     <div class="flex-1 min-w-[200px]"><label class="text-xs uppercase tracking-wider text-slate-500">Método de Análise</label><select id="metodo-simples" class="saas-input font-medium text-brand-700" onchange="verificarMetodo('simples')"><optgroup label="Modelos de Regressão"><option value="regr">Regressão de Doses Numéricas</option></optgroup><optgroup label="Comparação Múltipla"><option value="tukey" selected>Teste de Tukey</option><option value="duncan">Teste de Duncan</option><option value="dunnett">Teste de Dunnett</option></optgroup></select></div>
                                     <div id="opts-regr-simples" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Equação</label><select id="eq-simples" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
                                     <div id="opts-dunnett-simples" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Testemunha</label><input type="text" id="testemunha-simples" class="saas-input" placeholder="Ex: T1"></div>
-                                    <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('simples')"><i class="fa-solid fa-bolt"></i> Executar</button>
+                                    <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('simples', this)"><i class="fa-solid fa-bolt"></i> Executar Análise</button>
                                 </div>
                                 <div id="posthoc-simples-output" class="mt-6 hidden"></div>
                                 <div class="mt-8 pt-6 border-t border-slate-200 flex justify-end"><button class="saas-btn saas-btn-outline bg-white" onclick="baixarLaudoCompleto('simples')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
@@ -321,7 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- ================= MÓDULO 2: FATORIAL ================= -->
                     <div id="module-fatorial" class="module-section hidden">
                         <div class="saas-card p-6 mb-6 bg-gradient-to-br from-slate-800 to-surface-900 text-white border-none shadow-lg">
                             <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-layer-group text-brand-400"></i> Fatorial Duplo Cruzado (A x B)</h3>
@@ -339,45 +327,45 @@
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4 items-center">
                                     <input type="file" id="file-fatorial" accept=".csv" class="flex-1 w-full">
-                                    <button class="saas-btn saas-btn-primary w-full sm:w-auto" onclick="processarFatorial(false)">Processar Fatorial</button>
+                                    <button class="saas-btn saas-btn-primary w-full sm:w-auto" onclick="processarFatorial(false, this)"><i class="fa-solid fa-microchip"></i> Processar Fatorial</button>
                                 </div>
                             </div>
                             <div id="tab-fatorial-manual" class="hidden">
-                                <div class="flex flex-wrap gap-4 mb-4">
-                                    <div class="flex-1"><label class="text-xs uppercase text-slate-500">Níveis Fator A</label><input type="number" id="inp-fa" class="saas-input" value="2"></div>
-                                    <div class="flex-1"><label class="text-xs uppercase text-slate-500">Níveis Fator B</label><input type="number" id="inp-fb" class="saas-input" value="2"></div>
-                                    <div class="flex-1"><label class="text-xs uppercase text-slate-500">Nº Blocos</label><input type="number" id="inp-fr" class="saas-input" value="3"></div>
+                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Níveis Fator A</label><input type="number" id="inp-fa" class="saas-input" value="2"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Níveis Fator B</label><input type="number" id="inp-fb" class="saas-input" value="2"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Nº Blocos</label><input type="number" id="inp-fr" class="saas-input" value="3"></div>
+                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizFatorial()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
-                                <button class="saas-btn saas-btn-outline w-full mt-4" onclick="gerarMatrizFatorial()">Montar Matriz</button>
                                 <div id="matriz-fatorial" class="mt-6"></div>
-                                <button id="btn-calc-matriz-fatorial" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarFatorial(true)">Calcular Matriz</button>
+                                <button id="btn-calc-matriz-fatorial" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarFatorial(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Matriz</button>
                             </div>
                         </div>
                         <div id="res-fatorial-container" class="hidden">
                             <div class="saas-card p-0 mb-6 border-brand-200 shadow-md">
-                                <div class="bg-brand-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-brand-900">Quadro da ANOVA (Fatorial)</h3><div id="cv-fatorial-badge"></div></div>
+                                <div class="bg-brand-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-brand-900"><i class="fa-solid fa-square-poll-vertical mr-2 text-brand-500"></i> Quadro da ANOVA (Fatorial)</h3><div id="cv-fatorial-badge"></div></div>
                                 <div class="p-4 sm:p-6" id="anova-fatorial-table"></div>
                             </div>
                             <div class="saas-card p-6 bg-slate-50/50">
-                                <h3 class="text-lg font-bold mb-4 text-surface-900">Testes Isolados de Fatores</h3>
+                                <h3 class="text-lg font-bold mb-4 text-surface-900"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-slate-400"></i> Testes Isolados de Fatores</h3>
                                 <div class="flex flex-wrap gap-4 items-end bg-white p-4 rounded-xl border shadow-sm">
                                     <div class="flex-1 min-w-[220px]">
+                                        <label class="text-xs uppercase tracking-wider text-slate-500">Método de Análise</label>
                                         <select id="metodo-fatorial" class="saas-input font-medium text-brand-700" onchange="verificarMetodo('fatorial')">
                                             <optgroup label="Modelos Regressivos"><option value="regr_a">Regressão do Fator A</option><option value="regr_b">Regressão do Fator B</option></optgroup>
                                             <optgroup label="Agrupamento de Médias"><option value="tukey_a" selected>Tukey Fator A</option><option value="tukey_b">Tukey Fator B</option><option value="duncan_a">Duncan Fator A</option><option value="duncan_b">Duncan Fator B</option><option value="dunnett_a">Dunnett Fator A</option><option value="dunnett_b">Dunnett Fator B</option></optgroup>
                                         </select>
                                     </div>
-                                    <div id="opts-regr-fatorial" class="flex-1 min-w-[150px] hidden"><select id="eq-fatorial" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div id="opts-dunnett-fatorial" class="flex-1 min-w-[150px] hidden"><input type="text" id="testemunha-fatorial" class="saas-input" placeholder="Ex: A1"></div>
-                                    <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('fatorial')">Executar</button>
+                                    <div id="opts-regr-fatorial" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Equação</label><select id="eq-fatorial" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div id="opts-dunnett-fatorial" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Testemunha</label><input type="text" id="testemunha-fatorial" class="saas-input" placeholder="Ex: A1"></div>
+                                    <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('fatorial', this)"><i class="fa-solid fa-bolt"></i> Executar Análise</button>
                                 </div>
                                 <div id="posthoc-fatorial-output" class="mt-6 hidden"></div>
-                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white" onclick="baixarLaudoCompleto('fatorial')">Exportar Laudo (.txt)</button></div>
+                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white" onclick="baixarLaudoCompleto('fatorial')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ================= MÓDULO 3: PARCELAS ================= -->
                     <div id="module-parcelas" class="module-section hidden">
                         <div class="saas-card p-6 mb-6 bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-none shadow-lg">
                             <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-table-columns text-indigo-400"></i> Parcelas Subdivididas (Split-Plot)</h3>
@@ -395,39 +383,42 @@
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4 items-center">
                                     <input type="file" id="file-parcelas" accept=".csv" class="flex-1 w-full">
-                                    <button class="saas-btn saas-btn-primary w-full sm:w-auto" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(false)">Processar Split-Plot</button>
+                                    <button class="saas-btn saas-btn-primary w-full sm:w-auto" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(false, this)"><i class="fa-solid fa-microchip"></i> Processar Split-Plot</button>
                                 </div>
                             </div>
                             <div id="tab-parcelas-manual" class="hidden">
-                                <div class="card p-4">
-                                    <div style="display:flex; gap:1rem; flex-wrap:wrap;"><input type="number" id="inp-pa" value="2" placeholder="Parcelas A" class="saas-input"><input type="number" id="inp-pb" value="2" placeholder="Subparcelas B" class="saas-input"><input type="number" id="inp-pr" value="3" placeholder="Blocos" class="saas-input"></div>
-                                    <button class="saas-btn saas-btn-outline w-full mt-4" onclick="gerarMatrizParcelas()">Montar Matriz</button>
-                                    <div id="grade-parcelas" style="margin-top:1.5rem;"></div>
-                                    <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true)">Calcular Grade</button>
+                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase tracking-wider text-slate-500">Parcelas (A)</label><input type="number" id="inp-pa" class="saas-input" value="2"></div>
+                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase tracking-wider text-slate-500">Subparcelas (B)</label><input type="number" id="inp-pb" class="saas-input" value="2"></div>
+                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase tracking-wider text-slate-500">Blocos</label><input type="number" id="inp-pr" class="saas-input" value="3"></div>
+                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizParcelas()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
+                                <div id="matriz-parcelas" class="mt-6"></div>
+                                <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Grade</button>
                             </div>
                         </div>
 
                         <div id="res-parcelas-container" class="hidden">
                             <div class="saas-card p-0 mb-6 border-indigo-200 shadow-md">
-                                <div class="bg-indigo-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-indigo-900">Quadro da ANOVA (Split-Plot)</h3><div id="cv-parcelas-badge" class="flex gap-2"></div></div>
+                                <div class="bg-indigo-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-indigo-900"><i class="fa-solid fa-layer-group mr-2 text-indigo-500"></i> Quadro da ANOVA (Split-Plot)</h3><div id="cv-parcelas-badge" class="flex gap-2"></div></div>
                                 <div class="p-4 sm:p-6" id="anova-parcelas-table"></div>
                             </div>
                             <div class="saas-card p-6 bg-slate-50/50">
-                                <h3 class="text-lg font-bold mb-4 text-surface-900">Testes Isolados</h3>
+                                <h3 class="text-lg font-bold mb-4 text-surface-900"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-slate-400"></i> Testes Isolados</h3>
                                 <div class="flex flex-wrap gap-4 items-end bg-white p-4 rounded-xl border shadow-sm">
                                     <div class="flex-1 min-w-[220px]">
+                                        <label class="text-xs uppercase tracking-wider text-slate-500">Método de Análise</label>
                                         <select id="metodo-parcelas" class="saas-input font-medium text-indigo-700" onchange="verificarMetodo('parcelas')">
                                             <optgroup label="Modelos Regressivos"><option value="regr_a">Regressão Parcela A</option><option value="regr_b">Regressão Subparcela B</option></optgroup>
                                             <optgroup label="Agrupamento de Médias"><option value="tukey_a" selected>Tukey Parcela A</option><option value="tukey_b">Tukey Subparcela B</option><option value="duncan_a">Duncan Parcela A</option><option value="duncan_b">Duncan Subparcela B</option><option value="dunnett_a">Dunnett Parcela A</option><option value="dunnett_b">Dunnett Subparcela B</option></optgroup>
                                         </select>
                                     </div>
-                                    <div id="opts-regr-parcelas" class="flex-1 min-w-[150px] hidden"><select id="eq-parcelas" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div id="opts-dunnett-parcelas" class="flex-1 min-w-[150px] hidden"><input type="text" id="testemunha-parcelas" class="saas-input" placeholder="Testemunha"></div>
-                                    <button class="saas-btn saas-btn-primary" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="rodarPostHoc('parcelas')">Executar</button>
+                                    <div id="opts-regr-parcelas" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Equação</label><select id="eq-parcelas" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div id="opts-dunnett-parcelas" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Testemunha</label><input type="text" id="testemunha-parcelas" class="saas-input" placeholder="Ex: A1"></div>
+                                    <button class="saas-btn saas-btn-primary" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="rodarPostHoc('parcelas', this)"><i class="fa-solid fa-bolt"></i> Executar Análise</button>
                                 </div>
                                 <div id="posthoc-parcelas-output" class="mt-6 hidden"></div>
-                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" onclick="baixarLaudoCompleto('parcelas')">Exportar Laudo (.txt)</button></div>
+                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" onclick="baixarLaudoCompleto('parcelas')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
                             </div>
                         </div>
                     </div>
@@ -437,10 +428,8 @@
         </main>
     </div>
 
-    <!-- Core Scripts -->
     <script>
         const API_URL = "https://api-estatistica.onrender.com/api/analise/";
-
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
 
         function showPage(pageId) {
@@ -494,14 +483,20 @@
             if(document.getElementById(`opts-dunnett-${modulo}`)) document.getElementById(`opts-dunnett-${modulo}`).classList.toggle('hidden', !val.includes('dunnett'));
         }
 
-        function showToast(mensagem, tipo = 'info') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div');
+        function showToast(mensagem, tipo = 'info', duration = 4000) {
+            const container = document.getElementById('toast-container');
+            if (!container) { alert(mensagem); return null; }
+            const toast = document.createElement('div');
             let icone = '<i class="fa-solid fa-circle-info"></i>';
             if(tipo === 'sucesso') { toast.className = 'toast success'; icone = '<i class="fa-solid fa-circle-check"></i>'; }
             else if(tipo === 'erro') { toast.className = 'toast error'; icone = '<i class="fa-solid fa-triangle-exclamation"></i>'; }
             else { toast.className = 'toast info'; icone = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
             toast.innerHTML = `<div class="text-xl">${icone}</div> <div>${mensagem}</div>`; container.appendChild(toast);
-            if(tipo !== 'info') { setTimeout(() => { toast.style.animation = 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards'; setTimeout(() => toast.remove(), 300); }, 4000); }
+            
+            if(duration > 0) {
+                setTimeout(() => { toast.style.animation = 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards'; setTimeout(() => toast.remove(), 300); }, duration);
+            }
+            return toast;
         }
         function limparMensagens() { document.getElementById('toast-container').innerHTML = ''; }
 
@@ -523,7 +518,7 @@
             if(d.tipo === "regressao") {
                 let linhasReg = d.anova_reg.map(l => `<tr><td class="font-medium">${l.FV}</td><td class="text-center data-mono">${l.GL}</td><td class="data-mono">${l.SQ}</td><td class="data-mono">${l.QM}</td><td class="data-mono bg-surface-50">${l['F Calc']}</td><td class="data-mono text-brand-600 bg-brand-50/30">${l['F Tab']}</td><td class="font-bold">${l.Sig}</td></tr>`).join('');
                 let optDose = d.dose_otima ? `<div class="mt-3 flex gap-3 flex-wrap"><div class="bg-brand-50 border border-brand-200 px-3 py-2 rounded-lg"><span class="text-xs uppercase text-brand-700 block mb-0.5">Ponto de Máxima (Dose Ótima)</span><span class="font-bold text-brand-900 text-lg">${d.dose_otima}</span></div><div class="bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg"><span class="text-xs uppercase text-blue-700 block mb-0.5">Resposta Máxima Calculada</span><span class="font-bold text-blue-900 text-lg">${d.resposta_otima}</span></div></div>` : '';
-                return `<div class="saas-card p-5 mb-6"><div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4"><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">f(x) =</span><span class="text-surface-900 font-bold">${d.equacao}</span></div><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">R² =</span><span class="text-brand-600 font-bold">${d.r2}</span></div></div>${optDose}</div><h4 class="font-bold text-surface-900 mb-3 ml-1"><i class="fa-solid fa-table-list text-slate-400 mr-2"></i> Quadro da Regressão</h4><div class="table-wrapper mb-6"><table><thead><tr><th>Causa</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>${linhasReg}</tbody></table></div><div class="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center"><img src="data:image/png;base64,${d.img_png}" class="max-w-full h-auto rounded-lg mb-4" alt="Gráfico de Regressão"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_regressao.pdf" class="saas-btn saas-btn-outline"><i class="fa-solid fa-download"></i> Baixar Gráfico (PDF Alta Qualidade)</a></div>`;
+                return `<div class="saas-card p-5 mb-6"><div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4"><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">f(x) =</span><span class="text-surface-900 font-bold">${d.equacao}</span></div><div class="bg-white border px-4 py-2 rounded-lg font-mono text-sm"><span class="text-slate-500 mr-2">R² =</span><span class="text-brand-600 font-bold">${d.r2}</span></div></div>${optDose}</div><h4 class="font-bold text-surface-900 mb-3 ml-1"><i class="fa-solid fa-table-list text-slate-400 mr-2"></i> Quadro da Regressão</h4><div class="table-wrapper mb-6"><table><thead><tr><th>Causa</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-brand-600">F Tab</th><th>Sig</th></tr></thead><tbody>${linhasReg}</tbody></table></div><div class="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center"><img src="data:image/png;base64,${d.img_png}" class="max-w-full h-auto rounded-lg mb-4" alt="Gráfico de Regressão"><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_regressao.pdf" class="saas-btn saas-btn-outline"><i class="fa-solid fa-download"></i> Baixar Gráfico (PDF)</a></div>`;
             } else if(d.tipo === "tukey" || d.tipo === "duncan") {
                 let infoExtra = d.tipo === "tukey" ? `<span class="bg-white px-2 py-1 rounded border shadow-sm">DMS: <strong class="text-brand-700">${d.dms}</strong></span>` : '';
                 let linhasTab = d.tabela.map(l => `<tr><td class="font-medium">${l['Nível']}</td><td class="data-mono">${l['Média']}</td><td class="text-center font-bold text-lg text-brand-600 bg-brand-50/50 uppercase tracking-widest border-l border-brand-100">${l['Letra']}</td></tr>`).join('');
@@ -534,14 +529,14 @@
             }
         }
 
-        async function rodarPostHoc(modulo) {
+        async function rodarPostHoc(modulo, btnElement) {
             clearToasts();
+            let loadingToast = null;
+            let originalText = btnElement.innerHTML;
+            
             try {
                 let selMethod = document.getElementById(`metodo-${modulo}`).value;
-                let fd = new FormData();
-                fd.append("file", arquivosData[modulo]);
-                fd.append("tipo_teste", selMethod);
-                
+                let fd = new FormData(); fd.append("file", arquivosData[modulo]); fd.append("tipo_teste", selMethod);
                 if(modulo === 'simples') fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
                 if(selMethod.includes("regr")) fd.append("modelo_regr", document.getElementById(`eq-${modulo}`).value);
                 if(selMethod.includes("dunnett")) {
@@ -551,19 +546,29 @@
                 }
                 
                 const outDiv = document.getElementById(`posthoc-${modulo}-output`);
-                outDiv.innerHTML = '<div class="py-8 text-center text-slate-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-brand-500"></i><p>Processando cálculos estatísticos...</p></div>';
-                outDiv.classList.remove('hidden');
+                outDiv.innerHTML = '';
+                outDiv.classList.add('hidden');
+                
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aguarde o Servidor...';
+                btnElement.disabled = true;
+                loadingToast = showToast("O servidor está calculando a estatística avançada. Isso pode levar alguns segundos...", "info", 0);
                 
                 let req = await fetch(API_URL + modulo, {method: 'POST', body: fd});
                 let data = await req.json();
                 
-                if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
+                if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail || "Erro no servidor.");
                 
                 outDiv.innerHTML = formatarPostHoc(data);
+                outDiv.classList.remove('hidden');
+                if(loadingToast) loadingToast.remove();
                 showToast("Análise posterior concluída com sucesso!", "sucesso");
             } catch(e) { 
-                document.getElementById(`posthoc-${modulo}-output`).classList.add('hidden');
-                clearToasts(); showToast(e.message, "erro"); 
+                if(loadingToast) loadingToast.remove();
+                document.getElementById(`posthoc-${modulo}-output`).classList.add('hidden'); 
+                showToast(e.message, "erro"); 
+            } finally {
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
             }
         }
 
@@ -586,7 +591,7 @@
             if(postHocDiv && !postHocDiv.classList.contains('hidden') && postHocDiv.innerText.length > 50) {
                 text += "[ ANÁLISES POSTERIORES / COMPARAÇÕES ]\n========================================================\n";
                 let phText = postHocDiv.innerText;
-                phText = phText.replace(/Baixar Gráfico \(PDF Alta Qualidade\)/g, ''); phText = phText.replace(/\n\s*\n/g, '\n\n'); 
+                phText = phText.replace(/Baixar Gráfico \(PDF Alta Qualidade\)/g, ''); phText = phText.replace(/Baixar Gráfico \(PDF\)/g, ''); phText = phText.replace(/\n\s*\n/g, '\n\n'); 
                 text += phText.trim() + "\n";
             }
             text += "\n\n========================================================\nLaudo processado via Solver Estatistica Experimental API\n";
@@ -610,16 +615,18 @@
             let html = '<div class="table-wrapper"><table>';
             if (d === 'dql') {
                 html += '<thead><tr><th>Linha</th><th>Coluna</th><th>Tratamento</th><th>Valor numérico</th></tr></thead><tbody>';
-                for(let l=1; l<=t; l++) { for(let c=1; c<=t; c++) { html += `<tr><td class="bg-surface-50 font-medium text-slate-500">L${l}</td><td class="bg-surface-50 font-medium text-slate-500">C${c}</td><td class="p-0"><input type="text" class="grid-input font-bold text-brand-600 text-center uppercase" placeholder="T1"></td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
+                for(let l=1; l<=t; l++) { for(let c=1; c<=t; c++) { html += `<tr><td class="bg-surface-50 font-medium text-slate-500 border-r border-b border-slate-200 p-2">L${l}</td><td class="bg-surface-50 font-medium text-slate-500 border-r border-b border-slate-200 p-2">C${c}</td><td class="p-0 border-r border-b border-slate-200"><input type="text" class="grid-input font-bold text-brand-600 text-center uppercase" placeholder="T1"></td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
             } else {
                 const r = parseInt(document.getElementById('inp-r-simples').value);
                 html += '<thead><tr><th>Tratamento</th><th>Rep/Bloco</th><th>Valor numérico</th></tr></thead><tbody>';
-                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td class="bg-surface-50 p-0"><input type="text" value="T${i}" class="grid-input font-bold text-brand-600 uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500">R${j}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
+                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td class="bg-surface-50 p-0 border-r border-b border-slate-200"><input type="text" value="T${i}" class="grid-input font-bold text-brand-600 text-center uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${j}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
             }
             document.getElementById('matriz-simples').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-simples').classList.remove('hidden');
         }
-        async function processarSimples(isManual) {
+        async function processarSimples(isManual, btnElement) {
             clearToasts();
+            let loadingToast = null;
+            let originalText = btnElement.innerHTML;
             try {
                 const delin = document.querySelector('input[name="delinSimples"]:checked').value;
                 if(isManual) {
@@ -630,62 +637,105 @@
                     }
                     arquivosData.simples = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else { const input = document.getElementById('file-simples'); if(input.files.length === 0) throw new Error("Selecione um arquivo CSV primeiro."); arquivosData.simples = input.files[0]; }
-                showToast("Processando Matemática na Nuvem...", "info");
+                
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aguarde o Servidor...';
+                btnElement.disabled = true;
+                loadingToast = showToast("O servidor está processando a ANOVA. Isso pode levar alguns segundos...", "info", 0);
+                
                 let fd = new FormData(); fd.append("file", arquivosData.simples); fd.append("tipo_delineamento", delin); fd.append("tipo_teste", "anova");
                 let req = await fetch(API_URL + "simples", {method: 'POST', body: fd}); let data = await req.json();
-                clearToasts(); if(data.status !== "sucesso") throw new Error(data.detail);
+                
+                if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail || "Erro interno do servidor");
                 document.getElementById('anova-simples-table').innerHTML = buildAnovaTable(data.anova); document.getElementById('cv-simples-badge').innerHTML = buildBadgeCV(data.cv);
                 document.getElementById('res-simples-container').classList.remove('hidden'); document.getElementById('posthoc-simples-output').innerHTML = ''; document.getElementById('posthoc-simples-output').classList.add('hidden');
+                
+                if(loadingToast) loadingToast.remove();
                 showToast("Laudo da ANOVA gerado com sucesso!", "sucesso");
-            } catch(e) { clearToasts(); showToast(e.message, "erro"); }
+            } catch(e) { 
+                if(loadingToast) loadingToast.remove();
+                showToast(e.message, "erro"); 
+            } finally {
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
+            }
         }
 
         function gerarMatrizFatorial() {
             const a = parseInt(document.getElementById('inp-fa').value), b = parseInt(document.getElementById('inp-fb').value), r = parseInt(document.getElementById('inp-fr').value);
             let html = '<div class="table-wrapper"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r"><input type="text" value="A${i}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r"><input type="text" value="B${j}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="bg-surface-50 p-0 border-r border-b border-slate-200"><input type="text" value="A${i}" class="grid-input font-bold text-slate-700 text-center uppercase" readonly></td><td class="bg-surface-50 p-0 border-r border-b border-slate-200"><input type="text" value="B${j}" class="grid-input font-bold text-slate-700 text-center uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${k}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
             document.getElementById('matriz-fatorial').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-fatorial').classList.remove('hidden');
         }
-        async function processarFatorial(isManual) {
+        async function processarFatorial(isManual, btnElement) {
             clearToasts();
+            let loadingToast = null;
+            let originalText = btnElement.innerHTML;
             try {
                 if(isManual) {
                     let rows = document.querySelectorAll('#matriz-fatorial tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) { let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value; csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
+                    for(let r of rows) { let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value; if(!v) throw new Error("A matriz possui campos vazios."); csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
                     arquivosData.fatorial = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else { const input = document.getElementById('file-fatorial'); if(input.files.length === 0) throw new Error("Selecione um arquivo CSV."); arquivosData.fatorial = input.files[0]; }
-                showToast("Calculando ANOVA Fatorial...", "info");
+                
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aguarde o Servidor...';
+                btnElement.disabled = true;
+                loadingToast = showToast("O servidor está calculando os desdobramentos. Isso pode levar alguns segundos...", "info", 0);
+                
                 let fd = new FormData(); fd.append("file", arquivosData.fatorial); fd.append("tipo_teste", "anova");
                 let req = await fetch(API_URL + "fatorial", {method: 'POST', body: fd}); let data = await req.json();
-                clearToasts(); if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
+                
+                if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
                 document.getElementById('anova-fatorial-table').innerHTML = buildAnovaTable(data.anova); document.getElementById('cv-fatorial-badge').innerHTML = buildBadgeCV(data.cv);
                 document.getElementById('res-fatorial-container').classList.remove('hidden'); document.getElementById('posthoc-fatorial-output').innerHTML = ''; document.getElementById('posthoc-fatorial-output').classList.add('hidden');
+                
+                if(loadingToast) loadingToast.remove();
                 showToast("Matriz Fatorial processada!", "sucesso");
-            } catch(e) { clearToasts(); showToast(e.message, "erro"); }
+            } catch(e) { 
+                if(loadingToast) loadingToast.remove();
+                showToast(e.message, "erro"); 
+            } finally {
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
+            }
         }
 
         function gerarMatrizParcelas() {
             const a = parseInt(document.getElementById('inp-pa').value), b = parseInt(document.getElementById('inp-pb').value), r = parseInt(document.getElementById('inp-pr').value);
             let html = '<div class="table-wrapper"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r"><input type="text" value="A${i}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r"><input type="text" value="B${j}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="bg-surface-50 p-0 border-r border-b border-slate-200"><input type="text" value="A${i}" class="grid-input font-bold text-indigo-700 text-center uppercase" readonly></td><td class="bg-surface-50 p-0 border-r border-b border-slate-200"><input type="text" value="B${j}" class="grid-input font-bold text-indigo-700 text-center uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${k}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
             document.getElementById('matriz-parcelas').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-parcelas').classList.remove('hidden');
         }
-        async function processarParcelas(isManual) {
+        async function processarParcelas(isManual, btnElement) {
             clearToasts();
+            let loadingToast = null;
+            let originalText = btnElement.innerHTML;
             try {
                 if(isManual) {
                     let rows = document.querySelectorAll('#matriz-parcelas tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) { let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value; csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
+                    for(let r of rows) { let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value; if(!v) throw new Error("A matriz possui campos vazios."); csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`; }
                     arquivosData.parcelas = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else { const input = document.getElementById('file-parcelas'); if(input.files.length === 0) throw new Error("Selecione um arquivo CSV."); arquivosData.parcelas = input.files[0]; }
-                showToast("Calculando Erro Combinado...", "info");
+                
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aguarde o Servidor...';
+                btnElement.disabled = true;
+                loadingToast = showToast("O servidor está calculando o Erro de Satterthwaite. Isso pode levar alguns segundos...", "info", 0);
+                
                 let fd = new FormData(); fd.append("file", arquivosData.parcelas); fd.append("tipo_teste", "anova");
                 let req = await fetch(API_URL + "parcelas", {method: 'POST', body: fd}); let data = await req.json();
-                clearToasts(); if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
+                
+                if(data.status !== "sucesso") throw new Error(data.mensagem || data.detail);
                 document.getElementById('anova-parcelas-table').innerHTML = buildAnovaTable(data.anova); document.getElementById('cv-parcelas-badge').innerHTML = buildBadgeCV("A: " + data.cv_a) + buildBadgeCV("B: " + data.cv_b);
                 document.getElementById('res-parcelas-container').classList.remove('hidden'); document.getElementById('posthoc-parcelas-output').innerHTML = ''; document.getElementById('posthoc-parcelas-output').classList.add('hidden');
+                
+                if(loadingToast) loadingToast.remove();
                 showToast("Split-Plot calculado com sucesso!", "sucesso");
-            } catch(e) { clearToasts(); showToast(e.message, "erro"); }
+            } catch(e) { 
+                if(loadingToast) loadingToast.remove();
+                showToast(e.message, "erro"); 
+            } finally {
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
+            }
         }
     </script>
 </body>
