@@ -79,9 +79,9 @@
         .feature-card:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); border-color: #dcfce7; transform: translateY(-4px); }
         .feature-icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
 
-        .sidebar { position: fixed; top: 0; left: 0; width: 16rem; height: 100vh; background: white; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; overflow-y: auto; display: none; }
-        .sidebar.active { transform: translateX(0); }
-        @media (min-width: 768px) { .sidebar { display: block; position: relative; transform: translateX(0); width: 16rem; } }
+        .sidebar { position: fixed; top: 0; left: 0; width: 16rem; height: 100vh; background: white; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; overflow-y: auto; }
+        .sidebar.active { transform: translateX(0); box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+        @media (min-width: 768px) { .sidebar { display: block; position: relative; transform: translateX(0); width: 16rem; box-shadow: none; } }
         .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; }
         .sidebar-nav { padding: 1rem; }
         .nav-item { display: block; width: 100%; text-align: left; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-radius: 0.5rem; background: none; border: none; cursor: pointer; color: #4b5563; font-size: 0.875rem; transition: all 0.3s ease; }
@@ -133,6 +133,12 @@
 
         #globalMsgContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; max-width: 400px; }
         .hidden { display: none !important; }
+        
+        @media (max-width: 767px) {
+            h1 { font-size: 1.875rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.25rem; }
+            .hero-text h1 { font-size: 1.875rem; } .hero-text p { font-size: 1rem; }
+            .btn { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
+        }
     </style>
 </head>
 <body>
@@ -146,7 +152,7 @@
                     <a href="#" class="logo" onclick="showPage('home-page')">
                         <div class="logo-icon">S</div><div class="logo-text"><h1>Solver</h1><p>Estatística</p></div>
                     </a>
-                    <button class="menu-btn" onclick="toggleSidebar()"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                    <button class="menu-btn" onclick="showPage('analysis-page')"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                 </div>
             </div>
         </header>
@@ -220,9 +226,9 @@
 
                             <div id="manual-simples" class="tab-content">
                                 <div class="card">
-                                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-                                        <div class="form-group" style="flex:1;"><label id="lblSimplesT">Qtd. Tratamentos</label><input type="number" id="simples-t" value="4" min="2"></div>
-                                        <div class="form-group" style="flex:1;" id="divSimplesR"><label>Blocos/Repetições</label><input type="number" id="simples-r" value="3" min="2"></div>
+                                    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+                                        <div class="form-group" style="flex:1; min-width:140px;"><label id="lblSimplesT">Qtd. Tratamentos</label><input type="number" id="simples-t" value="4" min="2"></div>
+                                        <div class="form-group" style="flex:1; min-width:140px;" id="divSimplesR"><label>Blocos/Repetições</label><input type="number" id="simples-r" value="3" min="2"></div>
                                     </div>
                                     <button class="btn btn-primary w-full" onclick="gerarGradeSimples()">Gerar Grade</button>
                                     <div id="grade-simples" style="margin-top: 1.5rem;"></div>
@@ -239,15 +245,15 @@
                                 <h3>Análises Posteriores (Tratamento)</h3>
                                 <p class="text-sm text-muted" style="margin-bottom: 1rem;">Se a ANOVA foi significativa (*), aplique testes de médias ou ajuste de regressão.</p>
                                 <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-                                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
                                         <label>Selecione a Análise</label>
                                         <select id="selPostHocSimples" onchange="verificarCamposPostHocSimples()">
                                             <optgroup label="Regressão Quantitativa"><option value="regr">Regressão de Doses</option></optgroup>
                                             <optgroup label="Testes de Médias (a=5%)"><option value="tukey">Tukey</option><option value="duncan">Duncan</option><option value="dunnett">Dunnett (Vs. Testemunha)</option></optgroup>
                                         </select>
                                     </div>
-                                    <div class="form-group hidden" id="divModRegrSimples" style="flex:1; margin-bottom:0;"><label>Modelo</label><select id="selModRegrSimples"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div class="form-group hidden" id="divTestemunhaSimples" style="flex:1; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaSimples" placeholder="Ex: T1"></div>
+                                    <div class="form-group hidden" id="divModRegrSimples" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo</label><select id="selModRegrSimples"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunhaSimples" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaSimples" placeholder="Ex: T1"></div>
                                     <button class="btn btn-primary" onclick="calcularPostHocSimples()">Gerar Análise</button>
                                 </div>
                                 <div id="resPostHocSimples" class="hidden fade-in" style="margin-top: 1rem;"></div>
@@ -271,10 +277,10 @@
 
                             <div id="manual-fatorial" class="tab-content">
                                 <div class="card">
-                                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-                                        <div class="form-group" style="flex:1;"><label>Fator A</label><input type="number" id="fat-a" value="2" min="2"></div>
-                                        <div class="form-group" style="flex:1;"><label>Fator B</label><input type="number" id="fat-b" value="2" min="2"></div>
-                                        <div class="form-group" style="flex:1;"><label>Blocos</label><input type="number" id="fat-r" value="3" min="2"></div>
+                                    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+                                        <div class="form-group" style="flex:1; min-width:120px;"><label>Fator A</label><input type="number" id="fat-a" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1; min-width:120px;"><label>Fator B</label><input type="number" id="fat-b" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1; min-width:120px;"><label>Blocos</label><input type="number" id="fat-r" value="3" min="2"></div>
                                     </div>
                                     <button class="btn btn-primary w-full" onclick="gerarGradeFatorial()">Gerar Grade</button>
                                     <div id="grade-fatorial" style="margin-top: 1.5rem;"></div>
@@ -291,15 +297,15 @@
                                 <h3>Análises Posteriores</h3>
                                 <p class="text-sm text-muted" style="margin-bottom: 1rem;">Apenas realize testes adicionais para fatores cujo valor de F tenha sido significativo (*).</p>
                                 <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-                                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
                                         <label>Selecione a Análise</label>
                                         <select id="selPostHoc" onchange="verificarCamposPostHoc()">
                                             <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
                                             <optgroup label="Testes de Médias"><option value="tukey_a">Tukey (Fator A)</option><option value="tukey_b">Tukey (Fator B)</option><option value="duncan_a">Duncan (Fator A)</option><option value="duncan_b">Duncan (Fator B)</option><option value="dunnett_a">Dunnett (Fator A)</option><option value="dunnett_b">Dunnett (Fator B)</option></optgroup>
                                         </select>
                                     </div>
-                                    <div class="form-group hidden" id="divModRegr" style="flex:1; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegr"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div class="form-group hidden" id="divTestemunha" style="flex:1; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunha" placeholder="Ex: C1"></div>
+                                    <div class="form-group hidden" id="divModRegr" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegr"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunha" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunha" placeholder="Ex: C1"></div>
                                     <button class="btn btn-primary" onclick="calcularPostHoc()">Gerar Análise</button>
                                 </div>
                                 <div id="resPostHoc" class="hidden fade-in" style="margin-top: 1rem;"></div>
@@ -323,10 +329,10 @@
 
                             <div id="manual-parcelas" class="tab-content">
                                 <div class="card">
-                                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-                                        <div class="form-group" style="flex:1;"><label>Níveis Parcela (A)</label><input type="number" id="sub-a" value="2" min="2"></div>
-                                        <div class="form-group" style="flex:1;"><label>Níveis Subparcela (B)</label><input type="number" id="sub-b" value="2" min="2"></div>
-                                        <div class="form-group" style="flex:1;"><label>Blocos</label><input type="number" id="sub-r" value="3" min="2"></div>
+                                    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+                                        <div class="form-group" style="flex:1; min-width:140px;"><label>Níveis Parcela (A)</label><input type="number" id="sub-a" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1; min-width:140px;"><label>Níveis Subparcela (B)</label><input type="number" id="sub-b" value="2" min="2"></div>
+                                        <div class="form-group" style="flex:1; min-width:120px;"><label>Blocos</label><input type="number" id="sub-r" value="3" min="2"></div>
                                     </div>
                                     <button class="btn btn-primary w-full" onclick="gerarGradeParcelas()">Gerar Grade</button>
                                     <div id="grade-parcelas" style="margin-top: 1.5rem;"></div>
@@ -341,17 +347,17 @@
 
                             <div id="areaPostHocParcelas" class="card hidden fade-in">
                                 <h3>Análises Posteriores</h3>
-                                <p class="text-sm text-muted" style="margin-bottom: 1rem;">Lembre-se: O sistema usará o Erro A para testar a Parcela e o Erro B para a Subparcela automaticamente.</p>
+                                <p class="text-sm text-muted" style="margin-bottom: 1rem;">O sistema usará o Erro A para testar a Parcela e o Erro B para a Subparcela automaticamente.</p>
                                 <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-                                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
                                         <label>Selecione a Análise</label>
                                         <select id="selPostHocParcelas" onchange="verificarCamposPostHocParcelas()">
                                             <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão - Parcela (A)</option><option value="regr_b">Regressão - Subparcela (B)</option></optgroup>
                                             <optgroup label="Testes de Médias"><option value="tukey_a">Tukey - Parcela (A)</option><option value="tukey_b">Tukey - Subparcela (B)</option><option value="duncan_a">Duncan - Parcela (A)</option><option value="duncan_b">Duncan - Subparcela (B)</option><option value="dunnett_a">Dunnett - Parcela (A)</option><option value="dunnett_b">Dunnett - Subparcela (B)</option></optgroup>
                                         </select>
                                     </div>
-                                    <div class="form-group hidden" id="divModRegrParcelas" style="flex:1; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegrParcelas"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div class="form-group hidden" id="divTestemunhaParcelas" style="flex:1; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaParcelas" placeholder="Ex: C1"></div>
+                                    <div class="form-group hidden" id="divModRegrParcelas" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegrParcelas"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunhaParcelas" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaParcelas" placeholder="Ex: C1"></div>
                                     <button class="btn btn-primary" onclick="calcularPostHocParcelas()">Gerar Análise</button>
                                 </div>
                                 <div id="resPostHocParcelas" class="hidden fade-in" style="margin-top: 1rem;"></div>
@@ -430,6 +436,22 @@
         function montarTabelaAnovaHtml(anova, cvHtml) {
             let linhas = anova.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
             return `<div style="margin-bottom:1rem;">${cvHtml}</div><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+        }
+
+        function renderizarResultadoPostHoc(d) {
+            let html = '';
+            if(d.tipo === "regressao") {
+                let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
+            } else if(d.tipo === "tukey" || d.tipo === "duncan") {
+                let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
+                let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td></tr>`).join('');
+                html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+            } else if(d.tipo === "dunnett") {
+                let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+            }
+            return html;
         }
 
         // ================= SIMPLES =================
@@ -523,19 +545,7 @@
                 let res = await fetch(API_URL + "simples", {method:'POST', body:fd}), d = await res.json();
                 if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
                 
-                let html = '';
-                if(d.tipo === "regressao") {
-                    let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
-                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
-                    let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
-                    let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                } else if(d.tipo === "dunnett") {
-                    let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                }
-                document.getElementById('resPostHocSimples').innerHTML = html;
+                document.getElementById('resPostHocSimples').innerHTML = renderizarResultadoPostHoc(d);
                 limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
@@ -598,19 +608,7 @@
                 let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
                 if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
                 
-                let html = '';
-                if(d.tipo === "regressao") {
-                    let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
-                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
-                    let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
-                    let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td><td style="font-weight:bold; color:#15803d; background:#dcfce7; text-align:center;">${l['Letra'] || 'a'}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th><th style="text-align:center;">Agrupamento</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                } else if(d.tipo === "dunnett") {
-                    let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                }
-                document.getElementById('resPostHoc').innerHTML = html;
+                document.getElementById('resPostHoc').innerHTML = renderizarResultadoPostHoc(d);
                 limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
@@ -628,6 +626,7 @@
         async function calcularParcelas(isManual) {
             limparMensagens();
             try {
+                let file;
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-parcelas tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
                     for(let r of rows) {
@@ -674,19 +673,7 @@
                 let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
                 if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
                 
-                let html = '';
-                if(d.tipo === "regressao") {
-                    let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
-                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
-                    let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
-                    let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                } else if(d.tipo === "dunnett") {
-                    let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                }
-                document.getElementById('resPostHocParcelas').innerHTML = html;
+                document.getElementById('resPostHocParcelas').innerHTML = renderizarResultadoPostHoc(d);
                 limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
