@@ -2,17 +2,18 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Plataforma analítica para ensaios de campo. Análise estatística com ANOVA, testes de médias e F-Tabelado exato.">
-    <meta name="theme-color" content="#16a34a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solver Estatística | Plataforma Experimental Avançada</title>
     
+    <!-- Premium Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,7 +34,10 @@
         /* Custom Premium CSS */
         body { background-color: #f1f5f9; color: #334155; -webkit-font-smoothing: antialiased; }
         
-        .hidden-page { display: none !important; }
+        /* Controles Absolutos de Página */
+        .page-hidden { display: none !important; }
+        .page-active { display: flex !important; }
+        .hidden { display: none !important; }
         
         .saas-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
         
@@ -97,8 +101,10 @@
 </head>
 <body class="h-screen w-screen overflow-hidden selection:bg-brand-500 selection:text-white relative">
 
+    <!-- Notificações -->
     <div id="toast-container"></div>
 
+    <!-- ==================== MANUAL MODAL ==================== -->
     <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-surface-900/60 backdrop-blur-sm transition-opacity" onclick="fecharManual()"></div>
         <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-[fadeIn_0.2s_ease-out]">
@@ -139,7 +145,8 @@
     </div>
 
 
-    <div id="landing-page" class="page flex flex-col fixed inset-0 z-50 bg-surface-50 overflow-y-auto w-full h-full">
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div id="landing-page" class="page-active flex-col fixed inset-0 z-50 bg-surface-50 overflow-y-auto w-full h-full">
         <nav class="w-full px-6 py-4 flex justify-between items-center z-10 shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-glow">
@@ -156,6 +163,7 @@
         </nav>
 
         <div class="flex-1 flex flex-col justify-center relative pb-12">
+            <!-- Background Decoration -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-brand-100/50 blur-3xl"></div>
                 <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-100/40 blur-3xl"></div>
@@ -203,8 +211,10 @@
     </div>
 
 
-    <div id="analysis-page" class="page hidden-page flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
+    <!-- ==================== APP PAGE ==================== -->
+    <div id="analysis-page" class="page-hidden flex-col md:flex-row fixed inset-0 w-full h-full z-50 bg-surface-50">
         
+        <!-- Sidebar -->
         <aside id="sidebar" class="bg-surface-900 text-slate-300 w-72 flex-shrink-0 flex flex-col transition-transform duration-300 z-40 absolute md:relative h-full -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="p-6 border-b border-surface-800 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing-page')">
@@ -235,8 +245,10 @@
             </div>
         </aside>
 
+        <!-- Overlay Mobile -->
         <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-surface-900/50 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
 
+        <!-- Main Workspace -->
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-surface-50 relative">
             <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shrink-0 shadow-sm">
                 <div class="flex items-center gap-4">
@@ -244,7 +256,7 @@
                     <div><h2 id="module-title" class="font-bold text-xl text-surface-900">Análise Simples</h2><p id="module-subtitle" class="text-sm text-slate-500 font-medium">DIC / DBC / DQL</p></div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="abrirManual()" class="saas-btn saas-btn-outline py-1.5 px-3 text-sm flex"><i class="fa-solid fa-book text-slate-400"></i> Guia Rápido</button>
+                    <button onclick="abrirManual()" class="saas-btn saas-btn-outline py-1.5 px-3 text-sm hidden sm:flex"><i class="fa-solid fa-book text-slate-400"></i> Guia Rápido</button>
                     <div class="hidden md:flex items-center gap-2 text-sm font-medium text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200"><div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> API Conectada</div>
                 </div>
             </header>
@@ -254,6 +266,7 @@
 
                     <button onclick="abrirManual()" class="saas-btn saas-btn-outline w-full mb-6 sm:hidden bg-white"><i class="fa-solid fa-book text-slate-400"></i> Ver Guia Rápido de Uso</button>
 
+                    <!-- ================= MÓDULO 1: SIMPLES ================= -->
                     <div id="module-simples" class="module-section">
                         <div class="saas-card p-6 mb-6">
                             <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-gears text-slate-400"></i> Configuração do Ensaio</h3>
@@ -275,7 +288,7 @@
                                     <div><strong class="block mb-1 text-blue-900">Cabeçalho exigido no CSV:</strong><span id="lbl-formato-simples" class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">Tratamento;Bloco;Valor</span></div>
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4 items-center">
-                                    <input type="file" id="file-simples" accept=".csv" class="flex-1 w-full">
+                                    <input type="file" id="file-simples" accept=".csv" class="flex-1">
                                     <button class="saas-btn saas-btn-primary w-full sm:w-auto" onclick="processarSimples(false, this)"><i class="fa-solid fa-microchip"></i> Processar ANOVA</button>
                                 </div>
                             </div>
@@ -310,6 +323,7 @@
                         </div>
                     </div>
 
+                    <!-- ================= MÓDULO 2: FATORIAL ================= -->
                     <div id="module-fatorial" class="module-section hidden">
                         <div class="saas-card p-6 mb-6 bg-gradient-to-br from-slate-800 to-surface-900 text-white border-none shadow-lg">
                             <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-layer-group text-brand-400"></i> Fatorial Duplo Cruzado (A x B)</h3>
@@ -343,11 +357,11 @@
                         </div>
                         <div id="res-fatorial-container" class="hidden">
                             <div class="saas-card p-0 mb-6 border-brand-200 shadow-md">
-                                <div class="bg-brand-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-brand-900"><i class="fa-solid fa-square-poll-vertical mr-2 text-brand-500"></i> Quadro da ANOVA (Fatorial)</h3><div id="cv-fatorial-badge"></div></div>
+                                <div class="bg-brand-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-brand-900">Quadro da ANOVA (Fatorial)</h3><div id="cv-fatorial-badge"></div></div>
                                 <div class="p-4 sm:p-6" id="anova-fatorial-table"></div>
                             </div>
                             <div class="saas-card p-6 bg-slate-50/50">
-                                <h3 class="text-lg font-bold mb-4 text-surface-900"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-slate-400"></i> Testes Isolados de Fatores</h3>
+                                <h3 class="text-lg font-bold mb-4 text-surface-900">Testes Isolados de Fatores</h3>
                                 <div class="flex flex-wrap gap-4 items-end bg-white p-4 rounded-xl border shadow-sm">
                                     <div class="flex-1 min-w-[220px]">
                                         <label class="text-xs uppercase tracking-wider text-slate-500">Método de Análise</label>
@@ -366,6 +380,7 @@
                         </div>
                     </div>
 
+                    <!-- ================= MÓDULO 3: PARCELAS ================= -->
                     <div id="module-parcelas" class="module-section hidden">
                         <div class="saas-card p-6 mb-6 bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-none shadow-lg">
                             <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-table-columns text-indigo-400"></i> Parcelas Subdivididas (Split-Plot)</h3>
@@ -388,9 +403,9 @@
                             </div>
                             <div id="tab-parcelas-manual" class="hidden">
                                 <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase tracking-wider text-slate-500">Parcelas (A)</label><input type="number" id="inp-pa" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase tracking-wider text-slate-500">Subparcelas (B)</label><input type="number" id="inp-pb" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase tracking-wider text-slate-500">Blocos</label><input type="number" id="inp-pr" class="saas-input" value="3"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Parcelas (A)</label><input type="number" id="inp-pa" class="saas-input" value="2"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Subparcelas (B)</label><input type="number" id="inp-pb" class="saas-input" value="2"></div>
+                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Nº Blocos</label><input type="number" id="inp-pr" class="saas-input" value="3"></div>
                                     <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizParcelas()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
                                 <div id="matriz-parcelas" class="mt-6"></div>
@@ -400,11 +415,11 @@
 
                         <div id="res-parcelas-container" class="hidden">
                             <div class="saas-card p-0 mb-6 border-indigo-200 shadow-md">
-                                <div class="bg-indigo-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-indigo-900"><i class="fa-solid fa-layer-group mr-2 text-indigo-500"></i> Quadro da ANOVA (Split-Plot)</h3><div id="cv-parcelas-badge" class="flex gap-2"></div></div>
+                                <div class="bg-indigo-50 border-b p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><h3 class="text-lg font-bold text-indigo-900">Quadro da ANOVA (Split-Plot)</h3><div id="cv-parcelas-badge" class="flex gap-2"></div></div>
                                 <div class="p-4 sm:p-6" id="anova-parcelas-table"></div>
                             </div>
                             <div class="saas-card p-6 bg-slate-50/50">
-                                <h3 class="text-lg font-bold mb-4 text-surface-900"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-slate-400"></i> Testes Isolados</h3>
+                                <h3 class="text-lg font-bold mb-4 text-surface-900">Testes Isolados</h3>
                                 <div class="flex flex-wrap gap-4 items-end bg-white p-4 rounded-xl border shadow-sm">
                                     <div class="flex-1 min-w-[220px]">
                                         <label class="text-xs uppercase tracking-wider text-slate-500">Método de Análise</label>
@@ -418,7 +433,7 @@
                                     <button class="saas-btn saas-btn-primary" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="rodarPostHoc('parcelas', this)"><i class="fa-solid fa-bolt"></i> Executar Análise</button>
                                 </div>
                                 <div id="posthoc-parcelas-output" class="mt-6 hidden"></div>
-                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" onclick="baixarLaudoCompleto('parcelas')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
+                                <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" onclick="baixarLaudoCompleto('parcelas')">Exportar Laudo (.txt)</button></div>
                             </div>
                         </div>
                     </div>
@@ -428,13 +443,19 @@
         </main>
     </div>
 
+    <!-- Core Scripts -->
     <script>
         const API_URL = "https://api-estatistica.onrender.com/api/analise/";
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
 
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => { p.classList.add('hidden-page'); });
-            document.getElementById(pageId).classList.remove('hidden-page');
+            document.querySelectorAll('.page').forEach(p => { 
+                p.classList.remove('page-active'); 
+                p.classList.add('page-hidden'); 
+            });
+            const target = document.getElementById(pageId);
+            target.classList.remove('page-hidden');
+            target.classList.add('page-active');
         }
 
         function toggleSidebar() {
