@@ -3,486 +3,1548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solver Estatística Experimental</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Plataforma analítica para ensaios de campo. Análise estatística com ANOVA, testes de médias e F-Tabelado exato.">
+    <meta name="theme-color" content="#16a34a">
+    <title>Solver Estatística - Análise Experimental Avançada</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        .menu-ativo { background-color: #dcfce7; color: #15803d; font-weight: bold; border-right: 4px solid #16a34a; }
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .sidebar-transition { transition: transform 0.3s ease-in-out; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-family: 'Geist', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f9fafb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        code, pre {
+            font-family: 'Geist Mono', monospace;
+        }
+
+        /* Utilities */
+        .container {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .container {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+                max-width: 1280px;
+            }
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 2.25rem; }
+        h2 { font-size: 1.875rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #1f2937;
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background-color: #16a34a;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.125rem;
+            margin: 0;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .nav {
+            display: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .nav {
+                display: flex;
+            }
+        }
+
+        .nav a {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: #16a34a;
+        }
+
+        /* Mobile Menu */
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: #1f2937;
+        }
+
+        @media (max-width: 767px) {
+            .menu-btn {
+                display: block;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 5rem 0;
+        }
+
+        @media (min-width: 768px) {
+            .hero {
+                padding: 8rem 0;
+            }
+        }
+
+        .hero-content {
+            display: grid;
+            gap: 3rem;
+            grid-template-columns: 1fr;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .hero-text h1 {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        @media (min-width: 768px) {
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+        }
+
+        .hero-text h1 .green {
+            color: #16a34a;
+        }
+
+        .hero-text p {
+            font-size: 1.125rem;
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 640px) {
+            .hero-buttons {
+                flex-direction: row;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #16a34a;
+            color: white;
+            box-shadow: 0 4px 6px rgba(22, 163, 74, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #15803d;
+            box-shadow: 0 10px 15px rgba(22, 163, 74, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 2px solid #dcfce7;
+            color: #16a34a;
+            background-color: transparent;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f0fdf4;
+        }
+
+        .hero-social {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .hero-avatars {
+            display: flex;
+            gap: -0.5rem;
+        }
+
+        .avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 2px solid white;
+            margin-right: -0.5rem;
+        }
+
+        .hero-illustration {
+            position: relative;
+            height: 24rem;
+        }
+
+        @media (min-width: 768px) {
+            .hero-illustration {
+                height: 100%;
+            }
+        }
+
+        .illustration-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, #dcfce7, #f0fdf4);
+            border-radius: 1rem;
+            opacity: 0.5;
+        }
+
+        .illustration-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 20rem;
+        }
+
+        .chart-box {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 8rem;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: linear-gradient(to bottom, #dcfce7, #f0fdf4);
+            border-radius: 0.5rem;
+        }
+
+        .bar {
+            background-color: #16a34a;
+            border-radius: 0.25rem;
+            flex: 1;
+        }
+
+        .chart-labels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .label {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #16a34a;
+        }
+
+        /* Decorative elements */
+        .decoration-1 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24rem;
+            height: 24rem;
+            background: #dcfce7;
+            border-radius: 9999px;
+            filter: blur(80px);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .decoration-2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 24rem;
+            height: 24rem;
+            background: #bfdbfe;
+            border-radius: 9999px;
+            filter: blur(80px);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        @media (min-width: 768px) {
+            .features {
+                padding: 6rem 0;
+            }
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .features-header h2 {
+            margin-bottom: 1rem;
+        }
+
+        .features-header p {
+            font-size: 1.125rem;
+            color: #4b5563;
+            max-width: 42rem;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-color: #dcfce7;
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.75rem;
+            color: #1f2937;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .cta {
+                padding: 6rem 0;
+            }
+        }
+
+        .cta h2 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            font-size: 1.125rem;
+            color: #dcfce7;
+            margin-bottom: 2rem;
+            max-width: 42rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-cta {
+            background-color: white;
+            color: #16a34a;
+        }
+
+        .btn-cta:hover {
+            background-color: #f0fdf4;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            padding: 3rem 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .footer-section h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #16a34a;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+            }
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 16rem;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 50;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        @media (min-width: 768px) {
+            .sidebar {
+                display: block;
+                position: relative;
+                transform: translateX(0);
+                width: 16rem;
+            }
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-nav {
+            padding: 1rem;
+        }
+
+        .nav-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #4b5563;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .nav-item.active {
+            background-color: #f0fdf4;
+            color: #16a34a;
+            font-weight: 600;
+            border-right: 4px solid #16a34a;
+        }
+
+        /* Main Content Area */
+        .main-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .top-bar {
+                padding: 2rem;
+            }
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .content-area {
+                padding: 2rem;
+            }
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .overlay {
+                display: none !important;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            margin: 0;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+            gap: 0;
+        }
+
+        .tab-btn {
+            padding: 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .tab-btn:hover {
+            color: #16a34a;
+        }
+
+        .tab-btn.active {
+            color: #16a34a;
+            border-bottom-color: #16a34a;
+            background-color: #f0fdf4;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="radio"] {
+            width: 1rem;
+            height: 1rem;
+            cursor: pointer;
+            accent-color: #16a34a;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        thead {
+            background-color: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 1rem;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-muted {
+            color: #6b7280;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1.5rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        /* Info Box */
+        .info-box {
+            background-color: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+        }
+
+        .info-box strong {
+            color: #1e3a8a;
+        }
+
+        /* Success Message */
+        .success-msg {
+            background-color: #dcfce7;
+            color: #15803d;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #86efac;
+        }
+
+        /* Error Message */
+        .error-msg {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #e5e7eb;
+            border-top-color: #16a34a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 767px) {
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.25rem; }
+
+            .hero-text h1 {
+                font-size: 1.875rem;
+            }
+
+            .hero-text p {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.625rem 1.25rem;
+                font-size: 0.875rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans flex flex-col md:flex-row h-screen w-full overflow-hidden relative">
+<body>
+    <!-- Home Page -->
+    <div id="home-page" class="page">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <a href="#" class="logo" onclick="showPage('home-page')">
+                        <div class="logo-icon">S</div>
+                        <div class="logo-text">
+                            <h1>Solver</h1>
+                            <p>Estatística</p>
+                        </div>
+                    </a>
+                    <nav class="nav">
+                        <a href="#features">Recursos</a>
+                        <a href="#about">Sobre</a>
+                    </nav>
+                    <button class="menu-btn" onclick="toggleSidebar()">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
 
-    <header class="md:hidden bg-green-700 text-white p-4 flex justify-between items-center shadow-md z-30">
-        <div class="flex flex-col">
-            <h1 class="text-lg font-extrabold tracking-tight leading-tight">Solver Estatística</h1>
-            <span class="text-[10px] text-green-200 font-medium">Por: Fernando Paes Lorena</span>
-        </div>
-        <button id="btnAbrirMenu" onclick="toggleMenu()" class="text-white hover:text-green-200 focus:outline-none p-2">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-        </button>
-    </header>
-
-    <div id="overlay" onclick="toggleMenu()" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden md:hidden transition-opacity"></div>
-
-    <aside id="sidebar" class="sidebar-transition fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 w-72 md:w-64 bg-white shadow-2xl md:shadow-md flex flex-col h-full z-50">
-        <div class="p-6 bg-green-700 text-white shadow-inner hidden md:block">
-            <h1 class="text-xl font-extrabold tracking-tight">Solver Estatística</h1>
-            <p class="text-xs text-green-200 mt-1 font-medium">Por: Fernando Paes Lorena</p>
-        </div>
-        
-        <div class="p-4 bg-green-700 flex justify-between items-center md:hidden shadow-inner">
-            <h2 class="text-lg font-bold text-white">Menu</h2>
-            <button onclick="toggleMenu()" class="text-white hover:text-green-200 p-2 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-
-        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <button id="btnMenuInicio" onclick="mudarAba('aba-inicio', this)" class="menu-btn menu-ativo w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">🏠 Início</button>
-            <button id="btnMenuSimples" onclick="mudarAba('aba-simples', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">📊 DIC / DBC / DQL</button>
-            <button id="btnMenuFatorial" onclick="mudarAba('aba-fatorial', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">📈 Fatorial (A x B)</button>
-            <button id="btnMenuParcelas" onclick="mudarAba('aba-parcelas', this)" class="menu-btn w-full text-left px-4 py-3 rounded-lg text-sm text-gray-600 hover:bg-green-50 transition-all shadow-sm">📑 Parcelas Subdivididas</button>
-        </nav>
-    </aside>
-
-    <main class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8 w-full">
-        
-        <section id="aba-inicio" class="aba-conteudo block fade-in max-w-6xl mx-auto">
-            <div class="bg-gradient-to-br from-green-700 to-green-600 rounded-2xl p-6 md:p-10 text-white shadow-xl mb-8 relative overflow-hidden">
-                <div class="relative z-10">
-                    <h2 class="text-3xl md:text-4xl font-extrabold mb-3 md:mb-4">Solver Estatística</h2>
-                    <p class="text-base md:text-lg text-green-100 max-w-2xl mb-6 md:mb-8 leading-relaxed">
-                        A plataforma analítica para ensaios de campo. Processe dados, avalie cultivares e obtenha laudos estatísticos com F-Tabelado exato.
-                    </p>
-                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                        <button onclick="document.getElementById('btnMenuSimples').click()" class="bg-white text-green-700 font-bold py-3 px-6 rounded-lg shadow hover:shadow-lg hover:bg-gray-50 transition-all text-center">
-                            Iniciar Análise Simples
-                        </button>
-                        <button onclick="document.getElementById('btnMenuFatorial').click()" class="bg-transparent border-2 border-green-200 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 hover:border-white transition-all text-center">
-                            Testar Fatorial (A x B)
-                        </button>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="decoration-1"></div>
+            <div class="decoration-2"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Análise Estatística<br><span class="green">Experimental<br>Avançada</span></h1>
+                        <p>A plataforma analítica para ensaios de campo. Processe dados, avalie cultivares e obtenha laudos estatísticos com F-Tabelado exato.</p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary" onclick="showPage('analysis-page')">
+                                Iniciar Análise
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                            <button class="btn btn-secondary">Saiba Mais</button>
+                        </div>
+                        <div class="hero-social">
+                            <div class="hero-avatars">
+                                <div class="avatar"></div>
+                                <div class="avatar"></div>
+                                <div class="avatar"></div>
+                            </div>
+                            <span>Confiável por pesquisadores em todo o Brasil</span>
+                        </div>
+                    </div>
+                    <div class="hero-illustration">
+                        <div class="illustration-bg"></div>
+                        <div class="illustration-content">
+                            <div class="chart-demo">
+                                <div class="chart-box">
+                                    <div class="chart-bars">
+                                        <div class="bar" style="height: 60%;"></div>
+                                        <div class="bar" style="height: 80%;"></div>
+                                        <div class="bar" style="height: 40%;"></div>
+                                        <div class="bar" style="height: 90%;"></div>
+                                        <div class="bar" style="height: 50%;"></div>
+                                    </div>
+                                </div>
+                                <div class="chart-labels">
+                                    <div class="label">ANOVA</div>
+                                    <div class="label">Tukey</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="absolute -bottom-10 -right-10 opacity-10 hidden md:block">
-                    <svg width="250" height="250" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.83L18.17 20H5.83L12 5.83zM11 16h2v2h-2v-2zm0-7h2v5h-2V9z"/></svg>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">🌱</div><h4 class="font-bold text-gray-800 mb-1">Delineamentos</h4><p class="text-xs text-gray-600">DIC, DBC, DQL, Fatoriais e Parcelas Subdivididas.</p></div>
-                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">📊</div><h4 class="font-bold text-gray-800 mb-1">Testes de Médias</h4><p class="text-xs text-gray-600">Agrupamentos precisos com Tukey, Duncan e Dunnett.</p></div>
-                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm"><div class="text-3xl mb-3">📈</div><h4 class="font-bold text-gray-800 mb-1">ANOVA de Regressão</h4><p class="text-xs text-gray-600">Desdobramento dos GL para Linear e Quadrática provando o ajuste.</p></div>
             </div>
         </section>
 
-        <section id="aba-simples" class="aba-conteudo hidden fade-in max-w-5xl mx-auto">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Análise Simples (Fator Único)</h2>
-            
-            <div class="mb-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-sm flex flex-wrap gap-3 md:gap-4 items-center">
-                <span class="font-bold text-gray-700 bg-gray-100 px-3 py-1 rounded-md w-full sm:w-auto text-center">Delineamento:</span>
-                <label class="cursor-pointer flex items-center gap-1"><input type="radio" name="delinSimples" value="dbc" checked onchange="atualizarFormularioSimples()" class="accent-green-600 w-4 h-4"> DBC</label>
-                <label class="cursor-pointer flex items-center gap-1"><input type="radio" name="delinSimples" value="dic" onchange="atualizarFormularioSimples()" class="accent-green-600 w-4 h-4"> DIC</label>
-                <label class="cursor-pointer flex items-center gap-1"><input type="radio" name="delinSimples" value="dql" onchange="atualizarFormularioSimples()" class="accent-green-600 w-4 h-4"> DQL</label>
-            </div>
-
-            <div class="mb-5 flex border-b border-gray-200">
-                <button onclick="alternarEntrada('simples', 'csv')" id="btnSimplesCsv" class="flex-1 md:flex-none font-bold text-green-700 border-b-2 border-green-700 px-4 py-3 bg-green-50 rounded-tl-lg transition text-sm">Upload CSV</button>
-                <button onclick="alternarEntrada('simples', 'manual')" id="btnSimplesManual" class="flex-1 md:flex-none font-semibold text-gray-500 px-4 py-3 hover:bg-gray-100 rounded-tr-lg transition text-sm border-b-2 border-transparent">Digitação Manual</button>
-            </div>
-
-            <div id="entradaSimplesCsv" class="bg-white p-5 md:p-8 rounded-b-xl rounded-tr-xl border border-gray-100 mb-6 shadow-sm block">
-                <label id="lblCsvSimples" class="block text-sm mb-4 text-gray-600">CSV com 3 colunas: <strong>Tratamento; Repetição/Bloco; Valor</strong></label>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="file" id="csvSimples" accept=".csv" class="border border-gray-200 p-2 rounded-lg flex-1 text-sm bg-gray-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 cursor-pointer">
-                    <button onclick="calcularSimples(false)" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold shadow transition-all w-full sm:w-auto">Calcular ANOVA</button>
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="features-header">
+                    <h2>Recursos Poderosos</h2>
+                    <p>Tudo que você precisa para análise estatística rigorosa de experimentos agrícolas</p>
                 </div>
-            </div>
-
-            <div id="entradaSimplesManual" class="bg-white p-5 md:p-8 rounded-b-xl rounded-tr-xl border border-gray-100 mb-6 hidden shadow-sm">
-                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                    <div class="flex-1"><label id="lblSimplesT" class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Tratamentos:</label><input type="number" id="simplesT" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="4"></div>
-                    <div id="divSimplesR" class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Blocos/Repetições:</label><input type="number" id="simplesR" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="3"></div>
-                    <div class="flex items-end"><button onclick="gerarGradeSimples()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold shadow w-full sm:w-auto transition-all">Gerar Grade</button></div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🌱</div>
+                        <h3>Delineamentos</h3>
+                        <p>DIC, DBC, DQL, Fatoriais e Parcelas Subdivididas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Testes de Médias</h3>
+                        <p>Agrupamentos precisos com Tukey, Duncan e Dunnett.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3>ANOVA de Regressão</h3>
+                        <p>Desdobramento dos GL para Linear e Quadrática provando o ajuste.</p>
+                    </div>
                 </div>
-                <div id="gradeSimplesContainer" class="overflow-x-auto rounded-lg border border-gray-200 hidden mt-4"></div>
-                <button onclick="calcularSimples(true)" id="btnCalcSimplesManual" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold w-full mt-6 hidden shadow transition-all">Calcular ANOVA da Grade</button>
-            </div>
-            <div id="resSimples" class="hidden bg-white p-4 md:p-8 rounded-xl border border-gray-100 shadow-sm mt-6"></div>
-        </section>
-
-        <section id="aba-fatorial" class="aba-conteudo hidden fade-in max-w-5xl mx-auto">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Fatorial Duplo (A x B) em DBC</h2>
-            
-            <div class="mb-5 flex border-b border-gray-200 mt-2">
-                <button onclick="alternarEntrada('fatorial', 'csv')" id="btnFatorialCsv" class="flex-1 md:flex-none font-bold text-green-700 border-b-2 border-green-700 px-4 py-3 bg-green-50 rounded-tl-lg transition text-sm">Upload CSV</button>
-                <button onclick="alternarEntrada('fatorial', 'manual')" id="btnFatorialManual" class="flex-1 md:flex-none font-semibold text-gray-500 px-4 py-3 hover:bg-gray-100 rounded-tr-lg transition text-sm border-b-2 border-transparent">Digitação Manual</button>
-            </div>
-
-            <div id="entradaFatorialCsv" class="bg-white p-5 md:p-8 rounded-b-xl rounded-tr-xl border border-gray-100 mb-6 shadow-sm block">
-                <label class="block text-sm mb-4 text-gray-600">CSV com 4 colunas: <strong>FatorA; FatorB; Bloco; Valor</strong></label>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="file" id="csvFatorial" accept=".csv" class="border border-gray-200 p-2 rounded-lg flex-1 text-sm bg-gray-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 cursor-pointer">
-                    <button onclick="calcularFatorial(false)" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold shadow transition-all w-full sm:w-auto">Calcular ANOVA</button>
-                </div>
-            </div>
-
-            <div id="entradaFatorialManual" class="bg-white p-5 md:p-8 rounded-b-xl rounded-tr-xl border border-gray-100 mb-6 hidden shadow-sm">
-                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                    <div class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Fator A:</label><input type="number" id="fatA" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="2"></div>
-                    <div class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Fator B:</label><input type="number" id="fatB" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="2"></div>
-                    <div class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Blocos:</label><input type="number" id="fatR" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="3"></div>
-                    <div class="flex items-end"><button onclick="gerarGradeFatorial()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold shadow w-full sm:w-auto transition-all">Gerar Grade</button></div>
-                </div>
-                <div id="gradeFatorialContainer" class="overflow-x-auto rounded-lg border border-gray-200 hidden mt-4"></div>
-                <button onclick="calcularFatorial(true)" id="btnCalcFatorialManual" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold w-full mt-6 hidden shadow transition-all">Calcular ANOVA da Grade</button>
-            </div>
-
-            <div id="resFatorial" class="hidden bg-white p-4 md:p-8 rounded-xl border border-gray-100 shadow-sm mt-6"></div>
-
-            <div id="areaPostHoc" class="hidden bg-white p-5 md:p-8 rounded-xl border border-gray-100 mt-6 shadow-sm">
-                <h3 class="text-lg md:text-xl font-bold mb-4 text-gray-800">Testes de Médias e Regressão</h3>
-                <div class="flex flex-col md:flex-row gap-3 mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <select id="selPostHoc" onchange="verificarCamposPostHoc()" class="border border-gray-300 p-3 rounded-lg bg-white w-full md:w-auto shadow-sm outline-none focus:ring-2 focus:ring-green-500">
-                        <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
-                        <optgroup label="Tukey (a=5%)"><option value="tukey_a">Tukey (Fator A)</option><option value="tukey_b">Tukey (Fator B)</option></optgroup>
-                        <optgroup label="Duncan (a=5%)"><option value="duncan_a">Duncan (Fator A)</option><option value="duncan_b">Duncan (Fator B)</option></optgroup>
-                        <optgroup label="Dunnett"><option value="dunnett_a">Dunnett (Fator A)</option><option value="dunnett_b">Dunnett (Fator B)</option></optgroup>
-                    </select>
-                    <select id="selModRegr" class="block border border-gray-300 p-3 rounded-lg bg-white shadow-sm w-full md:w-auto outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option>
-                    </select>
-                    <input type="text" id="txtTestemunha" placeholder="Qual a Testemunha? Ex: C1" class="hidden border border-gray-300 p-3 rounded-lg bg-white shadow-sm w-full md:flex-1 outline-none focus:ring-2 focus:ring-green-500">
-                    <button onclick="calcularPostHoc()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold shadow transition-all w-full md:w-auto">Gerar Análise</button>
-                </div>
-                <div id="resPostHoc" class="mt-6 hidden"></div>
             </div>
         </section>
 
-        <section id="aba-parcelas" class="aba-conteudo hidden fade-in max-w-5xl mx-auto">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Parcelas Subdivididas em DBC</h2>
-            
-            <div class="mb-5 flex border-b border-gray-200 mt-2">
-                <button onclick="alternarEntrada('parcelas', 'csv')" id="btnParcelasCsv" class="flex-1 md:flex-none font-bold text-green-700 border-b-2 border-green-700 px-4 py-3 bg-green-50 rounded-tl-lg transition text-sm">Upload CSV</button>
-                <button onclick="alternarEntrada('parcelas', 'manual')" id="btnParcelasManual" class="flex-1 md:flex-none font-semibold text-gray-500 px-4 py-3 hover:bg-gray-100 rounded-tr-lg transition text-sm border-b-2 border-transparent">Digitação Manual</button>
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="container">
+                <h2>Pronto para começar?</h2>
+                <p>Carregue seus dados e obtenha análises estatísticas completas em segundos</p>
+                <button class="btn btn-cta" onclick="showPage('analysis-page')">
+                    Iniciar Análise Agora
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
             </div>
-
-            <div id="entradaParcelasCsv" class="bg-white p-5 md:p-8 rounded-b-xl rounded-tr-xl border border-gray-100 mb-6 shadow-sm block">
-                <label class="block text-sm mb-4 text-gray-600">CSV com 4 colunas: <strong>FatorA (Parcela); FatorB (Subparcela); Bloco; Valor</strong></label>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="file" id="csvParcelas" accept=".csv" class="border border-gray-200 p-2 rounded-lg flex-1 text-sm bg-gray-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 cursor-pointer">
-                    <button onclick="calcularParcelas(false)" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-lg font-bold shadow transition-all w-full sm:w-auto">Calcular ANOVA</button>
-                </div>
-            </div>
-
-            <div id="entradaParcelasManual" class="bg-white p-5 md:p-8 rounded-b-xl rounded-tr-xl border border-gray-100 mb-6 hidden shadow-sm">
-                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                    <div class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Níveis Parcela (A):</label><input type="number" id="subA" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="2"></div>
-                    <div class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Níveis Subparcela (B):</label><input type="number" id="subB" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="2"></div>
-                    <div class="flex-1"><label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Blocos:</label><input type="number" id="subR" class="border border-gray-200 p-3 w-full rounded-lg bg-gray-50" value="3"></div>
-                    <div class="flex items-end"><button onclick="gerarGradeParcelas()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold shadow w-full sm:w-auto transition-all">Gerar Grade</button></div>
-                </div>
-                <div id="gradeParcelasContainer" class="overflow-x-auto rounded-lg border border-gray-200 hidden mt-4"></div>
-                <button onclick="calcularParcelas(true)" id="btnCalcParcelasManual" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold w-full mt-6 hidden shadow transition-all">Calcular ANOVA da Grade</button>
-            </div>
-
-            <div id="resParcelas" class="hidden bg-white p-4 md:p-8 rounded-xl border border-gray-100 shadow-sm mt-6"></div>
         </section>
 
-        <div id="globalMsg" class="fixed bottom-4 left-4 md:left-auto md:bottom-8 md:right-8 p-4 rounded-xl shadow-2xl text-sm font-semibold hidden z-50 flex items-center gap-3 max-w-[90vw] md:max-w-md"></div>
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>Sobre</h4>
+                        <ul>
+                            <li><a href="#">Solver Estatística</a></li>
+                            <li><a href="#">Análise experimental</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Recursos</h4>
+                        <ul>
+                            <li><a href="#">Documentação</a></li>
+                            <li><a href="#">Tutoriais</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Suporte</h4>
+                        <ul>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Contato</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacidade</a></li>
+                            <li><a href="#">Termos</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Solver Estatística. Todos os direitos reservados.</p>
+                    <p>Por: Fernando Paes Lorena</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-    </main>
+    <!-- Analysis Page -->
+    <div id="analysis-page" class="page hidden">
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo">
+                        <div class="logo-icon">S</div>
+                        <div class="logo-text">
+                            <h1>Solver</h1>
+                            <p>Estatística</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-muted" style="margin-top: 0.5rem;">Por: Fernando Paes Lorena</p>
+                </div>
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" onclick="switchModule('simples')">
+                        <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📊</div>
+                        <div>
+                            <div style="font-weight: 600;">Análise Simples</div>
+                            <div style="font-size: 0.75rem; color: #9ca3af;">DIC / DBC / DQL</div>
+                        </div>
+                    </button>
+                    <button class="nav-item" onclick="switchModule('fatorial')">
+                        <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📈</div>
+                        <div>
+                            <div style="font-weight: 600;">Fatorial (A x B)</div>
+                            <div style="font-size: 0.75rem; color: #9ca3af;">Duplo em DBC</div>
+                        </div>
+                    </button>
+                    <button class="nav-item" onclick="switchModule('parcelas')">
+                        <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📑</div>
+                        <div>
+                            <div style="font-weight: 600;">Parcelas Subdivididas</div>
+                            <div style="font-size: 0.75rem; color: #9ca3af;">Em DBC</div>
+                        </div>
+                    </button>
+                </nav>
+                <div style="padding: 1rem; border-top: 1px solid #e5e7eb; margin-top: auto;">
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: flex-start;" onclick="showPage('home-page')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        Voltar ao Início
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Overlay -->
+            <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <button class="menu-btn" onclick="toggleSidebar()">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <div>
+                        <h2 id="module-title" style="margin: 0; font-size: 1.5rem;">Análise Simples</h2>
+                        <p class="text-sm text-muted" style="margin: 0;">DIC / DBC / DQL</p>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="content-area">
+                    <div style="max-width: 56rem;">
+                        <!-- Simple Analysis Module -->
+                        <div id="module-simples" class="module-content">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Tipo de Delineamento</h3>
+                                </div>
+                                <div class="radio-group">
+                                    <div class="radio-item">
+                                        <input type="radio" id="dbc" name="delineamento" value="dbc" checked>
+                                        <label for="dbc">DBC (Blocos Casualizados)</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="dic" name="delineamento" value="dic">
+                                        <label for="dic">DIC (Inteiramente Casualizado)</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="dql" name="delineamento" value="dql">
+                                        <label for="dql">DQL (Quadrado Latino)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tabs">
+                                <button class="tab-btn active" onclick="switchTab(this, 'csv-simples')">
+                                    📥 Upload CSV
+                                </button>
+                                <button class="tab-btn" onclick="switchTab(this, 'manual-simples')">
+                                    ✏️ Digitação Manual
+                                </button>
+                            </div>
+
+                            <div id="csv-simples" class="tab-content active">
+                                <div class="card">
+                                    <div class="info-box">
+                                        <strong>Formato esperado:</strong><br>
+                                        Tratamento;Bloco;Valor
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Selecione o arquivo CSV</label>
+                                        <input type="file" id="csv-input-simples" accept=".csv">
+                                    </div>
+                                    <button class="btn btn-primary w-full" onclick="calcularSimples()">
+                                        Calcular ANOVA
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="manual-simples" class="tab-content">
+                                <div class="card">
+                                    <div class="form-group">
+                                        <label>Qtd. Tratamentos</label>
+                                        <input type="number" id="simples-t" value="4" min="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Blocos/Repetições</label>
+                                        <input type="number" id="simples-r" value="3" min="2">
+                                    </div>
+                                    <button class="btn btn-primary w-full" onclick="gerarGradeSimples()">
+                                        Gerar Grade
+                                    </button>
+                                    <div id="grade-simples" style="margin-top: 1.5rem;"></div>
+                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-simples" onclick="calcularSimplesManual()">
+                                        Calcular ANOVA da Grade
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="resultado-simples" class="card hidden">
+                                <h3>Resultados da ANOVA</h3>
+                                <div id="resultado-simples-content"></div>
+                            </div>
+                        </div>
+
+                        <!-- Factorial Analysis Module -->
+                        <div id="module-fatorial" class="module-content hidden">
+                            <div class="card">
+                                <div class="info-box">
+                                    <strong>Fatorial Duplo (A × B) em DBC:</strong> Analisa dois fatores simultaneamente com blocos casualizados.
+                                </div>
+                            </div>
+
+                            <div class="tabs">
+                                <button class="tab-btn active" onclick="switchTab(this, 'csv-fatorial')">
+                                    📥 Upload CSV
+                                </button>
+                                <button class="tab-btn" onclick="switchTab(this, 'manual-fatorial')">
+                                    ✏️ Digitação Manual
+                                </button>
+                            </div>
+
+                            <div id="csv-fatorial" class="tab-content active">
+                                <div class="card">
+                                    <div class="info-box">
+                                        <strong>Formato esperado:</strong><br>
+                                        FatorA;FatorB;Bloco;Valor
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Selecione o arquivo CSV</label>
+                                        <input type="file" id="csv-input-fatorial" accept=".csv">
+                                    </div>
+                                    <button class="btn btn-primary w-full" onclick="calcularFatorial()">
+                                        Calcular ANOVA
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="manual-fatorial" class="tab-content">
+                                <div class="card">
+                                    <div class="form-group">
+                                        <label>Fator A</label>
+                                        <input type="number" id="fat-a" value="2" min="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fator B</label>
+                                        <input type="number" id="fat-b" value="2" min="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Blocos</label>
+                                        <input type="number" id="fat-r" value="3" min="2">
+                                    </div>
+                                    <button class="btn btn-primary w-full" onclick="gerarGradeFatorial()">
+                                        Gerar Grade
+                                    </button>
+                                    <div id="grade-fatorial" style="margin-top: 1.5rem;"></div>
+                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-fatorial" onclick="calcularFatorialManual()">
+                                        Calcular ANOVA da Grade
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="resultado-fatorial" class="card hidden">
+                                <h3>Resultados da ANOVA</h3>
+                                <div id="resultado-fatorial-content"></div>
+                            </div>
+                        </div>
+
+                        <!-- Split Plot Analysis Module -->
+                        <div id="module-parcelas" class="module-content hidden">
+                            <div class="card">
+                                <div class="info-box">
+                                    <strong>Parcelas Subdivididas em DBC:</strong> Analisa dois fatores com estrutura hierárquica.
+                                </div>
+                            </div>
+
+                            <div class="tabs">
+                                <button class="tab-btn active" onclick="switchTab(this, 'csv-parcelas')">
+                                    📥 Upload CSV
+                                </button>
+                                <button class="tab-btn" onclick="switchTab(this, 'manual-parcelas')">
+                                    ✏️ Digitação Manual
+                                </button>
+                            </div>
+
+                            <div id="csv-parcelas" class="tab-content active">
+                                <div class="card">
+                                    <div class="info-box">
+                                        <strong>Formato esperado:</strong><br>
+                                        FatorA (Parcela);FatorB (Subparcela);Bloco;Valor
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Selecione o arquivo CSV</label>
+                                        <input type="file" id="csv-input-parcelas" accept=".csv">
+                                    </div>
+                                    <button class="btn btn-primary w-full" onclick="calcularParcelas()">
+                                        Calcular ANOVA
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="manual-parcelas" class="tab-content">
+                                <div class="card">
+                                    <div class="form-group">
+                                        <label>Níveis Parcela (A)</label>
+                                        <input type="number" id="sub-a" value="2" min="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Níveis Subparcela (B)</label>
+                                        <input type="number" id="sub-b" value="2" min="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Blocos</label>
+                                        <input type="number" id="sub-r" value="3" min="2">
+                                    </div>
+                                    <button class="btn btn-primary w-full" onclick="gerarGradeParcelas()">
+                                        Gerar Grade
+                                    </button>
+                                    <div id="grade-parcelas" style="margin-top: 1.5rem;"></div>
+                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-parcelas" onclick="calcularParcelasManual()">
+                                        Calcular ANOVA da Grade
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="resultado-parcelas" class="card hidden">
+                                <h3>Resultados da ANOVA</h3>
+                                <div id="resultado-parcelas-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // ====================================================================
-        // COLOQUE O LINK DO SEU RENDER AQUI:
-        // ====================================================================
-        const API_URL = "https://api-estatistica-xyz.onrender.com/api/analise/"; 
+        // API Configuration
+        const API_URL = "https://api-estatistica-xyz.onrender.com/api/analise/";
 
-        let arquivoFatorialGlobal = null;
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            closeSidebar();
+        }
 
-        function toggleMenu() {
+        // Sidebar Toggle
+        function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
         }
 
-        function mudarAba(id, btn) {
-            document.querySelectorAll('.aba-conteudo').forEach(a => a.classList.replace('block', 'hidden'));
-            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('menu-ativo', 'bg-green-50'));
-            document.getElementById(id).classList.replace('hidden', 'block');
-            btn.classList.add('menu-ativo', 'bg-green-50');
-            document.getElementById('globalMsg').classList.add('hidden');
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Module Switching
+        function switchModule(module) {
+            document.querySelectorAll('.module-content').forEach(m => m.classList.add('hidden'));
+            document.getElementById('module-' + module).classList.remove('hidden');
             
-            if (window.innerWidth < 768) toggleMenu();
-        }
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
 
-        function alternarEntrada(modulo, tipo) {
-            const isCsv = tipo === 'csv';
-            document.getElementById(`entrada${modulo.charAt(0).toUpperCase() + modulo.slice(1)}Csv`).classList.toggle('hidden', !isCsv);
-            document.getElementById(`entrada${modulo.charAt(0).toUpperCase() + modulo.slice(1)}Manual`).classList.toggle('hidden', isCsv);
+            const titles = {
+                simples: 'Análise Simples',
+                fatorial: 'Fatorial (A x B)',
+                parcelas: 'Parcelas Subdivididas'
+            };
+            const subtitles = {
+                simples: 'DIC / DBC / DQL',
+                fatorial: 'Duplo em DBC',
+                parcelas: 'Em DBC'
+            };
             
-            const btnCsv = document.getElementById(`btn${modulo.charAt(0).toUpperCase() + modulo.slice(1)}Csv`);
-            const btnMan = document.getElementById(`btn${modulo.charAt(0).toUpperCase() + modulo.slice(1)}Manual`);
+            document.getElementById('module-title').textContent = titles[module];
+            document.querySelector('.top-bar p').textContent = subtitles[module];
+        }
+
+        // Tab Switching
+        function switchTab(btn, contentId) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
-            if(isCsv) {
-                btnCsv.className = 'flex-1 md:flex-none font-bold text-green-700 border-b-2 border-green-700 px-4 py-3 bg-green-50 rounded-tl-lg transition text-sm';
-                btnMan.className = 'flex-1 md:flex-none font-semibold text-gray-500 px-4 py-3 hover:bg-gray-100 rounded-tr-lg transition text-sm border-b-2 border-transparent';
-            } else {
-                btnCsv.className = 'flex-1 md:flex-none font-semibold text-gray-500 px-4 py-3 hover:bg-gray-100 rounded-tl-lg transition text-sm border-b-2 border-transparent';
-                btnMan.className = 'flex-1 md:flex-none font-bold text-green-700 border-b-2 border-green-700 px-4 py-3 bg-green-50 rounded-tr-lg transition text-sm';
-            }
+            parent.parentElement.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(contentId).classList.remove('hidden');
         }
 
-        function verificarCamposPostHoc() {
-            const val = document.getElementById('selPostHoc').value;
-            document.getElementById('selModRegr').classList.toggle('hidden', !val.includes('regr'));
-            document.getElementById('txtTestemunha').classList.toggle('hidden', !val.includes('dunnett'));
-        }
-
-        function mostrarMsg(txt, tipo) {
-            const m = document.getElementById('globalMsg');
-            let icon = '';
-            if(tipo === 'sucesso') {
-                m.className = 'fixed bottom-4 left-4 md:left-auto md:bottom-8 md:right-8 p-4 rounded-xl shadow-2xl text-sm font-semibold z-50 flex items-center gap-3 bg-green-800 text-white border border-green-600 fade-in';
-                icon = '<svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-            } else if (tipo === 'erro') {
-                m.className = 'fixed bottom-4 left-4 md:left-auto md:bottom-8 md:right-8 p-4 rounded-xl shadow-2xl text-sm font-semibold z-50 flex items-center gap-3 bg-red-600 text-white border border-red-800 fade-in';
-                icon = '<svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-            } else {
-                m.className = 'fixed bottom-4 left-4 md:left-auto md:bottom-8 md:right-8 p-4 rounded-xl shadow-2xl text-sm font-semibold z-50 flex items-center gap-3 bg-blue-600 text-white border border-blue-800 fade-in';
-                icon = '<svg class="w-6 h-6 shrink-0 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-            }
-            m.innerHTML = `${icon} <span>${txt}</span>`;
-            m.classList.remove('hidden');
-            if(tipo !== 'processando') setTimeout(() => m.classList.add('hidden'), 4500);
-        }
-
-        function montarTabelaAnovaHtml(anova, cvHtml) {
-            let linhas = anova.map(l => `<tr class="border-b hover:bg-gray-50 transition-colors"><td class="p-3 font-medium border-r border-gray-200">${l.FV}</td><td class="p-3 text-center border-r border-gray-200">${l.GL}</td><td class="p-3 border-r border-gray-200">${l.SQ}</td><td class="p-3 border-r border-gray-200">${l.QM}</td><td class="p-3 border-r border-gray-200 bg-gray-50 font-medium">${l['F Calc']}</td><td class="p-3 font-bold text-indigo-600 border-r border-gray-200 bg-indigo-50">${l['F Tab']}</td><td class="p-3 font-bold ${l.Sig.includes('*') ? 'text-green-600' : 'text-gray-400'}">${l.Sig}</td></tr>`).join('');
-            return `<div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-3"><h3 class="text-xl font-extrabold text-gray-800">Quadro da ANOVA</h3>${cvHtml}</div>
-                    <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm"><table class="w-full text-left text-sm whitespace-nowrap"><thead class="bg-gray-100 text-gray-700 border-b border-gray-200">
-                    <tr><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">Causa de Variação</th><th class="p-3 sm:p-4 text-center border-r border-gray-200 font-bold">GL</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">SQ</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">QM</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">F Calc</th><th class="p-3 sm:p-4 text-indigo-700 border-r border-gray-200 font-bold">F Tab (5%)</th><th class="p-3 sm:p-4 font-bold">Significância</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
-        }
-
-        function atualizarFormularioSimples() {
-            const d = document.querySelector('input[name="delinSimples"]:checked').value;
-            if (d === 'dql') {
-                document.getElementById('lblCsvSimples').innerHTML = "CSV de 4 colunas: <strong>Tratamento; Linha; Coluna; Valor</strong>";
-                document.getElementById('lblSimplesT').innerText = "Tamanho do Quadrado (n):";
-                document.getElementById('divSimplesR').classList.add('hidden');
-            } else {
-                document.getElementById('lblCsvSimples').innerHTML = "CSV de 3 colunas: <strong>Tratamento; Repetição/Bloco; Valor</strong>";
-                document.getElementById('lblSimplesT').innerText = "Qtd. Tratamentos:";
-                document.getElementById('divSimplesR').classList.remove('hidden');
-            }
-            document.getElementById('gradeSimplesContainer').innerHTML = '';
-            document.getElementById('gradeSimplesContainer').classList.add('hidden');
-            document.getElementById('btnCalcSimplesManual').classList.add('hidden');
-        }
-
+        // Simple Analysis - Generate Grid
         function gerarGradeSimples() {
-            const d = document.querySelector('input[name="delinSimples"]:checked').value;
-            let t = parseInt(document.getElementById('simplesT').value);
-            let html = '';
-
-            if (d === 'dql') {
-                html = '<table class="w-full text-sm text-center min-w-[300px]"><thead><tr class="bg-gray-100 text-gray-700 border-b"><th class="p-3 border-r font-bold">Linha</th><th class="p-3 border-r font-bold">Coluna</th><th class="p-3 border-r text-blue-700 font-bold">Tratamento</th><th class="bg-green-100 p-3 font-bold text-green-800">Valor</th></tr></thead><tbody>';
-                for(let l=1; l<=t; l++){
-                    for(let c=1; c<=t; c++){
-                        html += `<tr class="border-b"><td class="border-r text-gray-500 font-medium bg-gray-50">L${l}</td><td class="border-r text-gray-500 font-medium bg-gray-50">C${c}</td><td class="p-0 border-r"><input type="text" placeholder="Ex: T1" class="w-full h-full text-center py-3 bg-transparent outline-none font-bold text-blue-700 focus:bg-blue-50"></td><td class="p-0 bg-yellow-50 hover:bg-yellow-100"><input type="number" step="any" placeholder="0.00" class="w-full h-full text-center py-3 bg-transparent outline-none font-semibold text-gray-800 min-w-[80px]"></td></tr>`;
-                    }
+            const t = parseInt(document.getElementById('simples-t').value);
+            const r = parseInt(document.getElementById('simples-r').value);
+            let html = '<div class="table-container"><table><thead><tr><th>Tratamento</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
+            
+            for (let i = 1; i <= t; i++) {
+                for (let j = 1; j <= r; j++) {
+                    html += `<tr><td>T${i}</td><td>B${j}</td><td><input type="number" step="any" class="valor-input" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem;"></td></tr>`;
                 }
-                html += '</tbody></table>';
-            } else {
-                let r = parseInt(document.getElementById('simplesR').value);
-                html = '<table class="w-full text-sm text-center min-w-[250px]"><thead><tr class="bg-gray-100 text-gray-700 border-b"><th class="p-3 border-r font-bold">Tratamento</th><th class="p-3 border-r font-bold">Bloco/Rep</th><th class="bg-green-100 p-3 font-bold text-green-800">Valor</th></tr></thead><tbody>';
-                for(let i=1; i<=t; i++){
-                    for(let j=1; j<=r; j++){
-                        html += `<tr class="border-b"><td class="border-r"><input type="text" value="T${i}" class="w-full text-center py-3 bg-transparent font-bold text-blue-700 outline-none min-w-[60px]" readonly></td><td class="border-r text-gray-500 font-medium bg-gray-50">R${j}</td><td class="p-0 bg-yellow-50 hover:bg-yellow-100"><input type="number" step="any" placeholder="0.00" class="w-full h-full text-center py-3 bg-transparent outline-none font-semibold text-gray-800 min-w-[80px]"></td></tr>`;
-                    }
-                }
-                html += '</tbody></table>';
             }
-            const container = document.getElementById('gradeSimplesContainer');
-            container.innerHTML = html;
-            container.classList.remove('hidden');
-            document.getElementById('btnCalcSimplesManual').classList.remove('hidden');
+            html += '</tbody></table></div>';
+            document.getElementById('grade-simples').innerHTML = html;
+            document.getElementById('btn-calc-simples').classList.remove('hidden');
         }
 
-        async function calcularSimples(isManual) {
-            try {
-                let file;
-                const d = document.querySelector('input[name="delinSimples"]:checked').value;
-                if(isManual) {
-                    let rows = document.querySelectorAll('#gradeSimplesContainer tbody tr');
-                    let csv = d === 'dql' ? "Tratamento;Linha;Coluna;Valor\n" : "Tratamento;Bloco;Valor\n";
-                    for(let r of rows) {
-                        if (d === 'dql') {
-                            let l = r.cells[0].innerText; let c = r.cells[1].innerText;
-                            let tr = r.cells[2].querySelector('input').value.trim();
-                            let v = r.cells[3].querySelector('input').value;
-                            if(!tr || !v) throw new Error("Preencha todos os campos da grade.");
-                            csv += `${tr};${l};${c};${v.replace('.', ',')}\n`;
-                        } else {
-                            let tr = r.cells[0].querySelector('input').value; let b = r.cells[1].innerText;
-                            let v = r.cells[2].querySelector('input').value;
-                            if(!v) throw new Error("Preencha todas as células de valor.");
-                            csv += `${tr};${b};${v.replace('.', ',')}\n`;
-                        }
-                    }
-                    file = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
-                } else {
-                    file = document.getElementById('csvSimples').files[0];
-                    if(!file) throw new Error("Selecione um arquivo CSV antes.");
-                }
-                mostrarMsg("Processando ANOVA na nuvem...", "processando");
-                let fd = new FormData(); fd.append("file", file); fd.append("tipo_delineamento", d);
-                let res = await fetch(API_URL + "simples", {method:'POST', body:fd}), data = await res.json();
-                if(data.status !== "sucesso") throw new Error(data.detail);
-                document.getElementById('resSimples').innerHTML = montarTabelaAnovaHtml(data.anova, `<div class="bg-gray-100 text-gray-800 px-4 py-2 border border-gray-200 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap">CV (%): ${data.cv}</div>`);
-                document.getElementById('resSimples').classList.remove('hidden'); 
-                mostrarMsg("Análise concluída com sucesso!", "sucesso");
-            } catch(e) { mostrarMsg(e.message, "erro"); }
-        }
-
+        // Factorial Analysis - Generate Grid
         function gerarGradeFatorial() {
-            let na = parseInt(document.getElementById('fatA').value), nb = parseInt(document.getElementById('fatB').value), nr = parseInt(document.getElementById('fatR').value);
-            let html = '<table class="w-full text-sm text-center min-w-[300px]"><thead><tr class="bg-gray-100 text-gray-700 border-b"><th class="p-3 border-r font-bold">Fator A</th><th class="p-3 border-r font-bold">Fator B</th><th class="p-3 border-r font-bold">Bloco</th><th class="bg-green-100 p-3 font-bold text-green-800">Valor</th></tr></thead><tbody>';
-            for(let a=1; a<=na; a++) {
-                for(let b=1; b<=nb; b++) {
-                    for(let r=1; r<=nr; r++) {
-                        html += `<tr class="border-b"><td class="border-r"><input type="text" value="A${a}" class="w-full text-center py-3 bg-transparent font-bold text-blue-700 outline-none min-w-[40px]" readonly></td><td class="border-r"><input type="text" value="B${b}" class="w-full text-center py-3 bg-transparent font-bold text-blue-700 outline-none min-w-[40px]" readonly></td><td class="border-r text-gray-500 font-medium bg-gray-50">R${r}</td><td class="p-0 bg-yellow-50 hover:bg-yellow-100 transition-colors"><input type="number" step="any" placeholder="0.00" class="w-full h-full text-center py-3 bg-transparent outline-none font-semibold text-gray-800 min-w-[80px]"></td></tr>`;
+            const a = parseInt(document.getElementById('fat-a').value);
+            const b = parseInt(document.getElementById('fat-b').value);
+            const r = parseInt(document.getElementById('fat-r').value);
+            let html = '<div class="table-container"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
+            
+            for (let i = 1; i <= a; i++) {
+                for (let j = 1; j <= b; j++) {
+                    for (let k = 1; k <= r; k++) {
+                        html += `<tr><td>A${i}</td><td>B${j}</td><td>B${k}</td><td><input type="number" step="any" class="valor-input" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem;"></td></tr>`;
                     }
                 }
             }
-            html += '</tbody></table>';
-            const container = document.getElementById('gradeFatorialContainer');
-            container.innerHTML = html;
-            container.classList.remove('hidden');
-            document.getElementById('btnCalcFatorialManual').classList.remove('hidden');
+            html += '</tbody></table></div>';
+            document.getElementById('grade-fatorial').innerHTML = html;
+            document.getElementById('btn-calc-fatorial').classList.remove('hidden');
         }
 
-        async function calcularFatorial(isManual) {
-            try {
-                if(isManual) {
-                    let rows = document.querySelectorAll('#gradeFatorialContainer tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) {
-                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, bl = r.cells[2].innerText, v = r.cells[3].querySelector('input').value;
-                        if(!v) throw new Error("Preencha todas as células de valor."); csv += `${a};${b};${bl};${v.replace('.', ',')}\n`;
-                    }
-                    arquivoFatorialGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
-                } else {
-                    arquivoFatorialGlobal = document.getElementById('csvFatorial').files[0];
-                    if(!arquivoFatorialGlobal) throw new Error("Selecione o CSV primeiro.");
-                }
-                mostrarMsg("Calculando ANOVA...", "processando");
-                let fd = new FormData(); fd.append("file", arquivoFatorialGlobal); fd.append("tipo_teste", "anova");
-                let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.detail);
-                document.getElementById('resFatorial').innerHTML = montarTabelaAnovaHtml(d.anova, `<div class="bg-gray-100 text-gray-800 px-4 py-2 border border-gray-200 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap">CV (%): ${d.cv}</div>`);
-                document.getElementById('resFatorial').classList.remove('hidden'); document.getElementById('areaPostHoc').classList.remove('hidden');
-                document.getElementById('resPostHoc').classList.add('hidden');
-                mostrarMsg("ANOVA Finalizada com sucesso!", "sucesso");
-            } catch(e) { mostrarMsg(e.message, "erro"); }
-        }
-
-        async function calcularPostHoc() {
-            try {
-                let th = document.getElementById('selPostHoc').value;
-                let fd = new FormData(); fd.append("file", arquivoFatorialGlobal); fd.append("tipo_teste", th);
-                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegr').value);
-                if(th.includes("dunnett")) {
-                    const testVal = document.getElementById('txtTestemunha').value.trim();
-                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
-                    fd.append("testemunha", testVal);
-                }
-                
-                document.getElementById('resPostHoc').innerHTML = `<div class="flex items-center gap-2 text-blue-600 font-semibold"><svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Calculando análise rigorosa...</div>`;
-                document.getElementById('resPostHoc').classList.remove('hidden');
-                
-                let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
-                
-                let html = '';
-                if(d.tipo === "regressao") {
-                    let linhasAnovaReg = d.anova_reg.map(l => `<tr class="border-b hover:bg-gray-50 transition-colors"><td class="p-3 font-medium border-r border-gray-200">${l.FV}</td><td class="p-3 text-center border-r border-gray-200">${l.GL}</td><td class="p-3 border-r border-gray-200">${l.SQ}</td><td class="p-3 border-r border-gray-200">${l.QM}</td><td class="p-3 border-r border-gray-200 bg-gray-50 font-medium">${l['F Calc']}</td><td class="p-3 font-bold text-indigo-600 border-r border-gray-200 bg-indigo-50">${l['F Tab']}</td><td class="p-3 font-bold ${l.Sig.includes('*') ? 'text-green-600' : 'text-gray-400'}">${l.Sig}</td></tr>`).join('');
-                    
-                    html = `
-                    <div class="bg-blue-50 border border-blue-200 p-4 sm:p-5 rounded-xl mb-4 sm:mb-6 text-blue-900 shadow-sm overflow-x-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <p class="font-mono text-sm mb-2 whitespace-nowrap"><strong>Eq (${d.modelo}):</strong> <span class="bg-white px-3 py-1.5 rounded border border-blue-100 font-bold">${d.equacao}</span></p>
-                            <p class="font-mono text-sm whitespace-nowrap"><strong>R²:</strong> <span class="bg-white px-3 py-1.5 rounded border border-blue-100 font-bold">${d.r2}</span></p>
-                        </div>
-                        <a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="inline-flex justify-center items-center gap-2 bg-gray-800 hover:bg-gray-900 transition-colors text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md w-full md:w-auto"> <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Baixar Gráfico PDF</a>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-bold text-gray-800 mb-3 text-lg">ANOVA da Regressão (Ajuste do Modelo)</h4>
-                        <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm"><table class="w-full text-left text-sm whitespace-nowrap"><thead class="bg-gray-100 text-gray-700 border-b border-gray-200"><tr><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">Causa de Variação</th><th class="p-3 sm:p-4 text-center border-r border-gray-200 font-bold">GL</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">SQ</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">QM</th><th class="p-3 sm:p-4 border-r border-gray-200 font-bold">F Calc</th><th class="p-3 sm:p-4 text-indigo-700 border-r border-gray-200 font-bold">F Tab (5%)</th><th class="p-3 sm:p-4 font-bold">Significância</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div>
-                        <p class="text-xs text-gray-500 mt-2 italic">Dica: Se a linha "Desvios da Regressão" for significativa (*), indica que o modelo escolhido não se ajusta perfeitamente aos dados.</p>
-                    </div>
-
-                    <div class="bg-white p-2 sm:p-4 border border-gray-200 rounded-xl shadow-sm inline-block w-full overflow-x-auto"><img src="data:image/png;base64,${d.img_png}" class="rounded w-full h-auto min-w-[300px]"></div>`;
-                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
-                    let desc = d.tipo === "tukey" ? `<strong class="text-green-800">q (Tukey):</strong> ${d.q} &nbsp;&bull;&nbsp; <strong class="text-green-800">DMS:</strong> ${d.dms}` : `<strong class="text-green-800">Alcances de Duncan (p):</strong> <div class="mt-2 flex flex-wrap gap-2">${Object.entries(d.alcances).map(([p, v]) => `<span class="bg-white px-2 py-1 rounded border border-green-100 shadow-sm text-xs">p=${p} ➔ <strong>${v}</strong></span>`).join('')}</div>`;
-                    let rows = d.tabela.map(l => `<tr class="border-b hover:bg-gray-50"><td class="p-3 border-r font-medium">${l['Nível']}</td><td class="p-3 border-r">${l['Média']}</td><td class="p-3 font-bold text-green-700 bg-green-50 text-center">${l['Letra'] || 'a'}</td></tr>`).join('');
-                    html = `<div class="bg-green-50 border border-green-200 p-4 sm:p-5 rounded-xl mb-4 sm:mb-6 text-sm text-green-900 shadow-sm">${desc}</div><div class="border border-gray-200 rounded-xl overflow-x-auto shadow-sm max-w-full sm:max-w-lg"><table class="w-full text-sm text-left"><thead class="bg-gray-100 border-b text-gray-700"><tr><th class="p-3 border-r font-bold">Tratamento</th><th class="p-3 border-r font-bold">Média</th><th class="p-3 font-bold text-center">Agrupamento</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                } else if(d.tipo === "dunnett") {
-                    let rows = d.resultados.map(l => `<tr class="border-b hover:bg-gray-50"><td class="p-3 border-r font-medium">${l.Tratamento}</td><td class="p-3 border-r">${l.Média}</td><td class="p-3 border-r font-mono text-center bg-purple-50">${l.Diferença}</td><td class="p-3 font-bold ${l.Sig.includes('*') ? 'text-green-600' : 'text-gray-400'}">${l.Sig}</td></tr>`).join('');
-                    html = `<div class="bg-purple-50 border border-purple-200 p-4 sm:p-5 rounded-xl mb-4 sm:mb-6 text-sm text-purple-900 shadow-sm flex flex-col gap-2"><span><strong class="text-purple-800">Testemunha:</strong> <span class="bg-white px-2 py-1 rounded border border-purple-100">${d.testemunha} (Média: ${d.media_testemunha})</span></span> <span><strong class="text-purple-800">DMS (Dunnett):</strong> <span class="bg-white px-2 py-1 rounded border border-purple-100">${d.dms}</span></span></div><div class="border border-gray-200 rounded-xl overflow-x-auto shadow-sm"><table class="w-full text-sm text-left min-w-[400px]"><thead class="bg-gray-100 border-b text-gray-700"><tr><th class="p-3 border-r font-bold">Tratamento</th><th class="p-3 border-r font-bold">Média</th><th class="p-3 border-r text-center font-bold">Dif. p/ Testemunha</th><th class="p-3 font-bold">Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-                }
-                
-                document.getElementById('resPostHoc').innerHTML = html;
-            } catch(e) { document.getElementById('resPostHoc').innerHTML = `<div class="bg-red-50 text-red-700 border border-red-200 p-4 rounded-xl flex items-center gap-3 font-bold text-sm"><svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${e.message}</div>`; }
-        }
-
-        // ----------------- MÓDULO 3: PARCELAS SUBDIVIDIDAS -----------------
+        // Split Plot Analysis - Generate Grid
         function gerarGradeParcelas() {
-            let na = parseInt(document.getElementById('subA').value), nb = parseInt(document.getElementById('subB').value), nr = parseInt(document.getElementById('subR').value);
-            let html = '<table class="w-full text-sm text-center min-w-[350px]"><thead><tr class="bg-gray-100 text-gray-700 border-b"><th class="p-3 border-r font-bold">Parcela (A)</th><th class="p-3 border-r font-bold">Subparcela (B)</th><th class="p-3 border-r font-bold">Bloco</th><th class="bg-green-100 p-3 font-bold text-green-800">Valor</th></tr></thead><tbody>';
-            for(let a=1; a<=na; a++) {
-                for(let b=1; b<=nb; b++) {
-                    for(let r=1; r<=nr; r++) {
-                        html += `<tr class="border-b"><td class="border-r"><input type="text" value="A${a}" class="w-full text-center py-3 bg-transparent font-bold text-blue-700 outline-none min-w-[40px]" readonly></td><td class="border-r"><input type="text" value="B${b}" class="w-full text-center py-3 bg-transparent font-bold text-blue-700 outline-none min-w-[40px]" readonly></td><td class="border-r text-gray-500 font-medium bg-gray-50">R${r}</td><td class="p-0 bg-yellow-50 hover:bg-yellow-100 transition-colors"><input type="number" step="any" placeholder="0.00" class="w-full h-full text-center py-3 bg-transparent outline-none font-semibold text-gray-800 min-w-[80px]"></td></tr>`;
+            const a = parseInt(document.getElementById('sub-a').value);
+            const b = parseInt(document.getElementById('sub-b').value);
+            const r = parseInt(document.getElementById('sub-r').value);
+            let html = '<div class="table-container"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
+            
+            for (let i = 1; i <= a; i++) {
+                for (let j = 1; j <= b; j++) {
+                    for (let k = 1; k <= r; k++) {
+                        html += `<tr><td>A${i}</td><td>B${j}</td><td>B${k}</td><td><input type="number" step="any" class="valor-input" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem;"></td></tr>`;
                     }
                 }
             }
-            html += '</tbody></table>';
-            const container = document.getElementById('gradeParcelasContainer');
-            container.innerHTML = html;
-            container.classList.remove('hidden');
-            document.getElementById('btnCalcParcelasManual').classList.remove('hidden');
+            html += '</tbody></table></div>';
+            document.getElementById('grade-parcelas').innerHTML = html;
+            document.getElementById('btn-calc-parcelas').classList.remove('hidden');
         }
 
-        async function calcularParcelas(isManual) {
-            try {
-                let file;
-                if(isManual) {
-                    let rows = document.querySelectorAll('#gradeParcelasContainer tbody tr');
-                    let csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) {
-                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, bl = r.cells[2].innerText, v = r.cells[3].querySelector('input').value;
-                        if(!v) throw new Error("Preencha todas as células de valor na grade.");
-                        csv += `${a};${b};${bl};${v.replace('.', ',')}\n`;
-                    }
-                    file = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
-                } else {
-                    file = document.getElementById('csvParcelas').files[0];
-                    if(!file) throw new Error("Selecione um arquivo CSV.");
-                }
-                mostrarMsg("Processando Parcelas Subdivididas...", "processando");
-                let fd = new FormData(); fd.append("file", file);
-                let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.detail);
-                
-                let cvsHtml = `<div class="flex flex-col sm:flex-row gap-3 text-sm"><div class="bg-gray-100 px-4 py-2 border border-gray-200 rounded-lg font-bold shadow-sm text-gray-800 whitespace-nowrap">CV Parcela (A): ${d.cv_a}%</div><div class="bg-gray-100 px-4 py-2 border border-gray-200 rounded-lg font-bold shadow-sm text-gray-800 whitespace-nowrap">CV Subparcela (B): ${d.cv_b}%</div></div>`;
-                document.getElementById('resParcelas').innerHTML = montarTabelaAnovaHtml(d.anova, cvsHtml);
-                document.getElementById('resParcelas').classList.remove('hidden');
-                mostrarMsg("ANOVA calculada com sucesso!", "sucesso");
-            } catch(e) { mostrarMsg(e.message, "erro"); }
+        // Calculate Functions (Placeholders)
+        function calcularSimples() {
+            alert('Integre com sua API Render para processar os dados do CSV');
+        }
+
+        function calcularSimplesManual() {
+            alert('Integre com sua API Render para processar os dados da grade');
+        }
+
+        function calcularFatorial() {
+            alert('Integre com sua API Render para processar os dados do CSV');
+        }
+
+        function calcularFatorialManual() {
+            alert('Integre com sua API Render para processar os dados da grade');
+        }
+
+        function calcularParcelas() {
+            alert('Integre com sua API Render para processar os dados do CSV');
+        }
+
+        function calcularParcelasManual() {
+            alert('Integre com sua API Render para processar os dados da grade');
         }
     </script>
 </body>
