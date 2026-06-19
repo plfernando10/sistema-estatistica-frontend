@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solver Estatística | Plataforma Experimental Avançada</title>
     
+    <!-- Premium Fonts: Inter & JetBrains Mono for data -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -31,15 +34,12 @@
         /* Custom Premium CSS */
         body { background-color: #f1f5f9; color: #334155; -webkit-font-smoothing: antialiased; }
         
-        /* Smooth Transitions */
         .page-transition { transition: opacity 0.4s ease, transform 0.4s ease; }
         .page-hidden { opacity: 0; pointer-events: none; position: absolute; visibility: hidden; transform: translateY(10px); }
         .page-active { opacity: 1; pointer-events: auto; position: relative; visibility: visible; transform: translateY(0); }
         
-        /* Modern Cards */
         .saas-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
         
-        /* Stylish Inputs & Buttons */
         .saas-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.875rem; transition: all 0.2s; background-color: #f8fafc; color: #0f172a; }
         .saas-input:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); background-color: white; }
         
@@ -51,25 +51,21 @@
         .saas-btn-outline { background: transparent; border: 1px solid #cbd5e1; color: #475569; }
         .saas-btn-outline:hover { border-color: #10b981; color: #10b981; background: #ecfdf5; }
 
-        /* Custom File Input */
         input[type="file"] { border: 1px dashed #cbd5e1; padding: 0.5rem; border-radius: 8px; background: #f8fafc; cursor: pointer; }
         input[type="file"]::file-selector-button { background: #e2e8f0; border: none; padding: 0.5rem 1rem; border-radius: 6px; color: #475569; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-right: 1rem; }
         input[type="file"]::file-selector-button:hover { background: #cbd5e1; }
 
-        /* Modern Tabs */
         .saas-tabs { display: flex; gap: 2rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 1.5rem; }
         .saas-tab { padding: 0.75rem 0; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; margin-bottom: -2px; }
         .saas-tab:hover { color: #10b981; }
         .saas-tab.active { color: #10b981; border-bottom-color: #10b981; }
 
-        /* Fancy Radio Buttons */
         .radio-group { display: flex; flex-wrap: wrap; gap: 1rem; }
         .radio-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; background: white; font-weight: 500; font-size: 0.875rem; color: #475569; transition: all 0.2s; }
         .radio-label:hover { border-color: #10b981; background: #ecfdf5; }
         .radio-input:checked + .radio-label { border-color: #10b981; background: #ecfdf5; color: #047857; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1); }
         .radio-input { display: none; }
 
-        /* Elegant Tables */
         .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
         th { background-color: #f8fafc; padding: 1rem; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
@@ -79,11 +75,9 @@
         tr:last-child td { border-bottom: none; }
         tbody tr:hover td { background-color: #f1f5f9; }
         
-        /* Typography overrides for table data */
         .data-mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
         .data-highlight { color: #047857; font-weight: 600; background: #ecfdf5; border-radius: 4px; padding: 2px 6px; }
 
-        /* Toast Notifications */
         #toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
         .toast { padding: 1rem 1.5rem; border-radius: 12px; font-weight: 500; font-size: 0.875rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; max-width: 350px; color: white; }
         .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
@@ -91,17 +85,14 @@
         .toast.info { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        /* Grid Input Styles */
         .grid-input { width: 100%; border: none; background: transparent; padding: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; }
         .grid-input:focus { outline: none; background: #f8fafc; border-radius: 4px; box-shadow: inset 0 0 0 2px #10b981; }
 
-        /* Sidebar active state */
         .nav-item { border-left: 3px solid transparent; }
         .nav-item.active { background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-left-color: #10b981; }
     </style>
@@ -110,7 +101,70 @@
 
     <div id="toast-container"></div>
 
+    <!-- ==================== MANUAL MODAL ==================== -->
+    <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-surface-900/60 backdrop-blur-sm transition-opacity" onclick="fecharManual()"></div>
+        <div class="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-[fadeIn_0.2s_ease-out]">
+            
+            <!-- Modal Header -->
+            <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-20 rounded-t-2xl">
+                <h3 class="text-xl font-bold text-surface-900"><i class="fa-solid fa-book-open text-brand-500 mr-2"></i> Guia Rápido de Uso</h3>
+                <button onclick="fecharManual()" class="text-slate-400 hover:text-slate-700 bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 text-slate-600 text-sm leading-relaxed">
+                
+                <div class="mb-8">
+                    <h4 class="font-bold text-brand-700 text-base mb-2 border-l-4 border-brand-500 pl-3">📥 Opção 1: Upload de Arquivo CSV</h4>
+                    <p class="mb-3">Você deve montar seus dados no Excel e salvar o arquivo como <strong>CSV (separado por vírgulas)</strong>. O sistema aceita separador por vírgula (,) ou ponto-e-vírgula (;), e números decimais com ponto ou vírgula.</p>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                            <strong class="text-surface-900 block mb-1">Análise Simples (DBC/DIC):</strong>
+                            <code class="text-brand-600 font-bold">Tratamento; Bloco; Valor</code>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                            <strong class="text-surface-900 block mb-1">Análise Simples (DQL):</strong>
+                            <code class="text-brand-600 font-bold">Tratamento; Linha; Coluna; Valor</code>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                            <strong class="text-surface-900 block mb-1">Fatorial Duplo (A x B):</strong>
+                            <code class="text-brand-600 font-bold">FatorA; FatorB; Bloco; Valor</code>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                            <strong class="text-surface-900 block mb-1">Parcelas Subdivididas (Split-Plot):</strong>
+                            <code class="text-brand-600 font-bold">FatorA_Parcela; FatorB_Subparcela; Bloco; Valor</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-blue-700 text-base mb-2 border-l-4 border-blue-500 pl-3">✏️ Opção 2: Digitação Direta</h4>
+                    <p class="mb-2">Não quer usar Excel? Preencha tudo direto na tela:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li>Selecione a aba <strong>Digitação Direta</strong>.</li>
+                        <li>Informe a quantidade de Tratamentos (ou Níveis dos Fatores) e o número de Blocos/Repetições.</li>
+                        <li>Clique em <strong>Montar Matriz</strong>.</li>
+                        <li>Substitua os nomes padrões (T1, A1...) pelo nome real do tratamento (Ex: "Soja Intacta", "0", "50") para sair bonito no laudo.</li>
+                        <li>Digite os valores numéricos. Não deixe nenhuma célula vazia!</li>
+                        <li>Clique em <strong>Calcular Matriz</strong>.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end rounded-b-2xl">
+                <button class="saas-btn saas-btn-primary" onclick="fecharManual()">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== LANDING PAGE ==================== -->
     <div id="landing-page" class="page-active fixed inset-0 z-50 bg-surface-50 overflow-y-auto w-full">
+        <!-- Modern Nav -->
         <nav class="absolute top-0 w-full px-6 py-4 flex justify-between items-center z-10">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-glow">
@@ -126,7 +180,9 @@
             </button>
         </nav>
 
+        <!-- Hero Section -->
         <div class="min-h-screen flex items-center relative pt-20 pb-12">
+            <!-- Background Decoration -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="absolute -top-[20%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-100/50 blur-3xl"></div>
                 <div class="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] rounded-full bg-blue-100/40 blur-3xl"></div>
@@ -147,11 +203,9 @@
                     <button onclick="switchPage('app-page')" class="saas-btn saas-btn-primary px-8 py-4 text-base">
                         <i class="fa-solid fa-play mr-2"></i> Iniciar Análises Agora
                     </button>
-                    <a href="https://github.com/plfernando10" target="_blank" class="saas-btn saas-btn-outline px-8 py-4 text-base bg-white">
-                        <i class="fa-brands fa-github mr-2"></i> Ver Desenvolvedor
-                    </a>
                 </div>
 
+                <!-- Features Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-5xl mx-auto text-left">
                     <div class="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-white/40 shadow-sm">
                         <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-chart-column"></i></div>
@@ -161,7 +215,7 @@
                     <div class="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-white/40 shadow-sm">
                         <div class="w-12 h-12 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-chart-line"></i></div>
                         <h3 class="font-bold text-surface-900 mb-2">Regressão & Dose Ótima</h3>
-                        <p class="text-sm text-slate-500">Avalia a adequação da curva (Desvios) e calcula o Ponto de Máxima Eficiência Técnica (PMET) com gráficos HD.</p>
+                        <p class="text-sm text-slate-500">Avalia a adequação da curva e calcula o Ponto de Máxima Eficiência Técnica (PMET) com gráficos HD.</p>
                     </div>
                     <div class="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-white/40 shadow-sm">
                         <div class="w-12 h-12 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-file-contract"></i></div>
@@ -173,10 +227,11 @@
         </div>
     </div>
 
+    <!-- ==================== APP PAGE ==================== -->
     <div id="app-page" class="page-hidden w-full h-full flex bg-surface-50">
         
+        <!-- Sidebar -->
         <aside id="sidebar" class="bg-surface-900 text-slate-300 w-72 flex-shrink-0 flex flex-col transition-transform duration-300 z-40 fixed md:relative h-full -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
-            
             <div class="p-6 border-b border-surface-800 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-glow">
@@ -224,10 +279,13 @@
             </div>
         </aside>
 
+        <!-- Overlay Mobile -->
         <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-surface-900/50 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
 
+        <!-- Main Content Area -->
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-surface-50">
             
+            <!-- Topbar -->
             <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shrink-0 shadow-sm">
                 <div class="flex items-center gap-4">
                     <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-brand-600 focus:outline-none">
@@ -238,14 +296,26 @@
                         <p id="topbar-subtitle" class="text-sm text-slate-500 font-medium">DIC / DBC / DQL</p>
                     </div>
                 </div>
-                <div class="hidden sm:flex items-center gap-2 text-sm font-medium text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> API Conectada
+                <div class="flex items-center gap-3">
+                    <button onclick="abrirManual()" class="saas-btn saas-btn-outline py-1.5 px-3 text-sm hidden sm:flex">
+                        <i class="fa-solid fa-book text-slate-400"></i> Guia Rápido
+                    </button>
+                    <div class="hidden md:flex items-center gap-2 text-sm font-medium text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> API Conectada
+                    </div>
                 </div>
             </header>
 
+            <!-- Scrollable Content -->
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                 <div class="max-w-6xl mx-auto pb-20">
 
+                    <!-- Botão de Manual Mobile -->
+                    <button onclick="abrirManual()" class="saas-btn saas-btn-outline w-full mb-6 sm:hidden bg-white">
+                        <i class="fa-solid fa-book text-slate-400"></i> Ver Guia Rápido de Uso
+                    </button>
+
+                    <!-- ================= MÓDULO 1: SIMPLES ================= -->
                     <div id="module-simples" class="module-section">
                         
                         <div class="saas-card p-6 mb-6">
@@ -266,7 +336,7 @@
                             <div id="tab-simples-csv">
                                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800 flex items-start gap-3">
                                     <i class="fa-solid fa-circle-info mt-0.5"></i>
-                                    <div><strong class="block mb-1 text-blue-900">Formato exigido no arquivo (.csv)</strong><span id="lbl-formato-simples" class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">Tratamento;Bloco;Valor</span></div>
+                                    <div><strong class="block mb-1 text-blue-900">Cabeçalho (DBC/DIC):</strong><span id="lbl-formato-simples" class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">Tratamento;Bloco;Valor</span></div>
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4 items-center">
                                     <input type="file" id="file-simples" accept=".csv" class="flex-1 w-full">
@@ -285,6 +355,7 @@
                             </div>
                         </div>
 
+                        <!-- Resultados Simples -->
                         <div id="res-simples-container" class="hidden">
                             <div class="saas-card p-0 mb-6 border-brand-200 shadow-md">
                                 <div class="bg-brand-50 border-b border-brand-100 p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -328,6 +399,7 @@
                         </div>
 
 
+                        <!-- ================= MÓDULO 2: FATORIAL ================= -->
                         <div id="module-fatorial" class="module-section hidden">
                             <div class="saas-card p-6 mb-6 bg-gradient-to-br from-slate-800 to-surface-900 text-white border-none shadow-lg">
                                 <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-layer-group text-brand-400"></i> Fatorial Duplo Cruzado (A x B)</h3>
@@ -343,7 +415,7 @@
                                 <div id="tab-fatorial-csv">
                                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800 flex items-start gap-3">
                                         <i class="fa-solid fa-circle-info mt-0.5"></i>
-                                        <div><strong class="block mb-1 text-blue-900">Formato exigido no arquivo (.csv)</strong><span class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">FatorA;FatorB;Bloco;Valor</span></div>
+                                        <div><strong class="block mb-1 text-blue-900">Cabeçalho CSV (Ordem Exata):</strong><span class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">FatorA;FatorB;Bloco;Valor</span></div>
                                     </div>
                                     <div class="flex flex-col sm:flex-row gap-4 items-center">
                                         <input type="file" id="file-fatorial" accept=".csv" class="flex-1 w-full">
@@ -363,6 +435,7 @@
                                 </div>
                             </div>
 
+                            <!-- Resultados Fatorial -->
                             <div id="res-fatorial-container" class="hidden">
                                 <div class="saas-card p-0 mb-6 border-brand-200 shadow-md">
                                     <div class="bg-brand-50 border-b border-brand-100 p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -410,6 +483,7 @@
                             </div>
                         </div>
 
+                        <!-- ================= MÓDULO 3: PARCELAS ================= -->
                         <div id="module-parcelas" class="module-section hidden">
                             <div class="saas-card p-6 mb-6 bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-none shadow-lg">
                                 <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-table-columns text-indigo-400"></i> Parcelas Subdivididas (Split-Plot)</h3>
@@ -425,7 +499,7 @@
                                 <div id="tab-parcelas-csv">
                                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800 flex items-start gap-3">
                                         <i class="fa-solid fa-circle-info mt-0.5"></i>
-                                        <div><strong class="block mb-1 text-blue-900">Formato exigido no arquivo (.csv)</strong><span class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">FatorA_Parcela;FatorB_Subparcela;Bloco;Valor</span></div>
+                                        <div><strong class="block mb-1 text-blue-900">Cabeçalho CSV (Ordem Exata):</strong><span class="font-mono bg-white px-2 py-0.5 rounded border border-blue-100">FatorA_Parcela;FatorB_Subparcela;Bloco;Valor</span></div>
                                     </div>
                                     <div class="flex flex-col sm:flex-row gap-4 items-center">
                                         <input type="file" id="file-parcelas" accept=".csv" class="flex-1 w-full">
@@ -445,6 +519,7 @@
                                 </div>
                             </div>
 
+                            <!-- Resultados Parcelas -->
                             <div id="res-parcelas-container" class="hidden">
                                 <div class="saas-card p-0 mb-6 border-indigo-200 shadow-md">
                                     <div class="bg-indigo-50 border-b border-indigo-100 p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -498,16 +573,17 @@
         </main>
     </div>
 
+    <!-- Core Scripts -->
     <script>
         // ====================================================================
-        // CONFIGURAÇÃO DA API (COLOQUE A SUA URL DO RENDER AQUI)
+        // CONFIGURAÇÃO DA API 
         const API_URL = "https://api-estatistica.onrender.com/api/analise/";
         // ====================================================================
 
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
 
-        // Navegação de Telas
-        function switchPage(pageId) {
+        // Navegação de Telas e Modal
+        function showPage(pageId) {
             document.querySelectorAll('.page-active, .page-hidden').forEach(p => { p.classList.remove('page-active'); p.classList.add('page-hidden'); });
             document.getElementById(pageId).classList.remove('page-hidden'); document.getElementById(pageId).classList.add('page-active');
         }
@@ -515,6 +591,14 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
             document.getElementById('overlay').classList.toggle('hidden');
+        }
+
+        function abrirManual() {
+            document.getElementById('manual-modal').classList.remove('hidden');
+        }
+
+        function fecharManual() {
+            document.getElementById('manual-modal').classList.add('hidden');
         }
 
         function switchModule(modulo, btnElement) {
@@ -535,19 +619,21 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
-        // Tabs
+        // Sistema de Abas (Upload / Digitação)
         function switchTabSimples(tipo) {
             document.getElementById('tab-simples-csv').classList.toggle('hidden', tipo !== 'csv');
             document.getElementById('tab-simples-manual').classList.toggle('hidden', tipo !== 'manual');
             const btns = document.querySelectorAll('#module-simples .saas-tab');
             btns[0].classList.toggle('active', tipo === 'csv'); btns[1].classList.toggle('active', tipo === 'manual');
         }
+
         function switchTabFatorial(tipo) {
             document.getElementById('tab-fatorial-csv').classList.toggle('hidden', tipo !== 'csv');
             document.getElementById('tab-fatorial-manual').classList.toggle('hidden', tipo !== 'manual');
             const btns = document.querySelectorAll('#module-fatorial .saas-tab');
             btns[0].classList.toggle('active', tipo === 'csv'); btns[1].classList.toggle('active', tipo === 'manual');
         }
+
         function switchTabParcelas(tipo) {
             document.getElementById('tab-parcelas-csv').classList.toggle('hidden', tipo !== 'csv');
             document.getElementById('tab-parcelas-manual').classList.toggle('hidden', tipo !== 'manual');
@@ -686,7 +772,7 @@
             const a = parseInt(document.getElementById('inp-fa').value), b = parseInt(document.getElementById('inp-fb').value), r = parseInt(document.getElementById('inp-fr').value);
             let html = '<div class="table-wrapper"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
             for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { 
-                html += `<tr><td class="bg-surface-50 font-bold text-slate-700">A${i}</td><td class="bg-surface-50 font-bold text-slate-700">B${j}</td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; 
+                html += `<tr><td class="bg-surface-50 font-bold text-slate-700"><input type="text" value="A${i}" class="grid-input" readonly></td><td class="bg-surface-50 font-bold text-slate-700"><input type="text" value="B${j}" class="grid-input" readonly></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; 
             }}}
             document.getElementById('matriz-fatorial').innerHTML = html + '</tbody></table></div>';
             document.getElementById('btn-calc-matriz-fatorial').classList.remove('hidden');
@@ -698,9 +784,9 @@
                 if(isManual) {
                     let rows = document.querySelectorAll('#matriz-fatorial tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
                     for(let r of rows) {
-                        let v = r.cells[3].querySelector('input').value;
+                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value;
                         if(!v) throw new Error("A matriz possui valores em branco.");
-                        csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
+                        csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
                     }
                     arquivosData.fatorial = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else {
@@ -732,7 +818,7 @@
             const a = parseInt(document.getElementById('inp-pa').value), b = parseInt(document.getElementById('inp-pb').value), r = parseInt(document.getElementById('inp-pr').value);
             let html = '<div class="table-wrapper"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
             for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { 
-                html += `<tr><td class="bg-surface-50 font-bold text-indigo-700">A${i}</td><td class="bg-surface-50 font-bold text-indigo-700">B${j}</td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; 
+                html += `<tr><td class="bg-surface-50 font-bold text-indigo-700"><input type="text" value="A${i}" class="grid-input" readonly></td><td class="bg-surface-50 font-bold text-indigo-700"><input type="text" value="B${j}" class="grid-input" readonly></td><td class="bg-surface-50 font-medium text-slate-500">R${k}</td><td class="p-0"><input type="number" step="any" class="grid-input text-center"></td></tr>`; 
             }}}
             document.getElementById('matriz-parcelas').innerHTML = html + '</tbody></table></div>';
             document.getElementById('btn-calc-matriz-parcelas').classList.remove('hidden');
@@ -744,9 +830,9 @@
                 if(isManual) {
                     let rows = document.querySelectorAll('#matriz-parcelas tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
                     for(let r of rows) {
-                        let v = r.cells[3].querySelector('input').value;
+                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value;
                         if(!v) throw new Error("A matriz possui valores em branco.");
-                        csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
+                        csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
                     }
                     arquivosData.parcelas = new File([new Blob([csv], {type:'text/csv'})], "matriz.csv");
                 } else {
@@ -847,14 +933,13 @@
             }
         }
 
-        // Exportador Inteligente de Laudo (.txt) - Executado direto no navegador
+        // Exportador Inteligente de Laudo (.txt) 
         function baixarLaudoCompleto(modulo) {
             let modNomes = { simples: "Simples_Fator_Unico", fatorial: "Fatorial_Duplo_AxB", parcelas: "Parcelas_Subdivididas_SplitPlot" };
             let text = "========================================================\n";
             text += `      LAUDO ESTATÍSTICO - SOLVER (${modNomes[modulo]})\n`;
             text += "========================================================\n\n";
 
-            // Captura ANOVA
             const anovaTable = document.querySelector(`#anova-${modulo}-table table`);
             if(anovaTable) {
                 text += "[ QUADRO DA ANÁLISE DE VARIÂNCIA (ANOVA) ]\n";
@@ -869,27 +954,22 @@
                 text += "-".repeat(85) + "\n\n";
             }
 
-            // Captura CV
             const cvBadge = document.getElementById(`cv-${modulo}-badge`).innerText;
             if(cvBadge) text += `> Indicador de Dispersão:\n${cvBadge.replace(/\n/g, ' ')}\n\n`;
 
-            // Captura Post-Hoc
             const postHocDiv = document.getElementById(`posthoc-${modulo}-output`);
             if(postHocDiv && !postHocDiv.classList.contains('hidden') && postHocDiv.innerText.length > 50) {
                 text += "[ ANÁLISES POSTERIORES / COMPARAÇÕES ]\n";
                 text += "========================================================\n";
-                
-                // Limpeza visual do texto html
                 let phText = postHocDiv.innerText;
-                phText = phText.replace(/Baixar Gráfico \(PDF Alta Qualidade\)/g, ''); // Tira o texto do botão
-                phText = phText.replace(/\n\s*\n/g, '\n\n'); // Tira linhas muito em branco
+                phText = phText.replace(/Baixar Gráfico \(PDF Alta Qualidade\)/g, ''); 
+                phText = phText.replace(/\n\s*\n/g, '\n\n'); 
                 text += phText.trim() + "\n";
             }
             
             text += "\n\n========================================================\n";
             text += "Laudo processado via Solver Estatistica Experimental API\n";
 
-            // Gerar arquivo
             const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
