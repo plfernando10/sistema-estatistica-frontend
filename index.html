@@ -28,21 +28,6 @@
         .logo-text p { font-size: 0.75rem; color: #6b7280; margin: 0; }
         .menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #1f2937; }
         @media (max-width: 767px) { .menu-btn { display: block; } }
-        .hero { position: relative; overflow: hidden; padding: 5rem 0; }
-        @media (min-width: 768px) { .hero { padding: 8rem 0; } }
-        .hero-content { display: grid; gap: 3rem; grid-template-columns: 1fr; align-items: center; }
-        @media (min-width: 768px) { .hero-content { grid-template-columns: 1fr 1fr; } }
-        .hero-text h1 { font-size: 2.25rem; margin-bottom: 1rem; color: #1f2937; }
-        @media (min-width: 768px) { .hero-text h1 { font-size: 3rem; } }
-        .hero-text h1 .green { color: #16a34a; }
-        .hero-text p { font-size: 1.125rem; color: #4b5563; margin-bottom: 1.5rem; line-height: 1.8; }
-        .hero-buttons { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
-        @media (min-width: 640px) { .hero-buttons { flex-direction: row; } }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.3s ease; font-size: 1rem; }
-        .btn-primary { background-color: #16a34a; color: white; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.1); }
-        .btn-primary:hover { background-color: #15803d; box-shadow: 0 10px 15px rgba(22, 163, 74, 0.2); transform: translateY(-2px); }
-        .btn-secondary { border: 2px solid #dcfce7; color: #16a34a; background-color: transparent; }
-        .btn-secondary:hover { background-color: #f0fdf4; }
         .sidebar { position: fixed; top: 0; left: 0; width: 16rem; height: 100vh; background: white; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; overflow-y: auto; }
         .sidebar.active { transform: translateX(0); box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
         @media (min-width: 768px) { .sidebar { display: block; position: relative; transform: translateX(0); width: 16rem; box-shadow: none; } }
@@ -69,7 +54,7 @@
         .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; }
-        input[type="text"], input[type="number"], input[type="file"], select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-family: inherit; font-size: 0.875rem; transition: all 0.3s ease; }
+        input[type="text"], input[type="number"], input[type="file"], select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.875rem; }
         input:focus, select:focus, textarea:focus { outline: none; border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1); }
         .radio-group { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1rem; }
         .radio-item { display: flex; align-items: center; gap: 0.5rem; }
@@ -81,9 +66,9 @@
         td { padding: 1rem; border-right: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; }
         tbody tr:hover { background-color: #f9fafb; }
         .info-box { background-color: #dbeafe; border: 1px solid #93c5fd; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.875rem; color: #1e40af; }
-        .success-msg { background-color: #dcfce7; color: #15803d; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #86efac; font-weight: 500; font-size: 0.875rem; }
-        .error-msg { background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #fca5a5; font-weight: 500; font-size: 0.875rem; }
-        .info-msg { background-color: #e0f2fe; color: #1e40af; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #bfdbfe; font-weight: 500; font-size: 0.875rem; }
+        .success-msg { background-color: #dcfce7; color: #15803d; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #86efac; font-weight: 500; }
+        .error-msg { background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #fca5a5; font-weight: 500; }
+        .info-msg { background-color: #e0f2fe; color: #1e40af; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #bfdbfe; font-weight: 500; }
         #globalMsgContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; max-width: 400px; }
         .hidden { display: none !important; }
     </style>
@@ -99,23 +84,15 @@
                     <a href="#" class="logo" onclick="showPage('home-page')">
                         <div class="logo-icon">S</div><div class="logo-text"><h1>Solver</h1><p>Estatística</p></div>
                     </a>
-                    <button class="menu-btn" onclick="showPage('analysis-page')"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                    <button class="menu-btn" onclick="showPage('analysis-page')"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
                 </div>
             </div>
         </header>
-
         <section class="hero">
-            <div class="decoration-1"></div><div class="decoration-2"></div>
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <h1>Análise Estatística<br><span class="green">Experimental<br>Avançada</span></h1>
-                        <p>A plataforma analítica para ensaios de campo. Processe dados quantitativos e qualitativos com fechamento automático de laudos por e-mail.</p>
-                        <div class="hero-buttons">
-                            <button class="btn btn-primary" onclick="showPage('analysis-page')">Iniciar Análise</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="container text-center">
+                <h1 class="mb-4">Análise Estatística <span class="text-green-600">Experimental Avançada</span></h1>
+                <p class="text-muted max-w-xl mx-auto mb-6">Processe dados quantitativos e qualitativos de campo com exatidão científica, fechamentos completos e relatórios por e-mail.</p>
+                <button class="btn btn-primary" onclick="showPage('analysis-page')">Acessar Plataforma</button>
             </div>
         </section>
     </div>
@@ -125,16 +102,14 @@
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <div class="logo"><div class="logo-icon">S</div><div class="logo-text"><h1>Solver</h1><p>Estatística</p></div></div>
-                    <p class="text-sm text-muted" style="margin-top: 0.5rem;">Por: Fernando Paes Lorena</p>
+                    <p class="text-xs text-muted mt-1">Por: Fernando Paes Lorena</p>
                 </div>
                 <nav class="sidebar-nav">
-                    <button class="nav-item active" onclick="switchModule('simples')"><div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📊</div><div><div style="font-weight: 600;">Análise Simples</div><div style="font-size: 0.75rem; color: #9ca3af;">DIC / DBC / DQL</div></div></button>
-                    <button class="nav-item" onclick="switchModule('fatorial')"><div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📈</div><div><div style="font-weight: 600;">Fatorial (A x B)</div><div style="font-size: 0.75rem; color: #9ca3af;">Duplo em DBC</div></div></button>
-                    <button class="nav-item" onclick="switchModule('parcelas')"><div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📑</div><div><div style="font-weight: 600;">Parcelas Subdivididas</div><div style="font-size: 0.75rem; color: #9ca3af;">Em DBC</div></div></button>
+                    <button class="nav-item active" onclick="switchModule('simples')">📊 Análise Simples (Fator Único)</button>
+                    <button class="nav-item" onclick="switchModule('fatorial')">📈 Fatorial Duplo (A x B)</button>
+                    <button class="nav-item" onclick="switchModule('parcelas')">📑 Parcelas Subdivididas</button>
                 </nav>
-                <div style="padding: 1rem; border-top: 1px solid #e5e7eb; margin-top: auto;">
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: flex-start;" onclick="showPage('home-page')">Voltar ao Início</button>
-                </div>
+                <div class="p-4 border-t mt-auto"><button class="btn btn-secondary w-full" onclick="showPage('home-page')">Sair</button></div>
             </aside>
 
             <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -142,7 +117,7 @@
             <div class="main-content">
                 <div class="top-bar">
                     <button class="menu-btn" onclick="toggleSidebar()"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-                    <div><h2 id="module-title" style="margin: 0; font-size: 1.5rem;">Análise Simples</h2><p id="module-subtitle" class="text-sm text-muted" style="margin: 0;">DIC / DBC / DQL</p></div>
+                    <div><h2 id="module-title">Análise Simples</h2><p id="module-subtitle" class="text-sm text-muted">DIC / DBC / DQL</p></div>
                 </div>
 
                 <div class="content-area">
@@ -150,43 +125,56 @@
                         
                         <div id="module-simples" class="module-content fade-in">
                             <div class="card">
+                                <div class="card-header"><h3>Definição do Ensaio</h3></div>
                                 <div class="radio-group">
                                     <div class="radio-item"><input type="radio" id="dbc" name="delinSimples" value="dbc" checked onchange="atualizarFormularioSimples()"><label for="dbc">DBC</label></div>
                                     <div class="radio-item"><input type="radio" id="dic" name="delinSimples" value="dic" onchange="atualizarFormularioSimples()"><label for="dic">DIC</label></div>
                                     <div class="radio-item"><input type="radio" id="dql" name="delinSimples" value="dql" onchange="atualizarFormularioSimples()"><label for="dql">DQL</label></div>
                                 </div>
                             </div>
-
                             <div class="tabs">
                                 <button class="tab-btn active" onclick="switchTab(this, 'csv-simples')">📥 Upload CSV</button>
                                 <button class="tab-btn" onclick="switchTab(this, 'manual-simples')">✏️ Digitação Manual</button>
                             </div>
-
                             <div id="csv-simples" class="tab-content active">
                                 <div class="card">
-                                    <div class="info-box" id="lblCsvSimples">Tratamento;Bloco;Valor</div>
+                                    <div class="info-box" id="lblCsvSimples">Formato: Tratamento;Bloco;Valor</div>
                                     <div class="form-group"><input type="file" id="csv-input-simples" accept=".csv"></div>
-                                    <button class="btn btn-primary w-full" onclick="calcularSimples(false)">Calcular ANOVA</button>
+                                    <button class="btn btn-primary w-full" onclick="calcularSimples(false)">Processar ANOVA</button>
                                 </div>
                             </div>
-
                             <div id="manual-simples" class="tab-content">
                                 <div class="card">
-                                    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
-                                        <div class="form-group" style="flex:1;"><label id="lblSimplesT">Tratamentos</label><input type="number" id="simples-t" value="4"></div>
-                                        <div class="form-group" style="flex:1;" id="divSimplesR"><label>Blocos</label><input type="number" id="simples-r" value="3"></div>
+                                    <div class="flex gap-4 mb-4 flex-wrap">
+                                        <div class="form-group flex-1"><label id="lblSimplesT">Tratamentos</label><input type="number" id="simples-t" value="4"></div>
+                                        <div class="form-group flex-1" id="divSimplesR"><label>Blocos/Repetições</label><input type="number" id="simples-r" value="3"></div>
                                     </div>
-                                    <button class="btn btn-primary w-full" onclick="gerarGradeSimples()">Gerar Grade</button>
-                                    <div id="grade-simples" style="margin-top: 1.5rem;"></div>
+                                    <button class="btn btn-primary w-full" onclick="gerarGradeSimples()">Montar Matriz</button>
+                                    <div id="grade-simples" class="mt-4"></div>
                                     <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-simples" onclick="calcularSimples(true)">Calcular Grade</button>
                                 </div>
                             </div>
-
                             <div id="resultado-simples" class="card hidden fade-in">
-                                <div id="resultado-simples-content"></div>
-                                <div class="mt-4 flex gap-2 border-t pt-4">
-                                    <input type="text" id="emailSimples" placeholder="Digite seu e-mail para receber o laudo" class="flex-1">
-                                    <button class="btn btn-primary" onclick="enviarLaudoEmail('simples')">✉️ Enviar por E-mail</button>
+                                <h3>Quadro da ANOVA</h3><div id="resultado-simples-content" class="mt-2"></div>
+                            </div>
+                            <div id="areaPostHocSimples" class="card hidden fade-in">
+                                <h3>Testes de Comparações e Curvas</h3>
+                                <div class="flex flex-wrap gap-4 items-end">
+                                    <div class="form-group flex-1 min-width-[200px]">
+                                        <label>Análise Adicional</label>
+                                        <select id="selPostHocSimples" onchange="verificarCamposPostHocSimples()">
+                                            <optgroup label="Modelos Quantitativos"><option value="regr">Regressão de Doses</option></optgroup>
+                                            <optgroup label="Testes de Médias"><option value="tukey" selected>Teste de Tukey</option><option value="duncan">Teste de Duncan</option><option value="dunnett">Teste de Dunnett (Vs. Testemunha)</option></optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hidden flex-1" id="divModRegrSimples"><label>Modelo</label><select id="selModRegrSimples"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden flex-1" id="divTestemunhaSimples"><label>Testemunha</label><input type="text" id="txtTestemunhaSimples" placeholder="Ex: T1"></div>
+                                    <button class="btn btn-primary" onclick="executarPostHoc('simples')">Gerar Relatório</button>
+                                </div>
+                                <div id="resPostHocSimples" class="mt-4 hidden"></div>
+                                <div class="mt-6 flex gap-2 border-t pt-4">
+                                    <input type="text" id="emailSimples" placeholder="E-mail para envio do laudo .txt" class="flex-1">
+                                    <button class="btn btn-secondary" onclick="enviarLaudoEmail('simples')">✉️ Enviar por E-mail</button>
                                 </div>
                             </div>
                         </div>
@@ -196,30 +184,42 @@
                                 <button class="tab-btn active" onclick="switchTab(this, 'csv-fatorial')">📥 Upload CSV</button>
                                 <button class="tab-btn" onclick="switchTab(this, 'manual-fatorial')">✏️ Digitação Manual</button>
                             </div>
-
                             <div id="csv-fatorial" class="tab-content active">
                                 <div class="card">
+                                    <div class="info-box">Formato: FatorA;FatorB;Bloco;Valor</div>
                                     <div class="form-group"><input type="file" id="csv-input-fatorial" accept=".csv"></div>
-                                    <button class="btn btn-primary w-full" onclick="calcularFatorial(false)">Calcular ANOVA</button>
+                                    <button class="btn btn-primary w-full" onclick="calcularFatorial(false)">Processar ANOVA Fatorial</button>
                                 </div>
                             </div>
-
                             <div id="manual-fatorial" class="tab-content">
                                 <div class="card">
-                                    <div style="display:flex; gap:1rem;">
-                                        <input type="number" id="fat-a" value="2" placeholder="A"><input type="number" id="fat-b" value="2" placeholder="B"><input type="number" id="fat-r" value="3" placeholder="Blocos">
-                                    </div>
-                                    <button class="btn btn-primary w-full mt-4" onclick="gerarGradeFatorial()">Gerar Grade</button>
-                                    <div id="grade-fatorial" style="margin-top:1.5rem;"></div>
+                                    <div class="flex gap-4 flex-wrap"><input type="number" id="fat-a" value="2" placeholder="Níveis A"><input type="number" id="fat-b" value="2" placeholder="Níveis B"><input type="number" id="fat-r" value="3" placeholder="Blocos"></div>
+                                    <button class="btn btn-primary w-full mt-4" onclick="gerarGradeFatorial()">Montar Matriz</button>
+                                    <div id="grade-fatorial" class="mt-4"></div>
                                     <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-fatorial" onclick="calcularFatorial(true)">Calcular Grade</button>
                                 </div>
                             </div>
-
                             <div id="resultado-fatorial" class="card hidden fade-in">
-                                <div id="resultado-fatorial-content"></div>
-                                <div class="mt-4 flex gap-2 border-t pt-4">
-                                    <input type="text" id="emailFatorial" placeholder="Seu e-mail" class="flex-1">
-                                    <button class="btn btn-primary" onclick="enviarLaudoEmail('fatorial')">✉️ Enviar por E-mail</button>
+                                <h3>Quadro da ANOVA Fatorial</h3><div id="resultado-fatorial-content" class="mt-2"></div>
+                            </div>
+                            <div id="areaPostHocFatorial" class="card hidden fade-in">
+                                <h3>Testes de Comparações e Curvas (Fatorial)</h3>
+                                <div class="flex flex-wrap gap-4 items-end">
+                                    <div class="form-group flex-1 min-width-[200px]">
+                                        <label>Análise Adicional</label>
+                                        <select id="selPostHocFatorial" onchange="verificarCamposPostHocFatorial()">
+                                            <optgroup label="Modelos Quantitativos"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
+                                            <optgroup label="Testes de Médias"><option value="tukey_a" selected>Tukey (Fator A)</option><option value="tukey_b">Tukey (Fator B)</option><option value="duncan_a">Duncan (Fator A)</option><option value="duncan_b">Duncan (Fator B)</option><option value="dunnett_a">Dunnett (Fator A)</option><option value="dunnett_b">Dunnett (Fator B)</option></optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hidden flex-1" id="divModRegrFatorial"><label>Modelo</label><select id="selModRegrFatorial"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden flex-1" id="divTestemunhaFatorial"><label>Testemunha</label><input type="text" id="txtTestemunhaFatorial" placeholder="Ex: A1"></div>
+                                    <button class="btn btn-primary" onclick="executarPostHoc('fatorial')">Gerar Relatório</button>
+                                </div>
+                                <div id="resPostHocFatorial" class="mt-4 hidden"></div>
+                                <div class="mt-6 flex gap-2 border-t pt-4">
+                                    <input type="text" id="emailFatorial" placeholder="E-mail para envio do laudo .txt" class="flex-1">
+                                    <button class="btn btn-secondary" onclick="enviarLaudoEmail('fatorial')">✉️ Enviar por E-mail</button>
                                 </div>
                             </div>
                         </div>
@@ -229,25 +229,38 @@
                                 <button class="tab-btn active" onclick="switchTab(this, 'csv-parcelas')">📥 Upload CSV</button>
                                 <button class="tab-btn" onclick="switchTab(this, 'manual-parcelas')">✏️ Digitação Manual</button>
                             </div>
-
                             <div id="csv-parcelas" class="tab-content active">
                                 <div class="card">
+                                    <div class="info-box">Formato: FatorA;FatorB;Bloco;Valor</div>
                                     <div class="form-group"><input type="file" id="csv-input-parcelas" accept=".csv"></div>
-                                    <button class="btn btn-primary w-full" onclick="calcularParcelas(false)">Calcular ANOVA</button>
+                                    <button class="btn btn-primary w-full" onclick="calcularParcelas(false)">Processar Split-Plot</button>
                                 </div>
                             </div>
-
                             <div id="manual-parcelas" class="tab-content">
                                 <div class="card">
-                                    <div style="display:flex; gap:1rem;"><input type="number" id="sub-a" value="2"><input type="number" id="sub-b" value="2"><input type="number" id="sub-r" value="3"></div>
-                                    <button class="btn btn-primary w-full mt-4" onclick="gerarGradeParcelas()">Gerar Grade</button>
-                                    <div id="grade-parcelas" style="margin-top:1.5rem;"></div>
-                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-parcelas" onclick="calcularParcelas(true)">Calcular ANOVA</button>
+                                    <div class="flex gap-4 flex-wrap"><input type="number" id="sub-a" value="2"><input type="number" id="sub-b" value="2"><input type="number" id="sub-r" value="3"></div>
+                                    <button class="btn btn-primary w-full mt-4" onclick="gerarGradeParcelas()">Montar Matriz</button>
+                                    <div id="grade-parcelas" class="mt-4"></div>
+                                    <button class="btn btn-primary w-full mt-4 hidden" id="btn-calc-parcelas" onclick="calcularParcelas(true)">Calcular Grade</button>
                                 </div>
                             </div>
-
                             <div id="resultado-parcelas" class="card hidden fade-in">
-                                <div id="resultado-parcelas-content"></div>
+                                <h3>Quadro da ANOVA Split-Plot</h3><div id="resultado-parcelas-content" class="mt-2"></div>
+                            </div>
+                            <div id="areaPostHocParcelas" class="card hidden fade-in">
+                                <h3>Testes de Comparações e Curvas (Split-Plot)</h3>
+                                <div class="flex flex-wrap gap-4 items-end">
+                                    <div class="form-group flex-1 min-width-[200px]">
+                                        <label>Análise Adicional</label>
+                                        <select id="selPostHocParcelas" onchange="verificarCamposPostHocParcelas()">
+                                            <optgroup label="Modelos Quantitativos"><option value="regr_a">Regressão (Parcela A)</option><option value="regr_b">Regressão (Subparcela B)</option></optgroup>
+                                            <optgroup label="Testes de Médias"><option value="tukey_a" selected>Tukey (Parcela A)</option><option value="tukey_b">Tukey (Subparcela B)</option><option value="duncan_a">Duncan (Parcela A)</option><option value="duncan_b">Duncan (Subparcela B)</option></optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hidden flex-1" id="divModRegrParcelas"><label>Modelo</label><select id="selModRegrParcelas"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <button class="btn btn-primary" onclick="executarPostHoc('parcelas')">Gerar Relatório</button>
+                                </div>
+                                <div id="resPostHocParcelas" class="mt-4 hidden"></div>
                             </div>
                         </div>
 
@@ -264,7 +277,7 @@
         let arquivoFatorialGlobal = null;
         let arquivoParcelasGlobal = null;
 
-        function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); document.getElementById(pageId).classList.remove('hidden'); }
+        function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); document.getElementById(pageId).classList.remove('hidden'); closeSidebar(); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
         function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
 
@@ -273,6 +286,10 @@
             document.getElementById('module-' + module).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             event.target.closest('.nav-item').classList.add('active');
+            const titles = { simples: 'Análise Simples', fatorial: 'Fatorial (A x B)', parcelas: 'Parcelas Subdivididas' };
+            const subtitles = { simples: 'DIC / DBC / DQL', fatorial: 'Duplo em DBC', parcelas: 'Em DBC' };
+            document.getElementById('module-title').textContent = titles[module];
+            document.getElementById('module-subtitle').textContent = subtitles[module];
             if (window.innerWidth < 768) toggleSidebar();
         }
 
@@ -283,9 +300,12 @@
             document.getElementById(contentId).classList.remove('hidden');
         }
 
+        function verificarCamposPostHocSimples() { const val = document.getElementById('selPostHocSimples').value; document.getElementById('divModRegrSimples').classList.toggle('hidden', !val.includes('regr')); document.getElementById('divTestemunhaSimples').classList.toggle('hidden', !val.includes('dunnett')); }
+        function verificarCamposPostHocFatorial() { const val = document.getElementById('selPostHocFatorial').value; document.getElementById('divModRegrFatorial').classList.toggle('hidden', !val.includes('regr')); document.getElementById('divTestemunhaFatorial').classList.toggle('hidden', !val.includes('dunnett')); }
+        function verificarCamposPostHocParcelas() { const val = document.getElementById('selPostHocParcelas').value; document.getElementById('divModRegrParcelas').classList.toggle('hidden', !val.includes('regr')); }
+
         function mostrarMsg(txt, tipo) {
-            const container = document.getElementById('globalMsgContainer');
-            const toast = document.createElement('div');
+            const container = document.getElementById('globalMsgContainer'); const toast = document.createElement('div');
             toast.className = tipo === 'sucesso' ? 'success-msg fade-in' : (tipo === 'erro' ? 'error-msg fade-in' : 'info-msg fade-in');
             toast.innerHTML = txt; container.appendChild(toast);
             if(tipo !== 'info') { setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000); }
@@ -294,119 +314,186 @@
 
         function montarTabelaAnovaHtml(anova, cvHtml) {
             let linhas = anova.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td>${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-            return `<div style="margin-bottom:1rem; font-weight:bold;">CV: ${cvHtml}</div><div class="table-container"><table><thead><tr><th>Fonte de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th>F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+            return `<div style="margin-bottom:1rem; display:inline-block; background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV: ${cvHtml}</div><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab</th><th>Sig</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+        }
+
+        function renderizarResultadoPostHoc(d) {
+            let html = '';
+            if(d.tipo === "regressao") {
+                let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td>${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                let blocoDoseOtima = d.dose_otima ? `<br> <strong>Dose de Máxima Eficiência (Ótima):</strong> <span class="bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-bold">${d.dose_otima}</span> &nbsp;&bull;&nbsp; <strong>Resposta Máxima Esperada:</strong> <span class="bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-bold">${d.resposta_otima}</span>` : '';
+                html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}${blocoDoseOtima}</div><div style="margin-bottom:1.5rem;"><h4>ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
+            } else if(d.tipo === "tukey" || d.tipo === "duncan") {
+                let desc = d.tipo === "tukey" ? `<strong>q (${d.nome_teste}):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
+                let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td><td style="font-weight:bold; color:#15803d; background:#dcfce7; text-align:center;">${l['Letra'] || 'a'}</td></tr>`).join('');
+                html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th><th style="text-align:center;">Agrupamento</th></tr></thead><tbody>${rows}</tbody></table></div><p class="text-sm text-muted mt-2"><em>* Médias seguidas pela mesma letra não diferem estatisticamente entre si pelo teste de ${d.nome_teste} ao nível de probabilidade de ${d.alpha_txt}.</em></p>`;
+            } else if(d.tipo === "dunnett") {
+                let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div><p class="text-sm text-muted mt-2"><em>* O tratamento difere estatisticamente da testemunha pelo Teste de Dunnett ao nível de probabilidade de ${d.alpha_txt}.</em></p>`;
+            }
+            return html;
         }
 
         async function enviarLaudoEmail(modulo) {
             let emailInput = document.getElementById(modulo === 'simples' ? 'emailSimples' : 'emailFatorial').value.trim();
             if(!emailInput) { mostrarMsg("Por favor, preencha o e-mail.", "erro"); return; }
-            
             let file = modulo === 'simples' ? arquivoSimplesGlobal : arquivoFatorialGlobal;
-            let fd = new FormData();
-            fd.append("file", file);
-            fd.append("tipo_teste", "anova");
-            fd.append("email", emailInput);
+            let fd = new FormData(); fd.append("file", file); fd.append("tipo_teste", "anova"); fd.append("email", emailInput);
             if(modulo === 'simples') fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
-            
             mostrarMsg("Disparando e-mail contendo laudo...", "info");
             try {
-                let res = await fetch(API_URL + modulo, { method: 'POST', body: fd });
-                let d = await res.json();
-                limparMensagens();
-                if(d.status === "sucesso") mostrarMsg(d.mensagem, "sucesso");
-                else throw new Error(d.mensagem);
-            } catch(e) { mostrarMsg(e.message, "erro"); }
+                let res = await fetch(API_URL + modulo, { method: 'POST', body: fd }), d = await res.json();
+                limparMensagens(); if(d.status === "sucesso") mostrarMsg(d.mensagem, "sucesso"); else throw new Error(d.mensagem);
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
+        }
+
+        async function executarPostHoc(modulo_nome) {
+            try {
+                let suffix = modulo_nome === 'simples' ? 'Simples' : (modulo_nome === 'fatorial' ? 'Fatorial' : 'Parcelas');
+                let arquivoGlobal = modulo_nome === 'simples' ? arquivoSimplesGlobal : (modulo_nome === 'fatorial' ? arquivoFatorialGlobal : arquivoParcelasGlobal);
+                let th = document.getElementById('selPostHoc' + suffix).value;
+                let fd = new FormData(); fd.append("file", arquivoGlobal); fd.append("tipo_teste", th);
+                if(modulo_nome === 'simples') fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
+                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegr' + suffix).value);
+                if(th.includes("dunnett")) fd.append("testemunha", document.getElementById('txtTestemunha' + suffix).value.trim());
+                
+                mostrarMsg("Calculando pós-teste avançado...", "info");
+                const resDiv = document.getElementById('resPostHoc' + suffix);
+                resDiv.innerHTML = ''; resDiv.classList.remove('hidden');
+                
+                let res = await fetch(API_URL + modulo_nome, {method:'POST', body:fd}), d = await res.json();
+                limparMensagens(); if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
+                resDiv.innerHTML = renderizarResultadoPostHoc(d);
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
         // ================= SIMPLES =================
         function atualizarFormularioSimples() {
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
-            document.getElementById('divSimplesR').classList.toggle('hidden', d === 'dql');
-            document.getElementById('grade-simples').innerHTML = '';
+            if (d === 'dql') {
+                document.getElementById('lblCsvSimples').innerHTML = "<strong>Formato:</strong> Tratamento;Linha;Coluna;Valor";
+                document.getElementById('lblSimplesT').innerText = "Tamanho (n)"; document.getElementById('divSimplesR').classList.add('hidden');
+            } else {
+                document.getElementById('lblCsvSimples').innerHTML = "<strong>Formato:</strong> Tratamento;Bloco;Valor";
+                document.getElementById('lblSimplesT').innerText = "Qtd. Tratamentos"; document.getElementById('divSimplesR').classList.remove('hidden');
+            }
+            document.getElementById('grade-simples').innerHTML = ''; document.getElementById('btn-calc-simples').classList.add('hidden');
         }
 
         function gerarGradeSimples() {
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
-            let t = parseInt(document.getElementById('simples-t').value);
-            let html = '<div class="table-container"><table>';
+            let t = parseInt(document.getElementById('simples-t').value), html = '<div class="table-container"><table>';
             if (d === 'dql') {
                 html += '<thead><tr><th>Linha</th><th>Coluna</th><th>Tratamento</th><th>Valor</th></tr></thead><tbody>';
-                for(let l=1; l<=t; l++) { for(let c=1; c<=t; c++) { html += `<tr><td>L${l}</td><td>C${c}</td><td><input type="text"></td><td><input type="number" step="any"></td></tr>`; } }
+                for(let l=1; l<=t; l++) { for(let c=1; c<=t; c++) { html += `<tr><td>L${l}</td><td>C${c}</td><td><input type="text" placeholder="Ex: T1"></td><td><input type="number" step="any"></td></tr>`; } }
             } else {
                 let r = parseInt(document.getElementById('simples-r').value);
-                html += '<thead><tr><th>Tratamento</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
-                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td>T${i}</td><td>R${j}</td><td><input type="number" step="any"></td></tr>`; } }
+                html += '<thead><tr><th>Tratamento</th><th>Bloco/Rep</th><th>Valor</th></tr></thead><tbody>';
+                for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td><input type="text" value="T${i}" style="border:none; font-weight:bold; background:transparent;" readonly></td><td>R${j}</td><td><input type="number" step="any"></td></tr>`; } }
             }
             document.getElementById('grade-simples').innerHTML = html + '</tbody></table></div>';
             document.getElementById('btn-calc-simples').classList.remove('hidden');
         }
 
         async function calcularSimples(isManual) {
+            limparMensagens();
             try {
                 const d = document.querySelector('input[name="delinSimples"]:checked').value;
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-simples tbody tr'), csv = d === 'dql' ? "Tratamento;Linha;Coluna;Valor\n" : "Tratamento;Bloco;Valor\n";
                     for(let r of rows) {
-                        if(d === 'dql') csv += `${r.cells[2].querySelector('input').value};${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[3].querySelector('input').value.replace('.', ',')}\n`;
-                        else csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].querySelector('input').value.replace('.', ',')}\n`;
+                        if (d === 'dql') {
+                            let tr = r.cells[2].querySelector('input').value.trim(), v = r.cells[3].querySelector('input').value;
+                            if(!tr || !v) throw new Error("Preencha a grade.");
+                            csv += `${tr};${r.cells[0].innerText};${r.cells[1].innerText};${v.replace('.', ',')}\n`;
+                        } else {
+                            let tr = r.cells[0].querySelector('input').value, v = r.cells[2].querySelector('input').value;
+                            if(!v) throw new Error("Preencha todos os valores.");
+                            csv += `${tr};${r.cells[1].innerText};${v.replace('.', ',')}\n`;
+                        }
                     }
                     arquivoSimplesGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
                 } else {
                     arquivoSimplesGlobal = document.getElementById('csv-input-simples').files[0];
+                    if(!arquivoSimplesGlobal) throw new Error("Selecione um arquivo CSV.");
                 }
                 mostrarMsg("Processando ANOVA...", "info");
                 let fd = new FormData(); fd.append("file", arquivoSimplesGlobal); fd.append("tipo_delineamento", d); fd.append("tipo_teste", "anova");
                 let res = await fetch(API_URL + "simples", {method:'POST', body:fd}), data = await res.json();
-                limparMensagens();
+                limparMensagens(); if(data.status !== "sucesso") throw new Error(data.detail);
+                
                 document.getElementById('resultado-simples-content').innerHTML = montarTabelaAnovaHtml(data.anova, data.cv);
-                document.getElementById('resultado-simples').classList.remove('hidden');
-            } catch(e) { mostrarMsg(e.message, "erro"); }
+                document.getElementById('resultado-simples').classList.remove('hidden'); 
+                document.getElementById('areaPostHocSimples').classList.remove('hidden');
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
         // ================= FATORIAL =================
         function gerarGradeFatorial() {
             const a = parseInt(document.getElementById('fat-a').value), b = parseInt(document.getElementById('fat-b').value), r = parseInt(document.getElementById('fat-r').value);
-            let html = '<div class="table-container"><table><thead><tr><th>A</th><th>B</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td>A${i}</td><td>B${j}</td><td>R${k}</td><td><input type="number" step="any"></td></tr>`; } } }
+            let html = '<div class="table-container"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td><input type="text" value="A${i}" readonly style="border:none; background:transparent;"></td><td><input type="text" value="B${j}" readonly style="border:none; background:transparent;"></td><td>R${k}</td><td><input type="number" step="any"></td></tr>`; } } }
             document.getElementById('grade-fatorial').innerHTML = html + '</tbody></table></div>';
             document.getElementById('btn-calc-fatorial').classList.remove('hidden');
         }
 
         async function calcularFatorial(isManual) {
+            limparMensagens();
             try {
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-fatorial tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].innerText};${r.cells[3].querySelector('input').value.replace('.', ',')}\n`;
+                    for(let r of rows) {
+                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value;
+                        if(!v) throw new Error("Preencha os valores."); csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
+                    }
                     arquivoFatorialGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
-                } else { arquivoFatorialGlobal = document.getElementById('csv-input-fatorial').files[0]; }
+                } else {
+                    arquivoFatorialGlobal = document.getElementById('csv-input-fatorial').files[0];
+                    if(!arquivoFatorialGlobal) throw new Error("Selecione o CSV.");
+                }
+                mostrarMsg("Calculando ANOVA...", "info");
                 let fd = new FormData(); fd.append("file", arquivoFatorialGlobal); fd.append("tipo_teste", "anova");
                 let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
+                limparMensagens(); if(d.status !== "sucesso") throw new Error(d.detail);
+                
                 document.getElementById('resultado-fatorial-content').innerHTML = montarTabelaAnovaHtml(d.anova, d.cv);
-                document.getElementById('resultado-fatorial').classList.remove('hidden');
-            } catch(e) { mostrarMsg(e.message, "erro"); }
+                document.getElementById('resultado-fatorial').classList.remove('hidden'); 
+                document.getElementById('areaPostHocFatorial').classList.remove('hidden');
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
         // ================= PARCELAS =================
         function gerarGradeParcelas() {
             const a = parseInt(document.getElementById('sub-a').value), b = parseInt(document.getElementById('sub-b').value), r = parseInt(document.getElementById('sub-r').value);
-            let html = '<div class="table-container"><table><thead><tr><th>Parcela</th><th>Subparcela</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td>A${i}</td><td>B${j}</td><td>R${k}</td><td><input type="number" step="any"></td></tr>`; } } }
+            let html = '<div class="table-container"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td><input type="text" value="A${i}" readonly style="border:none; background:transparent;"></td><td><input type="text" value="B${j}" readonly style="border:none; background:transparent;"></td><td>R${k}</td><td><input type="number" step="any"></td></tr>`; } } }
             document.getElementById('grade-parcelas').innerHTML = html + '</tbody></table></div>';
             document.getElementById('btn-calc-parcelas').classList.remove('hidden');
         }
 
         async function calcularParcelas(isManual) {
+            limparMensagens();
             try {
                 if(isManual) {
                     let rows = document.querySelectorAll('#grade-parcelas tbody tr'), csv = "FatorA;FatorB;Bloco;Valor\n";
-                    for(let r of rows) csv += `${r.cells[0].innerText};${r.cells[1].innerText};${r.cells[2].innerText};${r.cells[3].querySelector('input').value.replace('.', ',')}\n`;
+                    for(let r of rows) {
+                        let a = r.cells[0].querySelector('input').value, b = r.cells[1].querySelector('input').value, v = r.cells[3].querySelector('input').value;
+                        if(!v) throw new Error("Preencha todos os campos."); csv += `${a};${b};${r.cells[2].innerText};${v.replace('.', ',')}\n`;
+                    }
                     arquivoParcelasGlobal = new File([new Blob([csv], {type:'text/csv'})], "manual.csv");
-                } else { arquivoParcelasGlobal = document.getElementById('csv-input-parcelas').files[0]; }
+                } else {
+                    arquivoParcelasGlobal = document.getElementById('csv-input-parcelas').files[0];
+                    if(!arquivoParcelasGlobal) throw new Error("Selecione um arquivo CSV.");
+                }
+                mostrarMsg("Calculando ANOVA...", "info");
                 let fd = new FormData(); fd.append("file", arquivoParcelasGlobal); fd.append("tipo_teste", "anova");
                 let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
-                document.getElementById('resultado-parcelas-content').innerHTML = montarTabelaAnovaHtml(d.anova, `${d.cv_a} | ${d.cv_b}`);
+                limparMensagens(); if(d.status !== "sucesso") throw new Error(d.detail);
+                
+                document.getElementById('resultado-parcelas-content').innerHTML = montarTabelaAnovaHtml(d.anova, `${d.cv_a} &nbsp;|&nbsp; ${d.cv_b}`);
                 document.getElementById('resultado-parcelas').classList.remove('hidden');
-            } catch(e) { mostrarMsg(e.message, "erro"); }
+                document.getElementById('areaPostHocParcelas').classList.remove('hidden');
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
     </script>
 </body>
