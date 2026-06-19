@@ -60,24 +60,6 @@
         @media (min-width: 768px) { .hero-illustration { height: 100%; } }
         .illustration-bg { position: absolute; inset: 0; background: linear-gradient(to bottom right, #dcfce7, #f0fdf4); border-radius: 1rem; opacity: 0.5; }
         .illustration-content { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-        
-        .chart-demo { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 20rem; }
-        .chart-box { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); padding: 1rem; border: 1px solid #e5e7eb; }
-        .chart-bars { display: flex; align-items: flex-end; justify-content: space-around; height: 8rem; gap: 0.5rem; padding: 0.5rem; background: linear-gradient(to bottom, #dcfce7, #f0fdf4); border-radius: 0.5rem; }
-        .bar { background-color: #16a34a; border-radius: 0.25rem; flex: 1; }
-        .chart-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-        .label { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem; text-align: center; font-size: 0.875rem; font-weight: 600; color: #16a34a; }
-
-        .features { padding: 4rem 0; background-color: white; }
-        @media (min-width: 768px) { .features { padding: 6rem 0; } }
-        .features-header { text-align: center; margin-bottom: 4rem; }
-        .features-header h2 { margin-bottom: 1rem; }
-        .features-header p { font-size: 1.125rem; color: #4b5563; max-width: 42rem; margin: 0 auto; }
-        .features-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 768px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
-        .feature-card { background: white; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 2rem; transition: all 0.3s ease; cursor: pointer; }
-        .feature-card:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); border-color: #dcfce7; transform: translateY(-4px); }
-        .feature-icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
 
         .sidebar { position: fixed; top: 0; left: 0; width: 16rem; height: 100vh; background: white; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; overflow-y: auto; }
         .sidebar.active { transform: translateX(0); box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
@@ -136,7 +118,6 @@
         
         @media (max-width: 767px) {
             h1 { font-size: 1.875rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.25rem; }
-            .hero-text h1 { font-size: 1.875rem; } .hero-text p { font-size: 1rem; }
             .btn { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
         }
     </style>
@@ -163,7 +144,7 @@
                 <div class="hero-content">
                     <div class="hero-text">
                         <h1>Análise Estatística<br><span class="green">Experimental<br>Avançada</span></h1>
-                        <p>A plataforma analítica para ensaios de campo. Processe dados quantitativos e qualitativos com segurança e exatidão estatística.</p>
+                        <p>A plataforma analítica para ensaios de campo. Processe dados quantitativos e qualitativos com agrupamento de letras automático e significância exata.</p>
                         <div class="hero-buttons">
                             <button class="btn btn-primary" onclick="showPage('analysis-page')">Iniciar Análise</button>
                         </div>
@@ -249,12 +230,12 @@
                                         <label>Selecione a Análise</label>
                                         <select id="selPostHocSimples" onchange="verificarCamposPostHocSimples()">
                                             <optgroup label="Regressão Quantitativa"><option value="regr">Regressão de Doses</option></optgroup>
-                                            <optgroup label="Testes de Médias (a=5%)"><option value="tukey">Tukey</option><option value="duncan">Duncan</option><option value="dunnett">Dunnett (Vs. Testemunha)</option></optgroup>
+                                            <optgroup label="Testes de Médias"><option value="tukey">Tukey</option><option value="duncan">Duncan</option><option value="dunnett">Dunnett (Vs. Testemunha)</option></optgroup>
                                         </select>
                                     </div>
                                     <div class="form-group hidden" id="divModRegrSimples" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo</label><select id="selModRegrSimples"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
                                     <div class="form-group hidden" id="divTestemunhaSimples" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaSimples" placeholder="Ex: T1"></div>
-                                    <button class="btn btn-primary" onclick="calcularPostHocSimples()">Gerar Análise</button>
+                                    <button class="btn btn-primary" onclick="calcularPostHoc('simples')">Gerar Análise</button>
                                 </div>
                                 <div id="resPostHocSimples" class="hidden fade-in" style="margin-top: 1rem;"></div>
                             </div>
@@ -293,22 +274,22 @@
                                 <div id="resultado-fatorial-content" style="margin-top: 1rem;"></div>
                             </div>
                             
-                            <div id="areaPostHoc" class="card hidden fade-in">
+                            <div id="areaPostHocFatorial" class="card hidden fade-in">
                                 <h3>Análises Posteriores</h3>
                                 <p class="text-sm text-muted" style="margin-bottom: 1rem;">Apenas realize testes adicionais para fatores cujo valor de F tenha sido significativo (*).</p>
                                 <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
                                     <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
                                         <label>Selecione a Análise</label>
-                                        <select id="selPostHoc" onchange="verificarCamposPostHoc()">
+                                        <select id="selPostHocFatorial" onchange="verificarCamposPostHocFatorial()">
                                             <optgroup label="Regressão Quantitativa"><option value="regr_a">Regressão (Fator A)</option><option value="regr_b">Regressão (Fator B)</option></optgroup>
                                             <optgroup label="Testes de Médias"><option value="tukey_a">Tukey (Fator A)</option><option value="tukey_b">Tukey (Fator B)</option><option value="duncan_a">Duncan (Fator A)</option><option value="duncan_b">Duncan (Fator B)</option><option value="dunnett_a">Dunnett (Fator A)</option><option value="dunnett_b">Dunnett (Fator B)</option></optgroup>
                                         </select>
                                     </div>
-                                    <div class="form-group hidden" id="divModRegr" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegr"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div class="form-group hidden" id="divTestemunha" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunha" placeholder="Ex: C1"></div>
-                                    <button class="btn btn-primary" onclick="calcularPostHoc()">Gerar Análise</button>
+                                    <div class="form-group hidden" id="divModRegrFatorial" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegrFatorial"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div class="form-group hidden" id="divTestemunhaFatorial" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaFatorial" placeholder="Ex: C1"></div>
+                                    <button class="btn btn-primary" onclick="calcularPostHoc('fatorial')">Gerar Análise</button>
                                 </div>
-                                <div id="resPostHoc" class="hidden fade-in" style="margin-top: 1rem;"></div>
+                                <div id="resPostHocFatorial" class="hidden fade-in" style="margin-top: 1rem;"></div>
                             </div>
                         </div>
 
@@ -358,7 +339,7 @@
                                     </div>
                                     <div class="form-group hidden" id="divModRegrParcelas" style="flex:1; min-width:150px; margin-bottom:0;"><label>Modelo Matemático</label><select id="selModRegrParcelas"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
                                     <div class="form-group hidden" id="divTestemunhaParcelas" style="flex:1; min-width:150px; margin-bottom:0;"><label>Nome da Testemunha</label><input type="text" id="txtTestemunhaParcelas" placeholder="Ex: C1"></div>
-                                    <button class="btn btn-primary" onclick="calcularPostHocParcelas()">Gerar Análise</button>
+                                    <button class="btn btn-primary" onclick="calcularPostHoc('parcelas')">Gerar Análise</button>
                                 </div>
                                 <div id="resPostHocParcelas" class="hidden fade-in" style="margin-top: 1rem;"></div>
                             </div>
@@ -373,12 +354,10 @@
     <script>
         // ====================================================================
         // COLOQUE A SUA URL DO RENDER AQUI:
-        const API_URL = "https://api-estatistica.onrender.com/api/analise/";
+        const API_URL = "https://api-estatistica-xyz.onrender.com/api/analise/";
         // ====================================================================
 
-        let arquivoSimplesGlobal = null;
-        let arquivoFatorialGlobal = null;
-        let arquivoParcelasGlobal = null;
+        let arquivoSimplesGlobal = null; let arquivoFatorialGlobal = null; let arquivoParcelasGlobal = null;
 
         function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); document.getElementById(pageId).classList.remove('hidden'); closeSidebar(); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
@@ -391,8 +370,7 @@
             event.target.closest('.nav-item').classList.add('active');
             const titles = { simples: 'Análise Simples', fatorial: 'Fatorial (A x B)', parcelas: 'Parcelas Subdivididas' };
             const subtitles = { simples: 'DIC / DBC / DQL', fatorial: 'Duplo em DBC', parcelas: 'Em DBC' };
-            document.getElementById('module-title').textContent = titles[module];
-            document.getElementById('module-subtitle').textContent = subtitles[module];
+            document.getElementById('module-title').textContent = titles[module]; document.getElementById('module-subtitle').textContent = subtitles[module];
             if (window.innerWidth < 768) toggleSidebar();
         }
 
@@ -404,30 +382,13 @@
             document.getElementById(contentId).classList.remove('hidden');
         }
 
-        function verificarCamposPostHocSimples() {
-            const val = document.getElementById('selPostHocSimples').value;
-            document.getElementById('divModRegrSimples').classList.toggle('hidden', !val.includes('regr'));
-            document.getElementById('divTestemunhaSimples').classList.toggle('hidden', !val.includes('dunnett'));
-        }
-
-        function verificarCamposPostHoc() {
-            const val = document.getElementById('selPostHoc').value;
-            document.getElementById('divModRegr').classList.toggle('hidden', !val.includes('regr'));
-            document.getElementById('divTestemunha').classList.toggle('hidden', !val.includes('dunnett'));
-        }
-
-        function verificarCamposPostHocParcelas() {
-            const val = document.getElementById('selPostHocParcelas').value;
-            document.getElementById('divModRegrParcelas').classList.toggle('hidden', !val.includes('regr'));
-            document.getElementById('divTestemunhaParcelas').classList.toggle('hidden', !val.includes('dunnett'));
-        }
+        function verificarCamposPostHocSimples() { const val = document.getElementById('selPostHocSimples').value; document.getElementById('divModRegrSimples').classList.toggle('hidden', !val.includes('regr')); document.getElementById('divTestemunhaSimples').classList.toggle('hidden', !val.includes('dunnett')); }
+        function verificarCamposPostHocFatorial() { const val = document.getElementById('selPostHocFatorial').value; document.getElementById('divModRegrFatorial').classList.toggle('hidden', !val.includes('regr')); document.getElementById('divTestemunhaFatorial').classList.toggle('hidden', !val.includes('dunnett')); }
+        function verificarCamposPostHocParcelas() { const val = document.getElementById('selPostHocParcelas').value; document.getElementById('divModRegrParcelas').classList.toggle('hidden', !val.includes('regr')); document.getElementById('divTestemunhaParcelas').classList.toggle('hidden', !val.includes('dunnett')); }
 
         function mostrarMsg(txt, tipo) {
-            const container = document.getElementById('globalMsgContainer');
-            const toast = document.createElement('div');
-            if(tipo === 'sucesso') toast.className = 'success-msg fade-in';
-            else if (tipo === 'erro') toast.className = 'error-msg fade-in';
-            else toast.className = 'info-msg fade-in';
+            const container = document.getElementById('globalMsgContainer'); const toast = document.createElement('div');
+            if(tipo === 'sucesso') toast.className = 'success-msg fade-in'; else if (tipo === 'erro') toast.className = 'error-msg fade-in'; else toast.className = 'info-msg fade-in';
             toast.innerHTML = txt; container.appendChild(toast);
             if(tipo !== 'info') { setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000); }
         }
@@ -435,23 +396,49 @@
 
         function montarTabelaAnovaHtml(anova, cvHtml) {
             let linhas = anova.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-            return `<div style="margin-bottom:1rem;">${cvHtml}</div><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+            return `<div style="margin-bottom:1rem;">${cvHtml}</div><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab</th><th>Sig</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
         }
 
-        function renderizarResultadoPostHoc(d) {
-            let html = '';
-            if(d.tipo === "regressao") {
-                let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab (5%)</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
-            } else if(d.tipo === "tukey" || d.tipo === "duncan") {
-                let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS:</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
-                let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td></tr>`).join('');
-                html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-            } else if(d.tipo === "dunnett") {
-                let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
-                html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-            }
-            return html;
+        // ================= ROTINA UNIFICADA DE POST-HOC =================
+        async function calcularPostHoc(modulo_nome) {
+            limparMensagens();
+            try {
+                let suffix = modulo_nome === 'simples' ? 'Simples' : (modulo_nome === 'fatorial' ? 'Fatorial' : 'Parcelas');
+                let arquivoGlobal = modulo_nome === 'simples' ? arquivoSimplesGlobal : (modulo_nome === 'fatorial' ? arquivoFatorialGlobal : arquivoParcelasGlobal);
+                
+                let th = document.getElementById('selPostHoc' + suffix).value;
+                let fd = new FormData(); fd.append("file", arquivoGlobal); fd.append("tipo_teste", th);
+                if(modulo_nome === 'simples') fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
+                
+                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegr' + suffix).value);
+                if(th.includes("dunnett")) {
+                    const testVal = document.getElementById('txtTestemunha' + suffix).value.trim();
+                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
+                    fd.append("testemunha", testVal);
+                }
+                
+                mostrarMsg("Gerando análise avançada...", "info");
+                const resDiv = document.getElementById('resPostHoc' + suffix);
+                resDiv.innerHTML = ''; resDiv.classList.remove('hidden');
+                
+                let res = await fetch(API_URL + modulo_nome, {method:'POST', body:fd}), d = await res.json();
+                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
+                
+                let html = '';
+                if(d.tipo === "regressao") {
+                    let linhasAnovaReg = d.anova_reg.map(l => `<tr><td>${l.FV}</td><td class="text-center">${l.GL}</td><td>${l.SQ}</td><td>${l.QM}</td><td style="background:#f9fafb; font-weight:500;">${l['F Calc']}</td><td style="color:#4f46e5; font-weight:bold; background:#eef2ff;">${l['F Tab']}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-family:'Geist Mono', monospace;"><strong>Eq (${d.modelo}):</strong> ${d.equacao} <br> <strong>R²:</strong> ${d.r2}</div><div style="margin-bottom:1.5rem;"><h4 style="margin-bottom:1rem;">ANOVA da Regressão (Ajuste)</h4><div class="table-container"><table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th style="color:#4338ca;">F Tab</th><th>Sig</th></tr></thead><tbody>${linhasAnovaReg}</tbody></table></div></div><div style="border:1px solid #e5e7eb; border-radius:0.75rem; padding:1rem; text-align:center;"><img src="data:image/png;base64,${d.img_png}" style="max-width:100%; border-radius:0.5rem; margin-bottom:1rem;"><br><a href="data:application/pdf;base64,${d.img_pdf}" download="grafico_${d.modelo}.pdf" class="btn btn-primary">📥 Baixar Gráfico PDF</a></div>`;
+                } else if(d.tipo === "tukey" || d.tipo === "duncan") {
+                    let desc = d.tipo === "tukey" ? `<strong>q (Tukey):</strong> ${d.q} &bull; <strong>DMS (Delta):</strong> ${d.dms}` : `<strong>Alcances de Duncan (p):</strong> <br> ${Object.entries(d.alcances).map(([p, v]) => `p=${p} ➔ <strong>${v}</strong>`).join(' | ')}`;
+                    let rows = d.tabela.map(l => `<tr><td>${l['Nível']}</td><td>${l['Média']}</td><td style="font-weight:bold; color:#15803d; background:#dcfce7; text-align:center;">${l['Letra'] || 'a'}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#f0fdf4; color:#14532d; border-color:#bbf7d0;">${desc}</div><div class="table-container" style="max-width:400px;"><table><thead><tr><th>Tratamento</th><th>Média</th><th style="text-align:center;">Agrupamento</th></tr></thead><tbody>${rows}</tbody></table></div><p class="text-sm text-muted mt-2"><em>* Médias seguidas pela mesma letra não diferem entre si pelo teste de ${d.nome_teste} ao nível de probabilidade de ${d.alpha_txt}.</em></p>`;
+                } else if(d.tipo === "dunnett") {
+                    let rows = d.resultados.map(l => `<tr><td>${l.Tratamento}</td><td>${l.Média}</td><td style="font-family:'Geist Mono', monospace; background:#f5f3ff;">${l.Diferença}</td><td style="font-weight:bold; color:${l.Sig.includes('*') ? '#16a34a' : '#9ca3af'};">${l.Sig}</td></tr>`).join('');
+                    html = `<div class="info-box" style="background:#faf5ff; color:#4c1d95; border-color:#e9d5ff;"><strong>Testemunha:</strong> ${d.testemunha} (Média: ${d.media_testemunha}) <br> <strong>DMS (Dunnett):</strong> ${d.dms}</div><div class="table-container"><table><thead><tr><th>Tratamento</th><th>Média</th><th>Dif. p/ Testemunha</th><th>Significância</th></tr></thead><tbody>${rows}</tbody></table></div><p class="text-sm text-muted mt-2"><em>* O tratamento difere estatisticamente da testemunha pelo Teste de Dunnett ao nível de ${d.alpha_txt} de probabilidade.</em></p>`;
+                }
+                resDiv.innerHTML = html;
+                limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
+            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
         // ================= SIMPLES =================
@@ -525,32 +512,7 @@
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
-        async function calcularPostHocSimples() {
-            limparMensagens();
-            try {
-                let th = document.getElementById('selPostHocSimples').value;
-                let fd = new FormData(); fd.append("file", arquivoSimplesGlobal); fd.append("tipo_teste", th);
-                fd.append("tipo_delineamento", document.querySelector('input[name="delinSimples"]:checked').value);
-                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegrSimples').value);
-                if(th.includes("dunnett")) {
-                    const testVal = document.getElementById('txtTestemunhaSimples').value.trim();
-                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
-                    fd.append("testemunha", testVal);
-                }
-                
-                mostrarMsg("Gerando análise avançada...", "info");
-                document.getElementById('resPostHocSimples').innerHTML = '';
-                document.getElementById('resPostHocSimples').classList.remove('hidden');
-                
-                let res = await fetch(API_URL + "simples", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
-                
-                document.getElementById('resPostHocSimples').innerHTML = renderizarResultadoPostHoc(d);
-                limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
-            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
-        }
-
-        // ================= MÓDULO 2: FATORIAL =================
+        // ================= FATORIAL =================
         function gerarGradeFatorial() {
             const a = parseInt(document.getElementById('fat-a').value), b = parseInt(document.getElementById('fat-b').value), r = parseInt(document.getElementById('fat-r').value);
             let html = '<div class="table-container"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
@@ -583,37 +545,13 @@
                 
                 document.getElementById('resultado-fatorial-content').innerHTML = montarTabelaAnovaHtml(d.anova, `<span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold;">CV (%): ${d.cv}</span>`);
                 document.getElementById('resultado-fatorial').classList.remove('hidden'); 
-                document.getElementById('areaPostHoc').classList.remove('hidden');
-                document.getElementById('resPostHoc').classList.add('hidden');
+                document.getElementById('areaPostHocFatorial').classList.remove('hidden');
+                document.getElementById('resPostHocFatorial').classList.add('hidden');
                 limparMensagens(); mostrarMsg("ANOVA Finalizada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
 
-        async function calcularPostHoc() {
-            limparMensagens();
-            try {
-                let th = document.getElementById('selPostHoc').value;
-                let fd = new FormData(); fd.append("file", arquivoFatorialGlobal); fd.append("tipo_teste", th);
-                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegr').value);
-                if(th.includes("dunnett")) {
-                    const testVal = document.getElementById('txtTestemunha').value.trim();
-                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
-                    fd.append("testemunha", testVal);
-                }
-                
-                mostrarMsg("Gerando análise avançada...", "info");
-                document.getElementById('resPostHoc').innerHTML = '';
-                document.getElementById('resPostHoc').classList.remove('hidden');
-                
-                let res = await fetch(API_URL + "fatorial", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
-                
-                document.getElementById('resPostHoc').innerHTML = renderizarResultadoPostHoc(d);
-                limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
-            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
-        }
-
-        // ================= MÓDULO 3: PARCELAS =================
+        // ================= PARCELAS =================
         function gerarGradeParcelas() {
             const a = parseInt(document.getElementById('sub-a').value), b = parseInt(document.getElementById('sub-b').value), r = parseInt(document.getElementById('sub-r').value);
             let html = '<div class="table-container"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor</th></tr></thead><tbody>';
@@ -645,36 +583,12 @@
                 let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
                 if(d.status !== "sucesso") throw new Error(d.detail || d.mensagem);
                 
-                let cvsHtml = `<div style="display:flex; gap:1rem;"><span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV Parcela (A): ${d.cv_a}%</span><span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV Subparcela (B): ${d.cv_b}%</span></div>`;
+                let cvsHtml = `<div style="display:flex; gap:1rem;"><span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV Parcela (A): ${d.cv_a}</span><span style="background:#f3f4f6; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; font-size:0.875rem;">CV Subparcela (B): ${d.cv_b}</span></div>`;
                 document.getElementById('resultado-parcelas-content').innerHTML = montarTabelaAnovaHtml(d.anova, cvsHtml);
                 document.getElementById('resultado-parcelas').classList.remove('hidden');
                 document.getElementById('areaPostHocParcelas').classList.remove('hidden');
                 document.getElementById('resPostHocParcelas').classList.add('hidden');
                 limparMensagens(); mostrarMsg("ANOVA calculada com sucesso!", "sucesso");
-            } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
-        }
-
-        async function calcularPostHocParcelas() {
-            limparMensagens();
-            try {
-                let th = document.getElementById('selPostHocParcelas').value;
-                let fd = new FormData(); fd.append("file", arquivoParcelasGlobal); fd.append("tipo_teste", th);
-                if(th.includes("regr")) fd.append("modelo_regr", document.getElementById('selModRegrParcelas').value);
-                if(th.includes("dunnett")) {
-                    const testVal = document.getElementById('txtTestemunhaParcelas').value.trim();
-                    if(!testVal) throw new Error("Digite o nome da Testemunha.");
-                    fd.append("testemunha", testVal);
-                }
-                
-                mostrarMsg("Gerando análise avançada...", "info");
-                document.getElementById('resPostHocParcelas').innerHTML = '';
-                document.getElementById('resPostHocParcelas').classList.remove('hidden');
-                
-                let res = await fetch(API_URL + "parcelas", {method:'POST', body:fd}), d = await res.json();
-                if(d.status !== "sucesso") throw new Error(d.mensagem || "Erro na análise.");
-                
-                document.getElementById('resPostHocParcelas').innerHTML = renderizarResultadoPostHoc(d);
-                limparMensagens(); mostrarMsg("Análise gerada com sucesso!", "sucesso");
             } catch(e) { limparMensagens(); mostrarMsg(e.message, "erro"); }
         }
     </script>
