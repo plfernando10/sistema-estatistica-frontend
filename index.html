@@ -33,7 +33,10 @@
         /* Custom Premium CSS */
         body { background-color: #f1f5f9; color: #334155; -webkit-font-smoothing: antialiased; }
         
+        /* Controles Absolutos de Exibição de Páginas */
         .hidden-page { display: none !important; }
+        .page-active { display: flex !important; }
+        .hidden { display: none !important; }
         
         .saas-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; }
         
@@ -64,7 +67,7 @@
         .radio-input:checked + .radio-label { border-color: #10b981; background: #ecfdf5; color: #047857; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1); }
         .radio-input { display: none; }
 
-        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
         th { background-color: #f8fafc; padding: 1rem; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
         th:last-child { border-right: none; }
@@ -280,10 +283,10 @@
                                 </div>
                             </div>
                             <div id="tab-simples-manual" class="hidden">
-                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500" id="lbl-t-simples">Nº Tratamentos</label><input type="number" id="inp-t-simples" class="saas-input" value="4"></div>
-                                    <div class="flex-1" id="div-r-simples"><label class="text-xs uppercase tracking-wider text-slate-500">Nº Repetições/Blocos</label><input type="number" id="inp-r-simples" class="saas-input" value="3"></div>
-                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizSimples()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 items-end">
+                                    <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 block" id="lbl-t-simples">Nº Tratamentos</label><input type="number" id="inp-t-simples" class="saas-input w-full" value="4"></div>
+                                    <div id="div-r-simples"><label class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 block">Nº Repetições/Blocos</label><input type="number" id="inp-r-simples" class="saas-input w-full" value="3"></div>
+                                    <div><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizSimples()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
                                 <div id="matriz-simples" class="mt-6"></div>
                                 <button id="btn-calc-matriz-simples" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarSimples(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Matriz</button>
@@ -331,11 +334,11 @@
                                 </div>
                             </div>
                             <div id="tab-fatorial-manual" class="hidden">
-                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Níveis Fator A</label><input type="number" id="inp-fa" class="saas-input" value="2"></div>
-                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Níveis Fator B</label><input type="number" id="inp-fb" class="saas-input" value="2"></div>
-                                    <div class="flex-1"><label class="text-xs uppercase tracking-wider text-slate-500">Nº Blocos</label><input type="number" id="inp-fr" class="saas-input" value="3"></div>
-                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizFatorial()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4 items-end">
+                                    <div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Níveis Fator A</label><input type="number" id="inp-fa" class="saas-input w-full" value="2"></div>
+                                    <div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Níveis Fator B</label><input type="number" id="inp-fb" class="saas-input w-full" value="2"></div>
+                                    <div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Nº Blocos</label><input type="number" id="inp-fr" class="saas-input w-full" value="3"></div>
+                                    <div><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizFatorial()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
                                 <div id="matriz-fatorial" class="mt-6"></div>
                                 <button id="btn-calc-matriz-fatorial" class="saas-btn saas-btn-primary w-full mt-4 hidden" onclick="processarFatorial(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Matriz</button>
@@ -350,15 +353,14 @@
                                 <h3 class="text-lg font-bold mb-4 text-surface-900"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-slate-400"></i> Testes Isolados de Fatores</h3>
                                 <div class="flex flex-wrap gap-4 items-end bg-white p-4 rounded-xl border shadow-sm">
                                     <div class="flex-1 min-w-[220px]">
-                                        <label class="text-xs uppercase tracking-wider text-slate-500">Método de Análise</label>
                                         <select id="metodo-fatorial" class="saas-input font-medium text-brand-700" onchange="verificarMetodo('fatorial')">
                                             <optgroup label="Modelos Regressivos"><option value="regr_a">Regressão do Fator A</option><option value="regr_b">Regressão do Fator B</option></optgroup>
                                             <optgroup label="Agrupamento de Médias"><option value="tukey_a" selected>Tukey Fator A</option><option value="tukey_b">Tukey Fator B</option><option value="duncan_a">Duncan Fator A</option><option value="duncan_b">Duncan Fator B</option><option value="dunnett_a">Dunnett Fator A</option><option value="dunnett_b">Dunnett Fator B</option></optgroup>
                                         </select>
                                     </div>
-                                    <div id="opts-regr-fatorial" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Equação</label><select id="eq-fatorial" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
-                                    <div id="opts-dunnett-fatorial" class="flex-1 min-w-[150px] hidden"><label class="text-xs uppercase tracking-wider text-slate-500">Testemunha</label><input type="text" id="testemunha-fatorial" class="saas-input" placeholder="Ex: A1"></div>
-                                    <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('fatorial', this)"><i class="fa-solid fa-bolt"></i> Executar Análise</button>
+                                    <div id="opts-regr-fatorial" class="flex-1 min-w-[150px] hidden"><select id="eq-fatorial" class="saas-input"><option value="linear">Linear</option><option value="quadratica" selected>Quadrática</option></select></div>
+                                    <div id="opts-dunnett-fatorial" class="flex-1 min-w-[150px] hidden"><input type="text" id="testemunha-fatorial" class="saas-input" placeholder="Ex: A1"></div>
+                                    <button class="saas-btn saas-btn-primary" onclick="rodarPostHoc('fatorial', this)">Executar Análise</button>
                                 </div>
                                 <div id="posthoc-fatorial-output" class="mt-6 hidden"></div>
                                 <div class="mt-8 pt-6 border-t flex justify-end"><button class="saas-btn saas-btn-outline bg-white" onclick="baixarLaudoCompleto('fatorial')"><i class="fa-solid fa-file-arrow-down"></i> Exportar Laudo (.txt)</button></div>
@@ -387,14 +389,14 @@
                                 </div>
                             </div>
                             <div id="tab-parcelas-manual" class="hidden">
-                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase tracking-wider text-slate-500">Níveis Parcela (A)</label><input type="number" id="inp-pa" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[140px]"><label class="text-xs uppercase tracking-wider text-slate-500">Níveis Subparcela (B)</label><input type="number" id="inp-pb" class="saas-input" value="2"></div>
-                                    <div class="flex-1 min-w-[120px]"><label class="text-xs uppercase tracking-wider text-slate-500">Nº Blocos</label><input type="number" id="inp-pr" class="saas-input" value="3"></div>
-                                    <div class="flex items-end"><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizParcelas()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4 items-end">
+                                    <div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Níveis Parcela (A)</label><input type="number" id="inp-pa" class="saas-input w-full" value="2"></div>
+                                    <div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Níveis Subparcela (B)</label><input type="number" id="inp-pb" class="saas-input w-full" value="2"></div>
+                                    <div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Nº Blocos</label><input type="number" id="inp-pr" class="saas-input w-full" value="3"></div>
+                                    <div><button class="saas-btn saas-btn-outline w-full" onclick="gerarMatrizParcelas()"><i class="fa-solid fa-table"></i> Montar Matriz</button></div>
                                 </div>
                                 <div id="matriz-parcelas" class="mt-6"></div>
-                                <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Matriz</button>
+                                <button id="btn-calc-matriz-parcelas" class="saas-btn saas-btn-primary w-full mt-4 hidden" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="processarParcelas(true, this)"><i class="fa-solid fa-calculator"></i> Calcular Grade</button>
                             </div>
                         </div>
 
@@ -434,10 +436,10 @@
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => { 
                 p.classList.remove('page-active'); 
-                p.classList.add('page-hidden'); 
+                p.classList.add('hidden-page'); 
             });
             const target = document.getElementById(pageId);
-            target.classList.remove('page-hidden');
+            target.classList.remove('hidden-page');
             target.classList.add('page-active');
         }
 
@@ -610,7 +612,7 @@
             showToast("Laudo baixado para o seu dispositivo!", "sucesso");
         }
 
-        // ================= CONFIGURAÇÕES DE INTERFACE INTERNA =================
+        // ================= INTERFACE MATRIZES E CÁLCULO MÓDULO 1 =================
         function configurarSimples() {
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
             const lblFormat = document.getElementById('lbl-formato-simples'), lblT = document.getElementById('lbl-t-simples'), divR = document.getElementById('div-r-simples');
@@ -622,11 +624,11 @@
             const d = document.querySelector('input[name="delinSimples"]:checked').value, t = parseInt(document.getElementById('inp-t-simples').value);
             let html = '<div class="table-wrapper"><table>';
             if (d === 'dql') {
-                html += '<thead><tr><th>Linha</th><th>Coluna</th><th>Tratamento</th><th>Valor numérico</th></tr></thead><tbody>';
+                html += '<thead><tr><th class="min-w-[80px]">Linha</th><th class="min-w-[80px]">Coluna</th><th class="min-w-[150px]">Tratamento</th><th class="min-w-[120px]">Valor numérico</th></tr></thead><tbody>';
                 for(let l=1; l<=t; l++) { for(let c=1; c<=t; c++) { html += `<tr><td class="bg-surface-50 font-medium text-slate-500 border-r border-b border-slate-200 p-2">L${l}</td><td class="bg-surface-50 font-medium text-slate-500 border-r border-b border-slate-200 p-2">C${c}</td><td class="p-0 border-r border-b border-slate-200"><input type="text" class="grid-input font-bold text-brand-600 text-center uppercase" placeholder="T1"></td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
             } else {
                 const r = parseInt(document.getElementById('inp-r-simples').value);
-                html += '<thead><tr><th>Tratamento</th><th>Rep/Bloco</th><th>Valor numérico</th></tr></thead><tbody>';
+                html += '<thead><tr><th class="min-w-[150px]">Tratamento</th><th class="min-w-[100px]">Rep/Bloco</th><th class="min-w-[120px]">Valor numérico</th></tr></thead><tbody>';
                 for(let i=1; i<=t; i++) { for(let j=1; j<=r; j++) { html += `<tr><td class="bg-surface-50 p-0 border-r border-b border-slate-200"><input type="text" value="T${i}" class="grid-input font-bold text-brand-600 text-center uppercase" readonly></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${j}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; } }
             }
             document.getElementById('matriz-simples').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-simples').classList.remove('hidden');
@@ -668,10 +670,11 @@
             }
         }
 
+        // ================= MÓDULO 2 FATORIAL =================
         function gerarMatrizFatorial() {
             const a = parseInt(document.getElementById('inp-fa').value), b = parseInt(document.getElementById('inp-fb').value), r = parseInt(document.getElementById('inp-fr').value);
-            let html = '<div class="table-wrapper"><table><thead><tr><th>Fator A</th><th>Fator B</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r"><input type="text" value="A${i}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r"><input type="text" value="B${j}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${k}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
+            let html = '<div class="table-wrapper"><table><thead><tr><th class="min-w-[120px]">Fator A</th><th class="min-w-[120px]">Fator B</th><th class="min-w-[100px]">Bloco</th><th class="min-w-[150px]">Valor Numérico</th></tr></thead><tbody>';
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r border-slate-200"><input type="text" value="A${i}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r border-slate-200"><input type="text" value="B${j}" class="grid-input font-bold text-slate-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${k}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
             document.getElementById('matriz-fatorial').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-fatorial').classList.remove('hidden');
         }
         async function processarFatorial(isManual, btnElement) {
@@ -701,16 +704,17 @@
             } catch(e) { 
                 if(loadingToast) loadingToast.remove();
                 showToast(e.message, "erro"); 
-            } else {
+            } finally {
                 btnElement.innerHTML = originalText;
                 btnElement.disabled = false;
             }
         }
 
+        // ================= MÓDULO 3 PARCELAS =================
         function gerarMatrizParcelas() {
             const a = parseInt(document.getElementById('inp-pa').value), b = parseInt(document.getElementById('inp-pb').value), r = parseInt(document.getElementById('inp-pr').value);
-            let html = '<div class="table-wrapper"><table><thead><tr><th>Parcela (A)</th><th>Subparcela (B)</th><th>Bloco</th><th>Valor Numérico</th></tr></thead><tbody>';
-            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r"><input type="text" value="A${i}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r"><input type="text" value="B${j}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${k}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
+            let html = '<div class="table-wrapper"><table><thead><tr><th class="min-w-[120px]">Parcela (A)</th><th class="min-w-[120px]">Subparcela (B)</th><th class="min-w-[100px]">Bloco</th><th class="min-w-[150px]">Valor Numérico</th></tr></thead><tbody>';
+            for(let i=1; i<=a; i++) { for(let j=1; j<=b; j++) { for(let k=1; k<=r; k++) { html += `<tr><td class="p-0 border-b border-r border-slate-200"><input type="text" value="A${i}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="p-0 border-b border-r border-slate-200"><input type="text" value="B${j}" class="grid-input font-bold text-indigo-700 text-center uppercase" style="background:#f8fafc;"></td><td class="bg-surface-50 font-medium text-slate-500 text-center border-r border-b border-slate-200">R${k}</td><td class="p-0 border-b border-slate-200"><input type="number" step="any" class="grid-input text-center"></td></tr>`; }}}
             document.getElementById('matriz-parcelas').innerHTML = html + '</tbody></table></div>'; document.getElementById('btn-calc-matriz-parcelas').classList.remove('hidden');
         }
         async function processarParcelas(isManual, btnElement) {
@@ -740,7 +744,7 @@
             } catch(e) { 
                 if(loadingToast) loadingToast.remove();
                 showToast(e.message, "erro"); 
-            } else {
+            } finally {
                 btnElement.innerHTML = originalText;
                 btnElement.disabled = false;
             }
