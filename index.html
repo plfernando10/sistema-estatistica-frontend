@@ -940,23 +940,33 @@
             return {
                 status: 'sucesso', tipo: 'regressao_direta', modelo: modelo === 'linear' ? 'Linear' : 'Quadrática',
                 equacao, r2: r2.toFixed(4), pontos: doses.map((d, i) => ({ Dose: d, Produtividade: prods[i] })),
-                dose_otima: doseOtima === null ? null : doseOtima.toFixed(2), resposta_otima: respOtima === null ? null : respOtima.toFixed(2),
+                dose_otima: doseOtima === null ? null : doseOtima.toFixed(2), resposta_otima: respOtima === null ? null : respOtima.toFixed(2), produtividade_otima: respOtima === null ? null : respOtima.toFixed(2),
                 svg: gerarGraficoSvg(doses, prods, modelo, coef, doseOtima, respOtima)
             };
         }
 
         function gerarGraficoSvg(x, y, modelo, coef, doseOtima, respOtima) {
-            const w = 760, h = 430, m = 52;
-            const xmin = Math.min(...x), xmax = Math.max(...x), ymin = Math.min(...y), ymax = Math.max(...y);
-            const dx = (xmax - xmin) || 1, dy = (ymax - ymin) || 1;
-            const X = v => m + ((v - xmin) / dx) * (w - 2 * m);
-            const Y = v => h - m - ((v - (ymin - dy * .1)) / (dy * 1.2)) * (h - 2 * m);
+            const w = 920, h = 540, m = 66;
+            const xmin = Math.min(...x), xmax = Math.max(...x);
+            const dx = (xmax - xmin) || 1;
             const yhat = v => modelo === 'linear' ? coef[0] + coef[1] * v : coef[0] + coef[1] * v + coef[2] * v * v;
-            const linha = Array.from({length: 120}, (_, i) => {
-                const xv = xmin + dx * i / 119;
+            const curva = Array.from({length: 180}, (_, i) => yhat(xmin + dx * i / 179));
+            const yVals = [...y, ...curva, ...(respOtima !== null ? [respOtima] : [])];
+            const ymin = Math.min(...yVals), ymax = Math.max(...yVals);
+            const dy = (ymax - ymin) || 1;
+            const y0 = ymin - dy * 0.16, y1 = ymax + dy * 0.18;
+            const X = v => m + ((v - (xmin - dx * .05)) / (dx * 1.10)) * (w - 2 * m);
+            const Y = v => h - m - ((v - y0) / (y1 - y0)) * (h - 2 * m);
+            const linha = Array.from({length: 180}, (_, i) => {
+                const xv = xmin + dx * i / 179;
                 return `${i ? 'L' : 'M'} ${X(xv).toFixed(1)} ${Y(yhat(xv)).toFixed(1)}`;
             }).join(' ');
-            return `<svg viewBox="0 0 ${w} ${h}" class="w-full rounded-2xl border border-slate-100 shadow-soft mb-6 bg-white" role="img" aria-label="Gráfico da regressão"><line x1="${m}" y1="${h-m}" x2="${w-m}" y2="${h-m}" stroke="#cbd5e1"/><line x1="${m}" y1="${m}" x2="${m}" y2="${h-m}" stroke="#cbd5e1"/><path d="${linha}" fill="none" stroke="#2d7244" stroke-width="3"/>${x.map((v,i)=>`<circle cx="${X(v)}" cy="${Y(y[i])}" r="5" fill="#111827"/>`).join('')}${doseOtima!==null?`<line x1="${X(doseOtima)}" y1="${m}" x2="${X(doseOtima)}" y2="${h-m}" stroke="#64748b" stroke-dasharray="6 6"/><text x="${X(doseOtima)+8}" y="${m+18}" font-size="14" fill="#1b3c28" font-weight="700">Dose ótima: ${Number(doseOtima).toFixed(2)}</text>`:''}<text x="${w/2}" y="${h-12}" text-anchor="middle" font-size="13" fill="#64748b">Dose</text><text x="18" y="${h/2}" transform="rotate(-90 18 ${h/2})" text-anchor="middle" font-size="13" fill="#64748b">Produtividade</text></svg>`;
+            const gradeH = Array.from({length: 5}, (_, i) => {
+                const yy = m + i * (h - 2*m) / 4;
+                return `<line x1="${m}" y1="${yy}" x2="${w-m}" y2="${yy}" stroke="#e2e8f0"/>`;
+            }).join('');
+            const otimo = doseOtima !== null ? `<line x1="${X(doseOtima)}" y1="${m}" x2="${X(doseOtima)}" y2="${h-m}" stroke="#94a3b8" stroke-dasharray="7 7" stroke-width="1.4"/><circle cx="${X(doseOtima)}" cy="${Y(respOtima)}" r="10" fill="#b18356" stroke="white" stroke-width="3"/><text x="${Math.min(X(doseOtima)+16, w-230)}" y="${Math.max(Y(respOtima)-18, m+24)}" font-size="16" fill="#1b3c28" font-weight="800">Dose ótima: ${Number(doseOtima).toFixed(2)}</text><text x="${Math.min(X(doseOtima)+16, w-230)}" y="${Math.max(Y(respOtima)+4, m+46)}" font-size="15" fill="#475569" font-weight="700">Prod. ótima: ${Number(respOtima).toFixed(2)}</text>` : '';
+            return `<svg viewBox="0 0 ${w} ${h}" class="w-full rounded-2xl border border-slate-100 shadow-soft mb-6 bg-white" role="img" aria-label="Gráfico da regressão"><rect width="${w}" height="${h}" rx="24" fill="#fbfdfb"/><text x="${w/2}" y="34" text-anchor="middle" font-size="22" fill="#0f172a" font-weight="800">Regressão direta para dose ótima</text>${gradeH}<line x1="${m}" y1="${h-m}" x2="${w-m}" y2="${h-m}" stroke="#cbd5e1"/><line x1="${m}" y1="${m}" x2="${m}" y2="${h-m}" stroke="#cbd5e1"/><path d="${linha}" fill="none" stroke="#2d7244" stroke-width="4" stroke-linecap="round"/>${x.map((v,i)=>`<circle cx="${X(v)}" cy="${Y(y[i])}" r="7" fill="#0f172a" stroke="white" stroke-width="2"/>`).join('')}${otimo}<text x="${w/2}" y="${h-18}" text-anchor="middle" font-size="15" fill="#334155" font-weight="700">Dose</text><text x="22" y="${h/2}" transform="rotate(-90 22 ${h/2})" text-anchor="middle" font-size="15" fill="#334155" font-weight="700">Produtividade</text></svg>`;
         }
 
 
@@ -994,7 +1004,7 @@
                         <h3 class="text-xl font-extrabold text-agro-900 tracking-tight">Resultado da Regressão Direta</h3>
                         <p class="text-sm text-slate-500 font-medium mt-1">${data.modelo} • R² = <span class="font-mono font-bold">${data.r2}</span></p>
                     </div>
-                    ${data.dose_otima ? `<div class="px-5 py-4 rounded-2xl bg-agro-50 border border-agro-200 text-agro-900"><span class="text-[10px] font-black uppercase tracking-widest text-agro-600 block">Dose ótima</span><span class="text-2xl font-black">${data.dose_otima}</span><span class="text-sm font-bold ml-2">Resposta: ${data.resposta_otima}</span></div>` : ''}
+                    ${data.dose_otima ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-[320px]"><div class="px-5 py-4 rounded-2xl bg-agro-50 border border-agro-200 text-agro-900"><span class="text-[10px] font-black uppercase tracking-widest text-agro-600 block">Dose ótima</span><span class="text-2xl font-black">${data.dose_otima}</span></div><div class="px-5 py-4 rounded-2xl bg-earth-50 border border-earth-200 text-earth-900"><span class="text-[10px] font-black uppercase tracking-widest text-earth-600 block">Produtividade ótima</span><span class="text-2xl font-black">${data.produtividade_otima || data.resposta_otima}</span></div></div>` : ''}
                 </div>
                 <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 mb-6"><span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Equação</span><code class="text-sm font-mono text-agro-900">${data.equacao}</code></div>
                 ${grafico}
