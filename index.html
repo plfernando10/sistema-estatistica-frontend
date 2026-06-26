@@ -563,6 +563,8 @@
                                                 <option value="1">Linear (1º Grau)</option>
                                                 <option value="2">Quadrática (2º Grau)</option>
                                                 <option value="3">Cúbica (3º Grau)</option>
+                                                <option value="exponencial">Exponencial</option>
+                                                <option value="logaritmica">Logarítmica</option>
                                             </select>
                                         </div>
                                         <div id="dunnett-fields-simples" class="hidden flex-1 min-w-[200px]">
@@ -603,13 +605,24 @@
                     <div class="xl:col-span-1 space-y-6">
                         <div class="agro-card p-6">
                             <h3 class="font-bold text-agro-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-layer-group text-agro-500"></i> Fatorial Duplo (AxB)</h3>
-                            <p class="text-sm text-slate-500 mb-5">CSV obrigatório no formato <span class="font-mono">A;B;Bloco;Valor</span>.</p>
-                            <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
-                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
-                                <input type="file" id="file-fatorial" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('fatorial')">
-                                <button onclick="document.getElementById('file-fatorial').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
-                                <p id="file-name-fatorial" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
-                                <button id="btn-proc-fatorial" onclick="processarModuloUpload('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
+                            <p class="text-sm text-slate-500 mb-5">Use CSV ou lançamento manual no formato <span class="font-mono">A;B;Bloco;Valor</span>.</p>
+                            <div class="agro-tabs mt-2">
+                                <div class="agro-tab active" onclick="switchTab(this, 'upload-fatorial')">Importar CSV</div>
+                                <div class="agro-tab" onclick="switchTab(this, 'manual-fatorial')">Lançamento Direto</div>
+                            </div>
+                            <div id="upload-fatorial" class="tab-pane">
+                                <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
+                                    <input type="file" id="file-fatorial" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('fatorial')">
+                                    <button onclick="document.getElementById('file-fatorial').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
+                                    <p id="file-name-fatorial" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
+                                    <button id="btn-proc-fatorial" onclick="processarModuloUpload('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
+                                </div>
+                            </div>
+                            <div id="manual-fatorial" class="tab-pane hidden">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Dados manuais: A;B;Bloco;Valor</label>
+                                <textarea id="manual-text-fatorial" rows="10" class="agro-input font-mono" placeholder="0;Cultivar_1;1;16,1&#10;0;Cultivar_1;2;16,3&#10;30;Cultivar_1;1;18,5&#10;30;Cultivar_2;1;18,9"></textarea>
+                                <button onclick="processarModuloManual('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4"><i class="fa-solid fa-calculator"></i> Processar Dados Manuais</button>
                             </div>
                         </div>
                     </div>
@@ -628,13 +641,24 @@
                     <div class="xl:col-span-1 space-y-6">
                         <div class="agro-card p-6">
                             <h3 class="font-bold text-agro-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-table-cells text-agro-500"></i> Parcelas Subdivididas</h3>
-                            <p class="text-sm text-slate-500 mb-5">CSV obrigatório no formato <span class="font-mono">A;B;Bloco;Valor</span>.</p>
-                            <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
-                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
-                                <input type="file" id="file-parcelas" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('parcelas')">
-                                <button onclick="document.getElementById('file-parcelas').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
-                                <p id="file-name-parcelas" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
-                                <button id="btn-proc-parcelas" onclick="processarModuloUpload('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
+                            <p class="text-sm text-slate-500 mb-5">Use CSV ou lançamento manual no formato <span class="font-mono">A;B;Bloco;Valor</span>.</p>
+                            <div class="agro-tabs mt-2">
+                                <div class="agro-tab active" onclick="switchTab(this, 'upload-parcelas')">Importar CSV</div>
+                                <div class="agro-tab" onclick="switchTab(this, 'manual-parcelas')">Lançamento Direto</div>
+                            </div>
+                            <div id="upload-parcelas" class="tab-pane">
+                                <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
+                                    <input type="file" id="file-parcelas" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('parcelas')">
+                                    <button onclick="document.getElementById('file-parcelas').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
+                                    <p id="file-name-parcelas" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
+                                    <button id="btn-proc-parcelas" onclick="processarModuloUpload('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
+                                </div>
+                            </div>
+                            <div id="manual-parcelas" class="tab-pane hidden">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Dados manuais: A;B;Bloco;Valor</label>
+                                <textarea id="manual-text-parcelas" rows="10" class="agro-input font-mono" placeholder="0;Manejo_1;1;16,1&#10;0;Manejo_1;2;16,3&#10;30;Manejo_1;1;18,5&#10;30;Manejo_2;1;18,9"></textarea>
+                                <button onclick="processarModuloManual('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4"><i class="fa-solid fa-calculator"></i> Processar Dados Manuais</button>
                             </div>
                         </div>
                     </div>
@@ -746,8 +770,8 @@
             parent.querySelectorAll('.agro-tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
             
-            const container = parent.nextElementSibling;
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            const card = parent.closest('.agro-card') || document;
+            card.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
             document.getElementById(targetId).classList.remove('hidden');
         }
 
@@ -798,9 +822,34 @@
             }
         }
 
+        function arquivoCsvDeTexto(nome, texto) {
+            const conteudo = String(texto || '').trim();
+            if (!conteudo) throw new Error('Preencha os dados manuais antes de processar.');
+            const csv = conteudo.includes('\n') && conteudo.split(/\r?\n/)[0].toLowerCase().includes('valor')
+                ? conteudo
+                : `A;B;Bloco;Valor\n${conteudo}`;
+            return new File([csv], nome, { type: 'text/csv;charset=utf-8' });
+        }
+
         async function processarModuloUpload(modulo, btnElement) {
             const file = document.getElementById(`file-${modulo}`).files[0];
             if (!file) { showToast('Selecione um arquivo CSV antes de iniciar o cálculo.', 'erro'); return; }
+            arquivosData[modulo] = file;
+            await processarModuloComArquivo(modulo, file, btnElement);
+        }
+
+        async function processarModuloManual(modulo, btnElement) {
+            try {
+                const texto = document.getElementById(`manual-text-${modulo}`).value;
+                const file = arquivoCsvDeTexto(`${modulo}_manual.csv`, texto);
+                arquivosData[modulo] = file;
+                await processarModuloComArquivo(modulo, file, btnElement);
+            } catch (err) {
+                showToast(err.message, 'erro', 6000);
+            }
+        }
+
+        async function processarModuloComArquivo(modulo, file, btnElement) {
             const result = document.getElementById(`result-${modulo}`);
             const placeholder = document.getElementById(`placeholder-${modulo}`);
             const originalHtml = btnElement.innerHTML;
@@ -843,98 +892,6 @@
             }
         }
 
-        async function carregarCsvDireto(input) {
-            mostrarArquivoSelecionado('regressaodireta');
-            const file = input.files && input.files[0];
-            if (!file) return;
-            try {
-                const texto = await file.text();
-                const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-                const doses = [];
-                const prods = [];
-                for (const linha of linhas) {
-                    const partes = linha.includes(';') ? linha.split(';') : linha.split(/\t|,/);
-                    if (partes.length < 2) continue;
-                    const d = Number(String(partes[0]).trim().replace(',', '.'));
-                    const p = Number(String(partes[1]).trim().replace(',', '.'));
-                    if (Number.isFinite(d) && Number.isFinite(p)) { doses.push(partes[0].trim()); prods.push(partes[1].trim()); }
-                }
-                if (doses.length < 2) throw new Error('CSV inválido. Use Dose;Produtividade, com uma linha por par.');
-                document.getElementById('doses-direto').value = doses.join('\n');
-                document.getElementById('prod-direto').value = prods.join('\n');
-                showToast('CSV importado para os campos. Clique em Calcular Dose Ótima.', 'success');
-            } catch (err) {
-                showToast(err.message, 'erro', 7000);
-            }
-        }
-        
-        async function processarSimples(isManual, btnElement) {
-            const placeholder = document.getElementById('placeholder-simples');
-            const resultArea = document.getElementById('result-simples');
-            btnElement.disabled = true;
-            const originalHtml = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
-            showToast("Iniciando análise estatística...", "info");
-
-            try {
-                const form = new FormData();
-                const delineamento = document.querySelector('input[name="delinSimples"]:checked').value;
-                form.append('tipo_delineamento', delineamento);
-                form.append('tipo_teste', 'anova');
-                form.append('modelo_regr', 'quadratica');
-
-                if (isManual) {
-                    throw new Error('O lançamento manual ainda precisa montar o CSV real da grade. Use a importação CSV ou complete a matriz antes de enviar.');
-                }
-
-                const file = document.getElementById('file-simples').files[0];
-                if (!file) throw new Error('Selecione um arquivo CSV antes de processar.');
-                form.append('file', file);
-
-                const resp = await fetch(`${API_BASE}/simples`, { method: 'POST', body: form });
-                const data = await resp.json();
-                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
-                analises.simples = { anova: data, posthoc: null };
-
-                placeholder.classList.add('hidden');
-                resultArea.classList.remove('hidden');
-
-                document.getElementById('anova-simples-table').innerHTML = `
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th class="text-agro-600">F Tab</th><th>Sig</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${data.anova.map(l => `<tr>
-                                    <td class="font-bold text-agro-900">${l.FV}</td>
-                                    <td class="text-center data-mono">${l.GL}</td>
-                                    <td class="data-mono">${l.SQ}</td>
-                                    <td class="data-mono">${l.QM}</td>
-                                    <td class="data-mono font-black text-agro-700">${l['F Calc']}</td>
-                                    <td class="data-mono font-bold text-slate-400">${l['F Tab']}</td>
-                                    <td><span class="sig-badge ${String(l.Sig).includes('*') ? 'sig-active' : 'sig-inactive'}">${l.Sig}</span></td>
-                                </tr>`).join('')}
-                            </tbody>
-                        </table>
-                    </div>`;
-                document.getElementById('cv-simples-badge').innerHTML = `
-                    <div class="flex flex-col items-end">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Coef. Variação</span>
-                        <div class="px-4 py-2 rounded-xl bg-agro-50 border border-agro-200 text-agro-800 font-black text-lg shadow-sm">${data.cv || '-'}</div>
-                    </div>`;
-                showToast("Análise concluída com sucesso!", "success");
-            } catch (err) {
-                showToast(err.message, "erro", 6000);
-            } finally {
-                btnElement.disabled = false;
-                btnElement.innerHTML = originalHtml;
-            }
-        }
-
-        // Funções de suporte adicionais (omitidas para brevidade mas necessárias para o funcionamento completo)
         function configurarSimples() {
             const lblFormat = document.getElementById('lbl-formato-simples');
             const d = document.querySelector('input[name="delinSimples"]:checked').value;
@@ -943,13 +900,56 @@
         }
         
         function gerarMatrizSimples() {
-            const t = document.getElementById('inp-t-simples').value;
-            const r = document.getElementById('inp-r-simples').value;
+            const t = parseInt(document.getElementById('inp-t-simples').value || '0', 10);
+            const r = parseInt(document.getElementById('inp-r-simples').value || '0', 10);
+            const delineamento = document.querySelector('input[name="delinSimples"]:checked').value;
             const container = document.getElementById('matriz-simples');
-            container.innerHTML = `<div class="p-4 text-center text-slate-400 text-sm italic">Grade de ${t} tratamentos e ${r} repetições gerada.</div>`;
+            if (t < 2 || r < 2) { showToast('Informe pelo menos 2 tratamentos e 2 repetições.', 'erro'); return; }
+            let html = '<div class="p-3 space-y-3">';
+            if (delineamento === 'dql') {
+                for (let i = 1; i <= t; i++) {
+                    for (let j = 1; j <= t; j++) {
+                        html += `<div class="grid grid-cols-4 gap-2 items-center"><input class="agro-input text-xs" data-campo="trat" value="${i}" placeholder="Trat"><input class="agro-input text-xs" data-campo="linha" value="${i}" placeholder="Linha"><input class="agro-input text-xs" data-campo="coluna" value="${j}" placeholder="Coluna"><input class="agro-input text-xs" data-campo="valor" placeholder="Valor"></div>`;
+                    }
+                }
+            } else {
+                for (let trat = 1; trat <= t; trat++) {
+                    for (let rep = 1; rep <= r; rep++) {
+                        html += `<div class="grid grid-cols-3 gap-2 items-center"><input class="agro-input text-xs" data-campo="trat" value="${trat}" placeholder="Trat"><input class="agro-input text-xs" data-campo="bloco" value="${rep}" placeholder="Bloco"><input class="agro-input text-xs" data-campo="valor" placeholder="Valor"></div>`;
+                    }
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
             document.getElementById('btn-calc-matriz-simples').classList.remove('hidden');
         }
 
+        function gerarCsvSimplesManual(delineamento) {
+            const linhas = [];
+            const container = document.getElementById('matriz-simples');
+            const rows = Array.from(container.querySelectorAll('.grid'));
+            if (!rows.length) throw new Error('Monte a grade de campo antes de processar.');
+            if (delineamento === 'dql') {
+                linhas.push('Tratamento;Linha;Coluna;Valor');
+                rows.forEach(row => {
+                    const trat = row.querySelector('[data-campo="trat"]').value;
+                    const linha = row.querySelector('[data-campo="linha"]').value;
+                    const coluna = row.querySelector('[data-campo="coluna"]').value;
+                    const valor = row.querySelector('[data-campo="valor"]').value;
+                    if (valor !== '') linhas.push(`${trat};${linha};${coluna};${valor}`);
+                });
+            } else {
+                linhas.push('Tratamento;Bloco;Valor');
+                rows.forEach(row => {
+                    const trat = row.querySelector('[data-campo="trat"]').value;
+                    const bloco = row.querySelector('[data-campo="bloco"]').value;
+                    const valor = row.querySelector('[data-campo="valor"]').value;
+                    if (valor !== '') linhas.push(`${trat};${bloco};${valor}`);
+                });
+            }
+            if (linhas.length < 3) throw new Error('Preencha os valores da grade antes de processar.');
+            return new File([linhas.join('\n')], 'simples_manual.csv', { type: 'text/csv;charset=utf-8' });
+        }
 
         function tabelaHtml(linhas) {
             if (!linhas || !linhas.length) return '';
@@ -1151,6 +1151,9 @@
                             <select id="eq-${modulo}" class="agro-input">
                                 <option value="1">Linear (1º Grau)</option>
                                 <option value="2" selected>Quadrática (2º Grau)</option>
+                                <option value="3">Cúbica (3º Grau)</option>
+                                <option value="exponencial">Exponencial</option>
+                                <option value="logaritmica">Logarítmica</option>
                             </select>
                         </div>
                         <div id="dunnett-fields-${modulo}" class="hidden flex-1 min-w-[200px]">
@@ -1164,6 +1167,7 @@
 
         function getArquivoModulo(modulo) {
             const id = modulo === 'regressaodireta' ? 'file-direto' : `file-${modulo}`;
+            if (arquivosData[modulo]) return arquivosData[modulo];
             const input = document.getElementById(id);
             return input && input.files ? input.files[0] : null;
         }
@@ -1190,7 +1194,8 @@
                 form.append('file', file);
                 form.append('tipo_teste', tipoTestePostHoc(modulo));
                 const grau = document.getElementById(`eq-${modulo}`)?.value || '2';
-                form.append('modelo_regr', grau === '1' ? 'linear' : 'quadratica');
+                const mapaModelo = { '1': 'linear', '2': 'quadratica', '3': 'cubica', 'exponencial': 'exponencial', 'logaritmica': 'logaritmica' };
+                form.append('modelo_regr', mapaModelo[grau] || 'quadratica');
                 const test = document.getElementById(`testemunha-${modulo}`)?.value || '';
                 form.append('testemunha', test.trim());
                 if (modulo === 'simples') {
