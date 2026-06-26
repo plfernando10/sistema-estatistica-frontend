@@ -257,6 +257,7 @@
             .toast { max-width: none; }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="h-screen w-screen overflow-hidden selection:bg-agro-500 selection:text-white relative">
 
@@ -579,7 +580,7 @@
                             
                             <div class="flex justify-center pb-12">
                                 <button onclick="baixarLaudoCompleto('simples')" class="agro-btn agro-btn-outline bg-white px-12 py-4 border-2 border-agro-200 text-agro-700 hover:bg-agro-50">
-                                    <i class="fa-solid fa-file-pdf text-lg"></i> Gerar Laudo Técnico Completo (.txt)
+                                    <i class="fa-solid fa-file-pdf text-lg"></i> Gerar Laudo Técnico Completo (PDF)
                                 </button>
                             </div>
                         </div>
@@ -703,6 +704,7 @@
     <script>
         const API_BASE = 'https://api-estatistica.onrender.com/api/analise';
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
+        let analises = { simples: {}, fatorial: {}, parcelas: {} };
 
         function toggleSidebarMobile() {
             document.getElementById('analysis-sidebar').classList.toggle('sidebar-open');
@@ -748,8 +750,8 @@
 
         function toggleRegrFields(mod) {
             const val = document.getElementById(`metodo-${mod}`).value;
-            document.getElementById(`regr-fields-${mod}`).classList.toggle('hidden', val !== 'regr');
-            document.getElementById(`dunnett-fields-${mod}`).classList.toggle('hidden', val !== 'dunnett');
+            document.getElementById(`regr-fields-${mod}`).classList.toggle('hidden', !String(val).startsWith('regr'));
+            document.getElementById(`dunnett-fields-${mod}`).classList.toggle('hidden', !String(val).startsWith('dunnett'));
         }
 
         function abrirManual() { document.getElementById('manual-modal').classList.remove('hidden'); }
@@ -811,15 +813,23 @@
                 if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
                 placeholder.classList.add('hidden');
                 result.classList.remove('hidden');
+                analises[modulo] = { anova: data, posthoc: null };
                 result.innerHTML = `
                     <div class="flex justify-between items-start mb-8">
                         <div>
                             <h3 class="text-xl font-extrabold text-agro-900 tracking-tight">Análise de Variância (ANOVA)</h3>
                             <p class="text-sm text-slate-500 font-medium">${modulo === 'fatorial' ? 'Fatorial Duplo (AxB)' : 'Parcelas Subdivididas'}</p>
                         </div>
-                        <div class="px-4 py-2 rounded-xl bg-agro-50 border border-agro-200 text-agro-800 font-black text-lg">CV: ${data.cv || '-'}</div>
+                        <div class="px-4 py-2 rounded-xl bg-agro-50 border border-agro-200 text-agro-800 font-black text-lg">CV: ${data.cv || data.cv_a || '-'}</div>
                     </div>
                     ${tabelaHtml(data.anova || [])}
+                    ${postHocControlesHtml(modulo)}
+                    <div id="posthoc-${modulo}-output" class="hidden mt-8 border-t-4 border-t-agro-500 rounded-2xl bg-white p-6"></div>
+                    <div class="flex justify-center pt-8">
+                        <button onclick="baixarLaudoCompleto('${modulo}')" class="agro-btn agro-btn-outline bg-white px-10 py-4 border-2 border-agro-200 text-agro-700 hover:bg-agro-50">
+                            <i class="fa-solid fa-file-pdf text-lg"></i> Gerar Laudo Técnico Completo (PDF)
+                        </button>
+                    </div>
                 `;
                 showToast('Cálculo concluído com sucesso!', 'success');
             } catch (err) {
@@ -881,6 +891,7 @@
                 const resp = await fetch(`${API_BASE}/simples`, { method: 'POST', body: form });
                 const data = await resp.json();
                 if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
+                analises.simples = { anova: data, posthoc: null };
 
                 placeholder.classList.add('hidden');
                 resultArea.classList.remove('hidden');
@@ -1102,6 +1113,162 @@
                 botoes.push(`<a download="${prefixo}.png" href="data:image/png;base64,${data.img_png}" class="agro-btn agro-btn-outline py-3 px-4 text-xs"><i class="fa-solid fa-image"></i> Baixar PNG</a>`);
             }
             return botoes.length ? `<div class="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">${botoes.join('')}</div>` : '';
+        }
+
+
+        function postHocControlesHtml(modulo) {
+            const fatorExtra = (modulo === 'fatorial' || modulo === 'parcelas') ? `
+                <div class="flex-1 min-w-[160px]">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Fator avaliado</label>
+                    <select id="fator-${modulo}" class="agro-input">
+                        <option value="a">Fator A</option>
+                        <option value="b">Fator B</option>
+                    </select>
+                </div>` : '';
+            const regr = (modulo === 'simples') ? 'regr' : 'regr_a';
+            return `
+                <div class="bg-agro-50/50 rounded-2xl p-6 border border-agro-100 mt-8">
+                    <h4 class="font-bold text-agro-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-agro-600"></i> Análise Posterior (Post-Hoc)</h4>
+                    <div class="flex flex-wrap gap-4 items-end">
+                        ${fatorExtra}
+                        <div class="flex-1 min-w-[200px]">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Método de Comparação</label>
+                            <select id="metodo-${modulo}" class="agro-input" onchange="toggleRegrFields('${modulo}')">
+                                <option value="tukey">Teste de Tukey (HSD)</option>
+                                <option value="duncan">Teste de Duncan</option>
+                                <option value="dunnett">Teste de Dunnett (vs Testemunha)</option>
+                                <option value="${regr}">Regressão Polinomial</option>
+                            </select>
+                        </div>
+                        <div id="regr-fields-${modulo}" class="hidden flex-1 min-w-[200px]">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Grau do Polinômio</label>
+                            <select id="eq-${modulo}" class="agro-input">
+                                <option value="1">Linear (1º Grau)</option>
+                                <option value="2" selected>Quadrática (2º Grau)</option>
+                            </select>
+                        </div>
+                        <div id="dunnett-fields-${modulo}" class="hidden flex-1 min-w-[200px]">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Identificador Testemunha</label>
+                            <input type="text" id="testemunha-${modulo}" placeholder="Ex: T1 ou 0" class="agro-input">
+                        </div>
+                        <button onclick="rodarPostHoc('${modulo}', this)" class="agro-btn agro-btn-primary h-[48px]">Executar Teste</button>
+                    </div>
+                </div>`;
+        }
+
+        function getArquivoModulo(modulo) {
+            const id = modulo === 'regressaodireta' ? 'file-direto' : `file-${modulo}`;
+            const input = document.getElementById(id);
+            return input && input.files ? input.files[0] : null;
+        }
+
+        function tipoTestePostHoc(modulo) {
+            let metodo = document.getElementById(`metodo-${modulo}`).value;
+            if (modulo === 'fatorial' || modulo === 'parcelas') {
+                const fator = document.getElementById(`fator-${modulo}`).value;
+                if (!metodo.endsWith('_a') && !metodo.endsWith('_b')) metodo = `${metodo}_${fator}`;
+                else metodo = metodo.replace(/_[ab]$/, `_${fator}`);
+            }
+            return metodo;
+        }
+
+        async function rodarPostHoc(modulo, btnElement) {
+            const file = getArquivoModulo(modulo);
+            if (!file) { showToast('Selecione e processe um CSV antes de executar o teste.', 'erro'); return; }
+            const out = document.getElementById(`posthoc-${modulo}-output`);
+            const originalHtml = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Executando...';
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                form.append('tipo_teste', tipoTestePostHoc(modulo));
+                const grau = document.getElementById(`eq-${modulo}`)?.value || '2';
+                form.append('modelo_regr', grau === '1' ? 'linear' : 'quadratica');
+                const test = document.getElementById(`testemunha-${modulo}`)?.value || '';
+                form.append('testemunha', test.trim());
+                if (modulo === 'simples') {
+                    const delineamento = document.querySelector('input[name="delinSimples"]:checked').value;
+                    form.append('tipo_delineamento', delineamento);
+                }
+                const resp = await fetch(`${API_BASE}/${modulo}`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao executar o teste.');
+                analises[modulo] = analises[modulo] || {};
+                analises[modulo].posthoc = data;
+                out.classList.remove('hidden');
+                out.innerHTML = renderPostHoc(data, modulo);
+                showToast('Teste executado com sucesso. O PDF já pode ser gerado.', 'success');
+            } catch (err) {
+                showToast(err.message, 'erro', 7000);
+            } finally {
+                btnElement.disabled = false;
+                btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        function renderPostHoc(data, modulo) {
+            if (data.tipo === 'regressao') {
+                const img = data.img_svg ? `<img class="w-full rounded-2xl border border-slate-100 shadow-soft my-6" src="data:image/svg+xml;base64,${data.img_svg}" alt="Gráfico da regressão">` : (data.img_png ? `<img class="w-full rounded-2xl border border-slate-100 shadow-soft my-6" src="data:image/png;base64,${data.img_png}" alt="Gráfico da regressão">` : '');
+                return `<h3 class="text-xl font-extrabold text-agro-900 mb-2">Regressão Polinomial</h3>
+                    <p class="text-sm text-slate-500 mb-4">${data.modelo || ''} • R² = <span class="font-mono font-bold">${data.r2 || '-'}</span></p>
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 mb-5"><span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Equação</span><code class="text-sm font-mono text-agro-900">${data.equacao || '-'}</code></div>
+                    ${data.dose_otima ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5"><div class="px-5 py-4 rounded-2xl bg-agro-50 border border-agro-200"><span class="text-[10px] font-black uppercase tracking-widest text-agro-600 block">Dose ótima</span><span class="text-2xl font-black text-agro-900">${data.dose_otima}</span></div><div class="px-5 py-4 rounded-2xl bg-earth-50 border border-earth-200"><span class="text-[10px] font-black uppercase tracking-widest text-earth-600 block">Produtividade ótima</span><span class="text-2xl font-black text-earth-900">${data.resposta_otima || data.produtividade_otima}</span></div></div>` : ''}
+                    ${img}${botoesDownloadImagem(data, `regressao_${modulo}`)}${tabelaHtml(data.anova_reg || [])}`;
+            }
+            if (data.tipo === 'dunnett') {
+                return `<h3 class="text-xl font-extrabold text-agro-900 mb-2">Teste de Dunnett</h3><p class="text-sm text-slate-500 mb-4">Testemunha: <b>${data.testemunha}</b> • DMS: ${data.dms} • Alfa: ${data.alpha_txt}</p>${tabelaHtml(data.resultados || [])}`;
+            }
+            const tabela = data.tabela || data.resultados || [];
+            return `<h3 class="text-xl font-extrabold text-agro-900 mb-2">Teste de ${data.nome_teste || data.tipo}</h3><p class="text-sm text-slate-500 mb-4">DMS: ${data.dms || '-'} • Alfa: ${data.alpha_txt || '-'}</p>${tabelaHtml(tabela)}`;
+        }
+
+        function linhasTabelaPdf(doc, titulo, linhas, y) {
+            if (!linhas || !linhas.length) return y;
+            const pageH = doc.internal.pageSize.getHeight();
+            const cols = Object.keys(linhas[0]);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text(titulo, 14, y); y += 8;
+            doc.setFontSize(8); doc.text(cols.join(' | '), 14, y); y += 5;
+            doc.setFont('helvetica', 'normal');
+            linhas.forEach(l => {
+                const txt = cols.map(c => String(l[c])).join(' | ');
+                const partes = doc.splitTextToSize(txt, 180);
+                if (y + partes.length * 4 > pageH - 15) { doc.addPage(); y = 18; }
+                doc.text(partes, 14, y); y += partes.length * 4 + 2;
+            });
+            return y + 4;
+        }
+
+        function baixarLaudoCompleto(modulo) {
+            const pacote = analises[modulo];
+            if (!pacote || !pacote.anova) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
+            if (!pacote.posthoc) { showToast('Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
+            if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+            let y = 16;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('Solver Agro - Laudo Técnico', 14, y); y += 8;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text(`Módulo: ${modulo}`, 14, y); y += 6;
+            doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 14, y); y += 8;
+            const cvTxt = pacote.anova.cv ? `CV: ${pacote.anova.cv}` : `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}`;
+            doc.text(cvTxt, 14, y); y += 8;
+            y = linhasTabelaPdf(doc, 'Análise de Variância (ANOVA)', pacote.anova.anova || [], y);
+            const ph = pacote.posthoc;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('Análise Posterior', 14, y); y += 7;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            if (ph.tipo === 'regressao') {
+                doc.text(`Modelo: ${ph.modelo || '-'} | R²: ${ph.r2 || '-'}`, 14, y); y += 6;
+                doc.text(doc.splitTextToSize(`Equação: ${ph.equacao || '-'}`, 180), 14, y); y += 10;
+                if (ph.dose_otima) { doc.text(`Dose ótima: ${ph.dose_otima} | Produtividade ótima: ${ph.resposta_otima || ph.produtividade_otima || '-'}`, 14, y); y += 8; }
+                y = linhasTabelaPdf(doc, 'ANOVA da regressão', ph.anova_reg || [], y);
+            } else if (ph.tipo === 'dunnett') {
+                doc.text(`Teste de Dunnett | Testemunha: ${ph.testemunha} | DMS: ${ph.dms} | Alfa: ${ph.alpha_txt}`, 14, y); y += 8;
+                y = linhasTabelaPdf(doc, 'Resultado do teste', ph.resultados || [], y);
+            } else {
+                doc.text(`Teste de ${ph.nome_teste || ph.tipo} | DMS: ${ph.dms || '-'} | Alfa: ${ph.alpha_txt || '-'}`, 14, y); y += 8;
+                y = linhasTabelaPdf(doc, 'Comparação de médias', ph.tabela || [], y);
+            }
+            doc.save(`laudo_solver_agro_${modulo}.pdf`);
         }
 
         function renderResultadoDireto(data, result, placeholder) {
