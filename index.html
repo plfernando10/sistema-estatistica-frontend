@@ -656,13 +656,16 @@
                                 <i class="fa-solid fa-bullseye text-agro-500"></i> Regressão para Dose Ótima
                             </h3>
                             <p class="text-sm text-slate-500 mb-5">Informe pares de dose e produtividade. Não precisa montar delineamento experimental.</p>
+                            <p class="text-xs text-slate-400 mb-5">Para modelo logarítmico, use doses maiores que zero.</p>
                             <div class="space-y-4">
                                 <div>
                                     <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Modelo</label>
                                     <select id="modelo-direto" class="agro-input">
                                         <option value="quadratica" selected>Quadrática (calcula dose ótima)</option>
+                                        <option value="cubica">Cúbica (ótimo no intervalo)</option>
+                                        <option value="exponencial">Exponencial</option>
+                                        <option value="logaritmica">Logarítmica</option>
                                         <option value="linear">Linear</option>
-                                        <option value="cubica">Cúbica</option>
                                     </select>
                                 </div>
                                 <div>
@@ -1030,6 +1033,9 @@
         }
 
         function calcularRegressaoDiretaLocal(txtDoses, txtProd, modelo) {
+            if (['cubica', 'exponencial', 'logaritmica'].includes(modelo)) {
+                throw new Error('Este modelo precisa do backend v6 publicado no Render.');
+            }
             const doses = separarNumerosCampo(txtDoses).map(numeroBR);
             const prods = separarNumerosCampo(txtProd).map(numeroBR);
             if (doses.length !== prods.length) throw new Error('Informe a mesma quantidade de doses e produtividades.');
