@@ -662,7 +662,7 @@
     </div>
 
     <script>
-        const API_BASE = "https://api-estatistica.onrender.com/api/analise";
+        const API_BASE = 'https://api-estatistica.onrender.com/api/analise';
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
 
         function toggleSidebarMobile() {
@@ -843,23 +843,22 @@
             btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculando...';
             showToast('Calculando regressão direta...', 'info');
             try {
-                const resp = await fetch(`${API_BASE}/regressao-direta`, { method: 'POST', body: form });
-                const data = await resp.json();
-                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha no cálculo.');
-                placeholder.classList.add('hidden');
-                result.classList.remove('hidden');
-                result.innerHTML = `
-                    <div class="flex flex-col lg:flex-row lg:justify-between gap-6 mb-8">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-agro-900 tracking-tight">Resultado da Regressão Direta</h3>
-                            <p class="text-sm text-slate-500 font-medium mt-1">${data.modelo} • R² = <span class="font-mono font-bold">${data.r2}</span></p>
-                        </div>
-                        ${data.dose_otima ? `<div class="px-5 py-4 rounded-2xl bg-agro-50 border border-agro-200 text-agro-900"><span class="text-[10px] font-black uppercase tracking-widest text-agro-600 block">Dose ótima</span><span class="text-2xl font-black">${data.dose_otima}</span><span class="text-sm font-bold ml-2">Resposta: ${data.resposta_otima}</span></div>` : ''}
-                    </div>
-                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 mb-6"><span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Equação</span><code class="text-sm font-mono text-agro-900">${data.equacao}</code></div>
-                    <img alt="Gráfico da regressão" class="w-full rounded-2xl border border-slate-100 shadow-soft mb-6" src="data:image/png;base64,${data.img_png}">
-                    ${tabelaHtml(data.pontos)}
-                `;
+                let data;
+                try {
+                    const resp = await fetch(`${API_BASE}/regressao-direta`, { method: 'POST', body: form });
+                    data = await resp.json();
+                    if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha no cálculo.');
+                } catch (erroRede) {
+                    // Se o backend ainda não foi publicado/ligado, mantém a tela funcionando com o mesmo cálculo no navegador.
+                    if (file) throw new Error('Não consegui acessar o backend para ler o CSV. Publique o backend_corrigido.py ou use os campos Dose/Produtividade.');
+                    data = calcularRegressaoDiretaLocal(
+                        document.getElementById('doses-direto').value,
+                        document.getElementById('prod-direto').value,
+                        document.getElementById('modelo-direto').value
+                    );
+                    showToast('Backend indisponível. Resultado calculado localmente para teste da tela.', 'info', 6000);
+                }
+                renderResultadoDireto(data, result, placeholder);
                 showToast('Regressão direta concluída!', 'success');
             } catch (err) {
                 showToast(err.message, 'erro', 6000);
@@ -868,6 +867,142 @@
                 btnElement.innerHTML = originalHtml;
             }
         }
+
+        function numeroBR(v) {
+            const n = Number(String(v).trim().replace(',', '.'));
+            if (!Number.isFinite(n)) throw new Error(`Valor inválido: ${v}`);
+            return n;
+        }
+
+        function separarNumerosCampo(texto) {
+            const bruto = String(texto || '').trim();
+            if (!bruto) return [];
+            // Preserva vírgula decimal. Para listas, prefira uma dose/produtividade por linha ou separadas por ponto e vírgula.
+            if (/[;\n\r\t]/.test(bruto)) return bruto.split(/[;\n\r\t]+/).map(v => v.trim()).filter(Boolean);
+            return bruto.split(/\s+/).map(v => v.trim()).filter(Boolean);
+        }
+
+        function resolverSistema(A, b) {
+            const n = b.length;
+            A = A.map((linha, i) => [...linha, b[i]]);
+            for (let i = 0; i < n; i++) {
+                let max = i;
+                for (let k = i + 1; k < n; k++) if (Math.abs(A[k][i]) > Math.abs(A[max][i])) max = k;
+                [A[i], A[max]] = [A[max], A[i]];
+                if (Math.abs(A[i][i]) < 1e-12) throw new Error('Não foi possível ajustar a regressão com esses dados.');
+                for (let k = i + 1; k < n; k++) {
+                    const fator = A[k][i] / A[i][i];
+                    for (let j = i; j <= n; j++) A[k][j] -= fator * A[i][j];
+                }
+            }
+            const x = Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let soma = A[i][n];
+                for (let j = i + 1; j < n; j++) soma -= A[i][j] * x[j];
+                x[i] = soma / A[i][i];
+            }
+            return x;
+        }
+
+        function calcularRegressaoDiretaLocal(txtDoses, txtProd, modelo) {
+            const doses = separarNumerosCampo(txtDoses).map(numeroBR);
+            const prods = separarNumerosCampo(txtProd).map(numeroBR);
+            if (doses.length !== prods.length) throw new Error('Informe a mesma quantidade de doses e produtividades.');
+            if (doses.length < 3 && modelo === 'quadratica') throw new Error('A regressão quadrática precisa de pelo menos 3 pontos.');
+            if (doses.length < 2) throw new Error('Informe pelo menos 2 pontos.');
+
+            const yMed = prods.reduce((a, b) => a + b, 0) / prods.length;
+            let pred, equacao, coef, doseOtima = null, respOtima = null;
+            if (modelo === 'linear') {
+                const xMed = doses.reduce((a, b) => a + b, 0) / doses.length;
+                const sxx = doses.reduce((a, x) => a + (x - xMed) ** 2, 0);
+                const sxy = doses.reduce((a, x, i) => a + (x - xMed) * (prods[i] - yMed), 0);
+                const b1 = sxy / sxx;
+                const b0 = yMed - b1 * xMed;
+                coef = [b0, b1];
+                pred = doses.map(x => b0 + b1 * x);
+                equacao = `y = ${b0.toFixed(4)} ${b1 >= 0 ? '+' : '-'} ${Math.abs(b1).toFixed(4)}x`;
+            } else {
+                const sx = doses.reduce((a, x) => a + x, 0), sx2 = doses.reduce((a, x) => a + x ** 2, 0), sx3 = doses.reduce((a, x) => a + x ** 3, 0), sx4 = doses.reduce((a, x) => a + x ** 4, 0);
+                const sy = prods.reduce((a, y) => a + y, 0), sxy = doses.reduce((a, x, i) => a + x * prods[i], 0), sx2y = doses.reduce((a, x, i) => a + x ** 2 * prods[i], 0);
+                const [b0, b1, b2] = resolverSistema([[doses.length, sx, sx2], [sx, sx2, sx3], [sx2, sx3, sx4]], [sy, sxy, sx2y]);
+                coef = [b0, b1, b2];
+                pred = doses.map(x => b0 + b1 * x + b2 * x ** 2);
+                equacao = `y = ${b0.toFixed(4)} ${b1 >= 0 ? '+' : '-'} ${Math.abs(b1).toFixed(4)}x ${b2 >= 0 ? '+' : '-'} ${Math.abs(b2).toFixed(4)}x²`;
+                if (Math.abs(b2) > 1e-12) {
+                    doseOtima = -b1 / (2 * b2);
+                    respOtima = b0 + b1 * doseOtima + b2 * doseOtima ** 2;
+                }
+            }
+            const ssRes = prods.reduce((a, y, i) => a + (y - pred[i]) ** 2, 0);
+            const ssTot = prods.reduce((a, y) => a + (y - yMed) ** 2, 0);
+            const r2 = ssTot > 0 ? 1 - ssRes / ssTot : 1;
+            return {
+                status: 'sucesso', tipo: 'regressao_direta', modelo: modelo === 'linear' ? 'Linear' : 'Quadrática',
+                equacao, r2: r2.toFixed(4), pontos: doses.map((d, i) => ({ Dose: d, Produtividade: prods[i] })),
+                dose_otima: doseOtima === null ? null : doseOtima.toFixed(2), resposta_otima: respOtima === null ? null : respOtima.toFixed(2),
+                svg: gerarGraficoSvg(doses, prods, modelo, coef, doseOtima, respOtima)
+            };
+        }
+
+        function gerarGraficoSvg(x, y, modelo, coef, doseOtima, respOtima) {
+            const w = 760, h = 430, m = 52;
+            const xmin = Math.min(...x), xmax = Math.max(...x), ymin = Math.min(...y), ymax = Math.max(...y);
+            const dx = (xmax - xmin) || 1, dy = (ymax - ymin) || 1;
+            const X = v => m + ((v - xmin) / dx) * (w - 2 * m);
+            const Y = v => h - m - ((v - (ymin - dy * .1)) / (dy * 1.2)) * (h - 2 * m);
+            const yhat = v => modelo === 'linear' ? coef[0] + coef[1] * v : coef[0] + coef[1] * v + coef[2] * v * v;
+            const linha = Array.from({length: 120}, (_, i) => {
+                const xv = xmin + dx * i / 119;
+                return `${i ? 'L' : 'M'} ${X(xv).toFixed(1)} ${Y(yhat(xv)).toFixed(1)}`;
+            }).join(' ');
+            return `<svg viewBox="0 0 ${w} ${h}" class="w-full rounded-2xl border border-slate-100 shadow-soft mb-6 bg-white" role="img" aria-label="Gráfico da regressão"><line x1="${m}" y1="${h-m}" x2="${w-m}" y2="${h-m}" stroke="#cbd5e1"/><line x1="${m}" y1="${m}" x2="${m}" y2="${h-m}" stroke="#cbd5e1"/><path d="${linha}" fill="none" stroke="#2d7244" stroke-width="3"/>${x.map((v,i)=>`<circle cx="${X(v)}" cy="${Y(y[i])}" r="5" fill="#111827"/>`).join('')}${doseOtima!==null?`<line x1="${X(doseOtima)}" y1="${m}" x2="${X(doseOtima)}" y2="${h-m}" stroke="#64748b" stroke-dasharray="6 6"/><text x="${X(doseOtima)+8}" y="${m+18}" font-size="14" fill="#1b3c28" font-weight="700">Dose ótima: ${Number(doseOtima).toFixed(2)}</text>`:''}<text x="${w/2}" y="${h-12}" text-anchor="middle" font-size="13" fill="#64748b">Dose</text><text x="18" y="${h/2}" transform="rotate(-90 18 ${h/2})" text-anchor="middle" font-size="13" fill="#64748b">Produtividade</text></svg>`;
+        }
+
+
+        function svgParaBase64(svg) {
+            return btoa(unescape(encodeURIComponent(svg)));
+        }
+
+        function botoesDownloadImagem(data, prefixo = 'regressao_direta') {
+            const botoes = [];
+            if (data.img_svg) {
+                botoes.push(`<a download="${prefixo}.svg" href="data:image/svg+xml;base64,${data.img_svg}" class="agro-btn agro-btn-outline py-3 px-4 text-xs"><i class="fa-solid fa-bezier-curve"></i> Baixar SVG</a>`);
+            } else if (data.svg) {
+                botoes.push(`<a download="${prefixo}.svg" href="data:image/svg+xml;base64,${svgParaBase64(data.svg)}" class="agro-btn agro-btn-outline py-3 px-4 text-xs"><i class="fa-solid fa-bezier-curve"></i> Baixar SVG</a>`);
+            }
+            if (data.img_pdf) {
+                botoes.push(`<a download="${prefixo}.pdf" href="data:application/pdf;base64,${data.img_pdf}" class="agro-btn agro-btn-outline py-3 px-4 text-xs"><i class="fa-solid fa-file-pdf"></i> Baixar PDF vetorial</a>`);
+            }
+            if (data.img_png) {
+                botoes.push(`<a download="${prefixo}.png" href="data:image/png;base64,${data.img_png}" class="agro-btn agro-btn-outline py-3 px-4 text-xs"><i class="fa-solid fa-image"></i> Baixar PNG</a>`);
+            }
+            return botoes.length ? `<div class="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">${botoes.join('')}</div>` : '';
+        }
+
+        function renderResultadoDireto(data, result, placeholder) {
+            placeholder.classList.add('hidden');
+            result.classList.remove('hidden');
+            const grafico = data.img_svg
+                ? `<img alt="Gráfico vetorial da regressão" class="w-full rounded-2xl border border-slate-100 shadow-soft mb-6 bg-white" src="data:image/svg+xml;base64,${data.img_svg}">`
+                : (data.img_png
+                    ? `<img alt="Gráfico da regressão" class="w-full rounded-2xl border border-slate-100 shadow-soft mb-6" src="data:image/png;base64,${data.img_png}">`
+                    : (data.svg || ''));
+            result.innerHTML = `
+                <div class="flex flex-col lg:flex-row lg:justify-between gap-6 mb-8">
+                    <div>
+                        <h3 class="text-xl font-extrabold text-agro-900 tracking-tight">Resultado da Regressão Direta</h3>
+                        <p class="text-sm text-slate-500 font-medium mt-1">${data.modelo} • R² = <span class="font-mono font-bold">${data.r2}</span></p>
+                    </div>
+                    ${data.dose_otima ? `<div class="px-5 py-4 rounded-2xl bg-agro-50 border border-agro-200 text-agro-900"><span class="text-[10px] font-black uppercase tracking-widest text-agro-600 block">Dose ótima</span><span class="text-2xl font-black">${data.dose_otima}</span><span class="text-sm font-bold ml-2">Resposta: ${data.resposta_otima}</span></div>` : ''}
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 mb-6"><span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Equação</span><code class="text-sm font-mono text-agro-900">${data.equacao}</code></div>
+                ${grafico}
+                ${botoesDownloadImagem(data, 'regressao_direta_dose_otima')}
+                ${tabelaHtml(data.pontos)}
+            `;
+        }
+
 
     </script>
 </body>
