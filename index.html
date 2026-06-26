@@ -492,8 +492,12 @@
                                         <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
                                         <p class="text-sm font-bold text-slate-600 mb-1">Arraste sua planilha aqui</p>
                                         <p class="text-xs text-slate-400 mb-4">Formato: <span id="lbl-formato-simples" class="font-mono">Tratamento;Bloco;Valor</span></p>
-                                        <input type="file" id="file-simples" accept=".csv" class="hidden" onchange="processarSimples(false, document.getElementById('btn-proc-simples'))">
+                                        <input type="file" id="file-simples" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('simples')">
                                         <button onclick="document.getElementById('file-simples').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
+                                        <p id="file-name-simples" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
+                                        <button id="btn-proc-simples" onclick="processarSimples(false, this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden">
+                                            <i class="fa-solid fa-play"></i> Iniciar Cálculo
+                                        </button>
                                     </div>
                                 </div>
 
@@ -593,19 +597,53 @@
             </div>
 
             <!-- Outros módulos seguirão o mesmo padrão visual (Omitido aqui por brevidade, mas aplicado no código final) -->
-            <div id="module-fatorial" class="module-content hidden">
-                <div class="flex flex-col items-center justify-center py-32 text-center">
-                    <i class="fa-solid fa-toolbox text-6xl text-slate-200 mb-6"></i>
-                    <h3 class="text-2xl font-bold text-slate-400">Módulo Fatorial em Manutenção</h3>
-                    <p class="text-slate-400 mt-2">Este módulo está sendo atualizado para a nova interface Agro-Premium.</p>
+            <div id="module-fatorial" class="module-content hidden space-y-8">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-1 space-y-6">
+                        <div class="agro-card p-6">
+                            <h3 class="font-bold text-agro-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-layer-group text-agro-500"></i> Fatorial Duplo (AxB)</h3>
+                            <p class="text-sm text-slate-500 mb-5">CSV obrigatório no formato <span class="font-mono">A;B;Bloco;Valor</span>.</p>
+                            <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
+                                <input type="file" id="file-fatorial" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('fatorial')">
+                                <button onclick="document.getElementById('file-fatorial').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
+                                <p id="file-name-fatorial" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
+                                <button id="btn-proc-fatorial" onclick="processarModuloUpload('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="xl:col-span-2 space-y-8">
+                        <div id="result-fatorial" class="hidden agro-card p-8"></div>
+                        <div id="placeholder-fatorial" class="flex flex-col items-center justify-center py-24 text-center">
+                            <i class="fa-solid fa-table-cells-large text-6xl text-slate-200 mb-6"></i>
+                            <h3 class="text-xl font-bold text-slate-400">Aguardando CSV fatorial...</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div id="module-parcelas" class="module-content hidden">
-                <div class="flex flex-col items-center justify-center py-32 text-center">
-                    <i class="fa-solid fa-toolbox text-6xl text-slate-200 mb-6"></i>
-                    <h3 class="text-2xl font-bold text-slate-400">Módulo Parcelas em Manutenção</h3>
-                    <p class="text-slate-400 mt-2">Este módulo está sendo atualizado para a nova interface Agro-Premium.</p>
+            <div id="module-parcelas" class="module-content hidden space-y-8">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-1 space-y-6">
+                        <div class="agro-card p-6">
+                            <h3 class="font-bold text-agro-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-table-cells text-agro-500"></i> Parcelas Subdivididas</h3>
+                            <p class="text-sm text-slate-500 mb-5">CSV obrigatório no formato <span class="font-mono">A;B;Bloco;Valor</span>.</p>
+                            <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
+                                <input type="file" id="file-parcelas" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('parcelas')">
+                                <button onclick="document.getElementById('file-parcelas').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
+                                <p id="file-name-parcelas" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
+                                <button id="btn-proc-parcelas" onclick="processarModuloUpload('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="xl:col-span-2 space-y-8">
+                        <div id="result-parcelas" class="hidden agro-card p-8"></div>
+                        <div id="placeholder-parcelas" class="flex flex-col items-center justify-center py-24 text-center">
+                            <i class="fa-solid fa-sitemap text-6xl text-slate-200 mb-6"></i>
+                            <h3 class="text-xl font-bold text-slate-400">Aguardando CSV de parcelas...</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -636,8 +674,9 @@
                                 </div>
                                 <div class="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center">
                                     <p class="text-xs text-slate-400 mb-3">Opcional: CSV no formato <span class="font-mono">Dose;Produtividade</span></p>
-                                    <input type="file" id="file-direto" accept=".csv" class="hidden">
+                                    <input type="file" id="file-direto" accept=".csv" class="hidden" onchange="carregarCsvDireto(this)">
                                     <button onclick="document.getElementById('file-direto').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar CSV</button>
+                                    <p id="file-name-direto" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
                                 </div>
                                 <button onclick="calcularRegressaoDireta(this)" class="agro-btn agro-btn-primary w-full py-4">
                                     <i class="fa-solid fa-chart-line"></i> Calcular Dose Ótima
@@ -739,6 +778,82 @@
 
         // Implementação das funções de cálculo e matrizes adaptadas para a nova UI
         // (Nota: Mantive a lógica original do usuário para garantir funcionalidade)
+
+        function mostrarArquivoSelecionado(modulo) {
+            const input = document.getElementById(`file-${modulo === 'regressaodireta' ? 'direto' : modulo}`);
+            const nome = document.getElementById(`file-name-${modulo === 'regressaodireta' ? 'direto' : modulo}`);
+            const botao = document.getElementById(`btn-proc-${modulo}`);
+            if (input && input.files && input.files[0]) {
+                if (nome) nome.innerHTML = `<i class="fa-solid fa-file-csv text-agro-600"></i> ${input.files[0].name}`;
+                if (botao) botao.classList.remove('hidden');
+                showToast(`Arquivo ${input.files[0].name} carregado. Clique em Iniciar Cálculo.`, 'success');
+            } else {
+                if (nome) nome.textContent = 'Nenhum arquivo selecionado';
+                if (botao) botao.classList.add('hidden');
+            }
+        }
+
+        async function processarModuloUpload(modulo, btnElement) {
+            const file = document.getElementById(`file-${modulo}`).files[0];
+            if (!file) { showToast('Selecione um arquivo CSV antes de iniciar o cálculo.', 'erro'); return; }
+            const result = document.getElementById(`result-${modulo}`);
+            const placeholder = document.getElementById(`placeholder-${modulo}`);
+            const originalHtml = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                form.append('tipo_teste', 'anova');
+                form.append('modelo_regr', 'quadratica');
+                const resp = await fetch(`${API_BASE}/${modulo}`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
+                placeholder.classList.add('hidden');
+                result.classList.remove('hidden');
+                result.innerHTML = `
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-agro-900 tracking-tight">Análise de Variância (ANOVA)</h3>
+                            <p class="text-sm text-slate-500 font-medium">${modulo === 'fatorial' ? 'Fatorial Duplo (AxB)' : 'Parcelas Subdivididas'}</p>
+                        </div>
+                        <div class="px-4 py-2 rounded-xl bg-agro-50 border border-agro-200 text-agro-800 font-black text-lg">CV: ${data.cv || '-'}</div>
+                    </div>
+                    ${tabelaHtml(data.anova || [])}
+                `;
+                showToast('Cálculo concluído com sucesso!', 'success');
+            } catch (err) {
+                showToast(err.message, 'erro', 7000);
+            } finally {
+                btnElement.disabled = false;
+                btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        async function carregarCsvDireto(input) {
+            mostrarArquivoSelecionado('regressaodireta');
+            const file = input.files && input.files[0];
+            if (!file) return;
+            try {
+                const texto = await file.text();
+                const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                const doses = [];
+                const prods = [];
+                for (const linha of linhas) {
+                    const partes = linha.includes(';') ? linha.split(';') : linha.split(/\t|,/);
+                    if (partes.length < 2) continue;
+                    const d = Number(String(partes[0]).trim().replace(',', '.'));
+                    const p = Number(String(partes[1]).trim().replace(',', '.'));
+                    if (Number.isFinite(d) && Number.isFinite(p)) { doses.push(partes[0].trim()); prods.push(partes[1].trim()); }
+                }
+                if (doses.length < 2) throw new Error('CSV inválido. Use Dose;Produtividade, com uma linha por par.');
+                document.getElementById('doses-direto').value = doses.join('\n');
+                document.getElementById('prod-direto').value = prods.join('\n');
+                showToast('CSV importado para os campos. Clique em Calcular Dose Ótima.', 'success');
+            } catch (err) {
+                showToast(err.message, 'erro', 7000);
+            }
+        }
         
         async function processarSimples(isManual, btnElement) {
             const placeholder = document.getElementById('placeholder-simples');
@@ -850,7 +965,6 @@
                     if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha no cálculo.');
                 } catch (erroRede) {
                     // Se o backend ainda não foi publicado/ligado, mantém a tela funcionando com o mesmo cálculo no navegador.
-                    if (file) throw new Error('Não consegui acessar o backend para ler o CSV. Publique o backend_corrigido.py ou use os campos Dose/Produtividade.');
                     data = calcularRegressaoDiretaLocal(
                         document.getElementById('doses-direto').value,
                         document.getElementById('prod-direto').value,
