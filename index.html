@@ -18,42 +18,12 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { 
-                        sans: ['Plus Jakarta Sans', 'sans-serif'], 
-                        mono: ['JetBrains Mono', 'monospace'] 
-                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
                     colors: {
-                        agro: {
-                            50: '#f0f9f1',
-                            100: '#dcf1e1',
-                            200: '#bbe1c6',
-                            300: '#8fc8a0',
-                            400: '#5eab75',
-                            500: '#3d8e56',
-                            600: '#2d7244',
-                            700: '#265b39',
-                            800: '#1f492f',
-                            900: '#1b3c28',
-                            950: '#0e2116',
-                        },
-                        earth: {
-                            50: '#fbf8f4',
-                            100: '#f4ece1',
-                            200: '#e8d8c3',
-                            300: '#d6bc9b',
-                            400: '#c29d74',
-                            500: '#b18356',
-                            600: '#a37148',
-                            700: '#885c3c',
-                            800: '#6f4c35',
-                            900: '#5a3f2d',
-                        },
-                        surface: { 50: '#f8fafc', 100: '#f1f5f9', 800: '#1e293b', 900: '#0f172a' }
+                        agro: { 50: '#f0f9f1', 100: '#dcf1e1', 200: '#bbe1c6', 300: '#8fc8a0', 400: '#5eab75', 500: '#3d8e56', 600: '#2d7244', 700: '#265b39', 800: '#1f492f', 900: '#1b3c28', 950: '#0e2116' },
+                        earth: { 50: '#fbf8f4', 100: '#f4ece1', 200: '#e8d8c3', 300: '#d6bc9b', 400: '#c29d74', 500: '#b18356', 600: '#a37148', 700: '#885c3c', 800: '#6f4c35', 900: '#5a3f2d' },
                     },
-                    boxShadow: { 
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)', 
-                        'agro-glow': '0 0 15px rgba(61, 142, 86, 0.2)' 
-                    }
+                    boxShadow: { 'agro-glow': '0 0 15px rgba(61, 142, 86, 0.2)', 'soft': '0 10px 40px -10px rgba(27, 60, 40, 0.05)' }
                 }
             }
         }
@@ -61,359 +31,145 @@
 
     <style>
         body { background-color: #fdfdfb; color: #2d3748; -webkit-font-smoothing: antialiased; }
-        
         .hidden-page { display: none !important; }
         .page-active { display: flex !important; }
         .hidden { display: none !important; }
         
-        .agro-card { 
-            background: white; 
-            border-radius: 20px; 
-            border: 1px solid #e9efea; 
-            box-shadow: 0 10px 40px -10px rgba(27, 60, 40, 0.05); 
-            transition: transform 0.2s ease, box-shadow 0.2s ease; 
-            overflow: hidden; 
-        }
+        .agro-card { background: white; border-radius: 24px; border: 1px solid #e9efea; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03); overflow: hidden; transition: all 0.3s ease; }
+        .agro-card:hover { box-shadow: 0 10px 40px -10px rgba(27, 60, 40, 0.08); }
         
-        .agro-input { 
-            width: 100%; 
-            padding: 0.875rem 1.25rem; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 12px; 
-            font-size: 16px; /* Melhor para mobile evitar zoom */
-            transition: all 0.2s; 
-            background-color: #ffffff; 
-            color: #1a202c; 
-        }
-        .agro-input:focus { 
-            outline: none; 
-            border-color: #3d8e56; 
-            box-shadow: 0 0 0 4px rgba(61, 142, 86, 0.1); 
-        }
+        .agro-input { width: 100%; padding: 0.875rem 1.25rem; border: 1px solid #e2e8f0; border-radius: 14px; font-size: 16px; transition: all 0.2s; background-color: #ffffff; }
+        .agro-input:focus { outline: none; border-color: #3d8e56; box-shadow: 0 0 0 4px rgba(61, 142, 86, 0.1); }
         
-        .agro-btn { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 0.625rem; 
-            padding: 0.875rem 1.75rem; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 0.9375rem; 
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer; 
-            border: none; 
-            min-height: 48px; /* Melhor para toque */
-        }
-        .agro-btn-primary { 
-            background: linear-gradient(135deg, #3d8e56 0%, #1b3c28 100%); 
-            color: white; 
-            box-shadow: 0 4px 12px rgba(27, 60, 40, 0.2); 
-        }
-        .agro-btn-primary:hover:not(:disabled) { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 20px rgba(27, 60, 40, 0.25); 
-            filter: brightness(1.1);
-        }
-        
-        .agro-btn-outline { 
-            background: white; 
-            border: 1.5px solid #e2e8f0; 
-            color: #4a5568; 
-        }
-        .agro-btn-outline:hover:not(:disabled) { 
-            border-color: #3d8e56; 
-            color: #3d8e56; 
-            background: #f0f9f1; 
-        }
+        .agro-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border-radius: 14px; font-weight: 700; font-size: 0.9375rem; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: none; min-height: 52px; }
+        .agro-btn-primary { background: linear-gradient(135deg, #3d8e56 0%, #1b3c28 100%); color: white; box-shadow: 0 4px 12px rgba(27, 60, 40, 0.2); }
+        .agro-btn-primary:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
+        .agro-btn-outline { background: white; border: 1.5px solid #e2e8f0; color: #4a5568; }
+        .agro-btn-outline:hover:not(:disabled) { border-color: #3d8e56; color: #3d8e56; background: #f0f9f1; }
 
         .agro-tabs { display: flex; gap: 1rem; border-bottom: 2px solid #f1f5f9; margin-bottom: 2rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .agro-tab { 
-            padding: 1rem 0.5rem; 
-            font-weight: 700; 
-            color: #718096; 
-            border-bottom: 3px solid transparent; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            font-size: 0.875rem; 
-            margin-bottom: -2px; 
-            white-space: nowrap;
-        }
-        .agro-tab:hover { color: #3d8e56; }
+        .agro-tab { padding: 1rem 0.5rem; font-weight: 700; color: #718096; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; font-size: 0.9375rem; white-space: nowrap; margin-bottom: -2px; }
         .agro-tab.active { color: #3d8e56; border-bottom-color: #3d8e56; }
 
-        .table-wrapper { 
-            overflow-x: auto; 
-            border-radius: 16px; 
-            border: 1px solid #edf2f7; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-            -webkit-overflow-scrolling: touch;
-        }
+        .table-wrapper { overflow-x: auto; border-radius: 18px; border: 1px solid #edf2f7; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        th { 
-            background-color: #f8fafc; 
-            padding: 1rem; 
-            font-size: 0.7rem; 
-            font-weight: 800; 
-            color: #4a5568; 
-            text-transform: uppercase; 
-            letter-spacing: 0.075em; 
-            border-bottom: 2px solid #edf2f7; 
-            white-space: nowrap;
-        }
-        td { 
-            padding: 1rem; 
-            font-size: 0.875rem; 
-            color: #2d3748; 
-            border-bottom: 1px solid #edf2f7; 
-            background: white; 
-        }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background-color: #f8fafc; }
+        th { background-color: #f8fafc; padding: 1.25rem 1rem; font-size: 0.75rem; font-weight: 800; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #edf2f7; }
+        td { padding: 1.125rem 1rem; font-size: 0.875rem; color: #2d3748; border-bottom: 1px solid #edf2f7; background: white; }
         
         .data-mono { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: #4a5568; }
-        .sig-badge { 
-            display: inline-flex;
-            align-items: center;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-weight: 800;
-            font-size: 0.7rem;
-        }
+        .sig-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.75rem; }
         .sig-active { background-color: #dcf1e1; color: #1b3c28; }
-        .sig-inactive { background-color: #f1f5f9; color: #94a3b8; }
 
-        #toast-container { position: fixed; bottom: 1rem; right: 1rem; left: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
-        @media (min-width: 640px) {
-            #toast-container { left: auto; width: 400px; }
-        }
-        .toast { 
-            padding: 1rem 1.25rem; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 0.875rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 0.75rem; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
-            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-            color: white; 
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        #toast-container { position: fixed; bottom: 2rem; right: 2rem; left: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 1rem; }
+        @media (min-width: 640px) { #toast-container { left: auto; width: 400px; } }
+        .toast { padding: 1.25rem 1.75rem; border-radius: 16px; font-weight: 600; font-size: 0.9375rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; color: white; }
         .toast.success { background: linear-gradient(135deg, #3d8e56, #1b3c28); }
         .toast.error { background: linear-gradient(135deg, #e53e3e, #9b2c2c); }
         .toast.info { background: linear-gradient(135deg, #3182ce, #2a4365); }
+        @keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        @keyframes slideInRight { 
-            from { transform: translateY(100%); opacity: 0; } 
-            to { transform: translateY(0); opacity: 1; } 
-        }
-        @media (min-width: 640px) {
-            @keyframes slideInRight { 
-                from { transform: translateX(120%); opacity: 0; } 
-                to { transform: translateX(0); opacity: 1; } 
-            }
-        }
-
-        .nav-item { 
-            margin: 0.25rem 0.5rem;
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            transition: all 0.2s;
-            font-weight: 600;
-            color: #718096;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            width: calc(100% - 1rem);
-            text-align: left;
-        }
+        .nav-item { margin: 0.25rem 0.75rem; padding: 0.875rem 1rem; border-radius: 14px; transition: all 0.2s; font-weight: 600; color: #718096; display: flex; align-items: center; gap: 0.75rem; width: calc(100% - 1.5rem); }
         .nav-item:hover { background-color: #f0f9f1; color: #3d8e56; }
         .nav-item.active { background-color: #3d8e56; color: white; box-shadow: 0 4px 12px rgba(61, 142, 86, 0.2); }
 
-        .hero-pattern {
-            background-image: radial-gradient(#3d8e56 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            opacity: 0.1;
-        }
-
-        /* Mobile Sidebar Toggle */
-        #mobile-menu-overlay { transition: opacity 0.3s ease; }
-        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hero-pattern { background-image: radial-gradient(#3d8e56 0.5px, transparent 0.5px); background-size: 24px 24px; opacity: 0.1; }
+        
+        .grid-input { width: 100%; border: none; background: transparent; padding: 0.625rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; text-align: center; }
+        .grid-input:focus { outline: none; background: #f0f9f1; border-radius: 8px; }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden selection:bg-agro-500 selection:text-white relative">
+<body class="h-screen w-screen overflow-hidden relative">
 
     <div id="toast-container"></div>
 
     <!-- Guia Rápido -->
     <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-agro-950/40 backdrop-blur-md transition-opacity" onclick="fecharManual()"></div>
-        <div class="bg-white rounded-[24px] shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative border border-agro-100">
-            <div class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 sm:px-8 sm:py-6 flex justify-between items-center z-20">
-                <div>
-                    <h3 class="text-xl sm:text-2xl font-extrabold text-agro-900 tracking-tight">Guia do Pesquisador</h3>
-                    <p class="text-xs sm:text-sm text-slate-500 font-medium">Como processar seus ensaios</p>
-                </div>
-                <button onclick="fecharManual()" class="text-slate-400 hover:text-agro-600 bg-slate-100 w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+        <div class="absolute inset-0 bg-agro-950/40 backdrop-blur-md" onclick="fecharManual()"></div>
+        <div class="bg-white rounded-[28px] shadow-2xl z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative border border-agro-100 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-extrabold text-agro-900 tracking-tight">Guia do Pesquisador</h3>
+                <button onclick="fecharManual()" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-agro-600 transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="p-6 sm:p-8 text-slate-600 leading-relaxed">
-                <div class="grid gap-6">
-                    <section>
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-8 h-8 rounded-lg bg-agro-100 text-agro-700 flex items-center justify-center font-bold text-sm">1</div>
-                            <h4 class="font-bold text-agro-900">Importação CSV</h4>
-                        </div>
-                        <p class="text-sm mb-3">Exporte seu Excel como CSV e suba aqui.</p>
-                        <div class="grid grid-cols-1 gap-2">
-                            <div class="bg-slate-50 border border-slate-100 rounded-xl p-3">
-                                <span class="text-[10px] uppercase font-bold text-agro-600 block mb-1">DBC / DIC</span>
-                                <code class="text-xs font-mono text-slate-700">Tratamento; Bloco; Valor</code>
-                            </div>
-                        </div>
-                    </section>
-                    <section>
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-8 h-8 rounded-lg bg-earth-100 text-earth-700 flex items-center justify-center font-bold text-sm">2</div>
-                            <h4 class="font-bold text-agro-900">Lançamento Direto</h4>
-                        </div>
-                        <p class="text-sm">Ideal para o campo. Preencha a grade diretamente na tela do celular.</p>
-                    </section>
+            <div class="space-y-6 text-slate-600 text-sm leading-relaxed">
+                <p>O Solver Agro processa seus dados com rigor estatístico. Siga os padrões abaixo para importar seus arquivos CSV (separados por ponto-e-vírgula):</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <span class="font-bold text-agro-700 block mb-1">Fator Único</span>
+                        <code class="text-xs">Tratamento; Bloco; Valor</code>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <span class="font-bold text-agro-700 block mb-1">Fatorial Duplo</span>
+                        <code class="text-xs">FatorA; FatorB; Bloco; Valor</code>
+                    </div>
                 </div>
             </div>
-            <div class="bg-slate-50 px-6 py-4 sm:px-8 sm:py-6 border-t border-slate-100">
-                <button class="agro-btn agro-btn-primary w-full" onclick="fecharManual()">Entendido</button>
-            </div>
+            <button class="agro-btn agro-btn-primary w-full mt-8" onclick="fecharManual()">Iniciar Trabalho</button>
         </div>
     </div>
 
-    <!-- Landing Page -->
+    <!-- Landing Page (Visual Premium) -->
     <div id="landing-page" class="page flex flex-col fixed inset-0 z-50 bg-[#fdfdfb] overflow-y-auto w-full h-full">
         <div class="absolute inset-0 hero-pattern pointer-events-none"></div>
-        
-        <nav class="w-full px-6 py-4 sm:px-8 sm:py-6 flex justify-between items-center z-10 shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-agro-500 to-agro-800 flex items-center justify-center text-white shadow-agro-glow">
-                    <i class="fa-solid fa-leaf text-lg sm:text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-black text-xl sm:text-2xl text-agro-950 leading-none tracking-tight">SOLVER <span class="text-agro-500">AGRO</span></h1>
-                    <p class="text-[8px] sm:text-[10px] text-agro-700 font-bold tracking-[0.2em] uppercase mt-1">Field Intelligence</p>
-                </div>
+        <nav class="w-full px-8 py-8 flex justify-between items-center z-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-agro-500 to-agro-800 flex items-center justify-center text-white shadow-agro-glow"><i class="fa-solid fa-leaf text-xl"></i></div>
+                <h1 class="font-black text-2xl text-agro-950 tracking-tight">SOLVER <span class="text-agro-500">AGRO</span></h1>
             </div>
-            <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-outline border-agro-200 text-agro-800 text-xs sm:text-sm px-4 py-2">
-                <i class="fa-solid fa-right-to-bracket"></i> <span class="hidden xs:inline ml-1">Entrar</span>
-            </button>
+            <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-outline px-6">Entrar no Painel</button>
         </nav>
-
-        <main class="flex-1 flex flex-col justify-center relative py-8 px-6">
-            <div class="container mx-auto relative z-10 text-center">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-agro-50 border border-agro-100 text-agro-800 font-bold text-[10px] tracking-wide mb-6">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-agro-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-agro-600"></span>
-                    </span>
-                    PADRÃO CIENTÍFICO
-                </div>
-                
-                <h2 class="text-4xl sm:text-6xl md:text-8xl font-black text-agro-950 tracking-tighter mb-6 max-w-5xl mx-auto leading-[1.1] sm:leading-[0.95]">
-                    Dados de campo em <span class="text-transparent bg-clip-text bg-gradient-to-r from-agro-600 to-earth-500">decisões de safra.</span>
-                </h2>
-                
-                <p class="text-base sm:text-xl md:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto font-medium leading-relaxed">
-                    A plataforma definitiva para agrônomos. 
-                    Processe estatísticas com precisão absoluta, direto do campo.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-                    <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary px-8 py-4 text-base sm:text-lg">
-                        <i class="fa-solid fa-gauge-high mr-2"></i> Iniciar Análise
-                    </button>
-                    <button onclick="abrirManual()" class="agro-btn agro-btn-outline px-8 py-4 text-base sm:text-lg bg-white/80">
-                        <i class="fa-solid fa-book-open mr-2"></i> Guia Técnico
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-6xl mx-auto text-left">
-                    <div class="agro-card p-6 sm:p-8 bg-white/40 backdrop-blur-md border-agro-50">
-                        <div class="w-12 h-12 rounded-xl bg-agro-100 text-agro-600 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-chart-pie"></i></div>
-                        <h3 class="font-bold text-lg text-agro-950 mb-2">Estatística de Campo</h3>
-                        <p class="text-slate-500 text-sm">DIC, DBC, Fatoriais e Parcelas com rigor científico.</p>
-                    </div>
-                    <div class="agro-card p-6 sm:p-8 bg-white/40 backdrop-blur-md border-agro-50">
-                        <div class="w-12 h-12 rounded-xl bg-earth-100 text-earth-600 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                        <h3 class="font-bold text-lg text-agro-950 mb-2">Dose Ótima</h3>
-                        <p class="text-slate-500 text-sm">Cálculo de máxima eficiência técnica para insumos.</p>
-                    </div>
-                    <div class="agro-card p-6 sm:p-8 bg-white/40 backdrop-blur-md border-agro-50">
-                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-file-signature"></i></div>
-                        <h3 class="font-bold text-lg text-agro-950 mb-2">Laudos Técnicos</h3>
-                        <p class="text-slate-500 text-sm">Relatórios prontos para publicação ou entrega.</p>
-                    </div>
-                </div>
+        <main class="flex-1 flex flex-col justify-center items-center px-6 text-center py-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-agro-50 border border-agro-100 text-agro-800 font-bold text-xs mb-8">PADRÃO CIENTÍFICO INTERNACIONAL</div>
+            <h2 class="text-5xl sm:text-8xl font-black text-agro-950 mb-8 leading-[1] tracking-tighter">Decisões de campo com <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-agro-600 to-earth-500">precisão absoluta.</span></h2>
+            <p class="text-xl text-slate-600 mb-12 max-w-3xl font-medium">A plataforma definitiva para agrônomos e pesquisadores. Processe ANOVA, testes de médias e regressões direto do campo.</p>
+            <div class="flex flex-col sm:flex-row gap-6">
+                <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary px-12 py-5 text-lg">Abrir Painel de Análise</button>
+                <button onclick="abrirManual()" class="agro-btn agro-btn-outline px-12 py-5 text-lg bg-white/80">Guia Técnico</button>
             </div>
         </main>
     </div>
 
-    <!-- Dashboard de Análise -->
+    <!-- Dashboard (Fixed Mobile UX) -->
     <div id="analysis-page" class="page hidden-page flex flex-col sm:flex-row h-full w-full bg-[#f8fafc] overflow-hidden">
         
         <!-- Mobile Header -->
-        <header class="sm:hidden flex items-center justify-between px-6 py-4 bg-agro-950 text-white z-30 shadow-lg">
+        <header class="sm:hidden flex items-center justify-between px-6 py-4 bg-agro-950 text-white z-[60] shadow-xl">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-leaf text-agro-400"></i>
                 <span class="font-black tracking-tight">SOLVER AGRO</span>
             </div>
-            <button onclick="toggleMobileMenu()" class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-lg">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <button onclick="toggleMobileMenu()" class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-xl"><i class="fa-solid fa-bars"></i></button>
         </header>
 
-        <!-- Sidebar (Responsive) -->
-        <div id="mobile-menu-overlay" class="fixed inset-0 bg-agro-950/60 backdrop-blur-sm z-40 hidden sm:hidden" onclick="toggleMobileMenu()"></div>
+        <!-- Sidebar Overlay -->
+        <div id="mobile-menu-overlay" class="fixed inset-0 bg-agro-950/60 backdrop-blur-sm z-[70] hidden sm:hidden" onclick="toggleMobileMenu()"></div>
         
-        <aside id="sidebar" class="fixed sm:relative inset-y-0 left-0 w-72 bg-agro-950 h-full flex flex-col shrink-0 z-50 sm:z-20 shadow-2xl transform -translate-x-full sm:translate-x-0">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed sm:relative inset-y-0 left-0 w-72 bg-agro-950 h-full flex flex-col shrink-0 z-[80] sm:z-20 transform -translate-x-full sm:translate-x-0 shadow-2xl">
             <div class="p-8 hidden sm:block">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-agro-500 flex items-center justify-center text-white">
-                        <i class="fa-solid fa-leaf"></i>
-                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-agro-500 flex items-center justify-center text-white"><i class="fa-solid fa-leaf"></i></div>
                     <span class="text-white font-black text-xl tracking-tight">SOLVER <span class="text-agro-400">AGRO</span></span>
                 </div>
             </div>
-            
             <div class="p-6 sm:hidden flex justify-between items-center border-b border-white/10 mb-4">
                 <span class="text-white font-bold">Menu de Análise</span>
-                <button onclick="toggleMobileMenu()" class="text-white/50"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="toggleMobileMenu()" class="text-white/40"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
             <nav class="flex-1 space-y-1">
-                <button onclick="showModule('simples'); toggleMobileMenu()" id="nav-simples" class="nav-item active">
-                    <i class="fa-solid fa-vial"></i> Fator Único (DBC/DIC)
-                </button>
-                <button onclick="showModule('fatorial'); toggleMobileMenu()" id="nav-fatorial" class="nav-item">
-                    <i class="fa-solid fa-layer-group"></i> Fatorial Duplo (AxB)
-                </button>
-                <button onclick="showModule('parcelas'); toggleMobileMenu()" id="nav-parcelas" class="nav-item">
-                    <i class="fa-solid fa-table-cells"></i> Parcelas Subdivididas
-                </button>
+                <button onclick="selectModule('simples')" id="nav-simples" class="nav-item active"><i class="fa-solid fa-vial"></i> Fator Único</button>
+                <button onclick="selectModule('fatorial')" id="nav-fatorial" class="nav-item"><i class="fa-solid fa-layer-group"></i> Fatorial Duplo</button>
+                <button onclick="selectModule('parcelas')" id="nav-parcelas" class="nav-item"><i class="fa-solid fa-table-cells"></i> Parcelas Subdivididas</button>
                 <div class="mx-6 my-6 border-t border-white/10"></div>
-                <button onclick="abrirManual(); toggleMobileMenu()" class="nav-item text-agro-300">
-                    <i class="fa-solid fa-circle-question"></i> Central de Ajuda
-                </button>
+                <button onclick="abrirManual(); if(window.innerWidth < 640) toggleMobileMenu();" class="nav-item text-agro-300"><i class="fa-solid fa-circle-question"></i> Central de Ajuda</button>
             </nav>
-
             <div class="p-6">
-                <button onclick="showPage('landing-page')" class="w-full agro-btn agro-btn-outline border-white/20 text-white bg-transparent hover:bg-white/10">
-                    <i class="fa-solid fa-house"></i> Início
-                </button>
+                <button onclick="showPage('landing-page')" class="w-full agro-btn agro-btn-outline border-white/20 text-white bg-transparent hover:bg-white/10"><i class="fa-solid fa-house"></i> Início</button>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 h-full overflow-y-auto relative p-4 sm:p-8 lg:p-12">
+        <main class="flex-1 h-full overflow-y-auto relative p-4 sm:p-10 lg:p-12">
             <header class="hidden sm:flex justify-between items-center mb-10">
                 <div>
                     <h2 id="module-title" class="text-3xl font-black text-agro-950 tracking-tight">Análise de Fator Único</h2>
@@ -425,135 +181,23 @@
                 </div>
             </header>
 
-            <!-- Módulo Simples -->
-            <div id="module-simples" class="module-content space-y-6 sm:y-8">
-                <!-- Mobile Module Title -->
-                <div class="sm:hidden mb-4">
-                    <h2 class="text-xl font-black text-agro-950">Fator Único</h2>
-                    <p class="text-xs text-slate-500">DBC / DIC / DQL</p>
-                </div>
-
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
-                    <!-- Configurações -->
-                    <div class="xl:col-span-1 space-y-6">
-                        <div class="agro-card p-5 sm:p-6">
-                            <h3 class="font-bold text-agro-900 mb-4 flex items-center gap-2">
-                                <i class="fa-solid fa-sliders text-agro-500"></i> Parâmetros
-                            </h3>
-                            
-                            <div class="space-y-5">
-                                <div class="agro-tabs">
-                                    <div class="agro-tab active" onclick="switchTab(this, 'upload-simples')">Importar CSV</div>
-                                    <div class="agro-tab" onclick="switchTab(this, 'manual-simples')">Lançamento de Campo</div>
-                                </div>
-
-                                <div id="upload-simples" class="tab-pane">
-                                    <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl text-center">
-                                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
-                                        <p class="text-xs text-slate-400 mb-4">Formato: <span id="lbl-formato-simples" class="font-mono">Trat;Bloco;Val</span></p>
-                                        <input type="file" id="file-simples" accept=".csv" class="hidden" onchange="processarSimples(false, document.getElementById('btn-proc-simples'))">
-                                        <button onclick="document.getElementById('file-simples').click()" class="agro-btn agro-btn-outline w-full">Selecionar Arquivo</button>
-                                    </div>
-                                </div>
-
-                                <div id="manual-simples" class="tab-pane hidden">
-                                    <div class="grid grid-cols-2 gap-3 mb-4">
-                                        <div>
-                                            <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Tratamentos</label>
-                                            <input type="number" id="inp-t-simples" value="4" class="agro-input">
-                                        </div>
-                                        <div id="div-r-simples">
-                                            <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Repetições</label>
-                                            <input type="number" id="inp-r-simples" value="3" class="agro-input">
-                                        </div>
-                                    </div>
-                                    <button onclick="gerarMatrizSimples()" class="agro-btn agro-btn-outline w-full mb-4">
-                                        <i class="fa-solid fa-table-columns"></i> Montar Grade
-                                    </button>
-                                    <div id="matriz-simples" class="max-h-[300px] overflow-y-auto rounded-xl border border-slate-100"></div>
-                                    <button id="btn-calc-matriz-simples" onclick="processarSimples(true, this)" class="agro-btn agro-btn-primary w-full mt-4 hidden">
-                                        Processar Estatística
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Resultados -->
-                    <div class="xl:col-span-2 space-y-6 sm:y-8">
-                        <div id="result-simples" class="hidden space-y-6 sm:y-8">
-                            <div class="agro-card p-5 sm:p-8">
-                                <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
-                                    <div>
-                                        <h3 class="text-lg sm:text-xl font-extrabold text-agro-900 tracking-tight">ANOVA</h3>
-                                        <p class="text-xs sm:text-sm text-slate-500 font-medium">Análise de Variância</p>
-                                    </div>
-                                    <div id="cv-simples-badge"></div>
-                                </div>
-                                
-                                <div id="anova-simples-table" class="mb-8"></div>
-                                
-                                <div class="bg-agro-50/50 rounded-2xl p-5 border border-agro-100">
-                                    <h4 class="font-bold text-agro-900 mb-4 text-sm sm:text-base">Análise Posterior</h4>
-                                    <div class="grid grid-cols-1 gap-4">
-                                        <select id="metodo-simples" class="agro-input" onchange="toggleRegrFields('simples')">
-                                            <option value="tukey">Teste de Tukey (HSD)</option>
-                                            <option value="duncan">Teste de Duncan</option>
-                                            <option value="regr">Regressão Polinomial</option>
-                                        </select>
-                                        <button onclick="rodarPostHoc('simples', this)" class="agro-btn agro-btn-primary">
-                                            Executar Teste
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="posthoc-simples-output" class="hidden agro-card p-5 sm:p-8 border-t-4 border-t-agro-500"></div>
-                            
-                            <div class="flex justify-center pb-8">
-                                <button onclick="baixarLaudoCompleto('simples')" class="agro-btn agro-btn-outline w-full sm:w-auto px-10">
-                                    <i class="fa-solid fa-file-pdf"></i> Baixar Laudo Completo
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Placeholder -->
-                        <div id="placeholder-simples" class="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
-                            <div class="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center text-slate-200 text-3xl mb-4">
-                                <i class="fa-solid fa-microscope"></i>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-400">Aguardando dados...</h3>
-                            <p class="text-slate-400 text-sm max-w-xs mt-2 px-6">Importe um CSV ou use a grade de campo para começar.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="module-fatorial" class="module-content hidden py-20 text-center">
-                <i class="fa-solid fa-toolbox text-4xl text-slate-200 mb-4"></i>
-                <p class="text-slate-400">Módulo em atualização mobile.</p>
-            </div>
-            
-            <div id="module-parcelas" class="module-content hidden py-20 text-center">
-                <i class="fa-solid fa-toolbox text-4xl text-slate-200 mb-4"></i>
-                <p class="text-slate-400">Módulo em atualização mobile.</p>
+            <div id="module-content-area" class="space-y-8">
+                <!-- Conteúdo renderizado dinamicamente -->
             </div>
         </main>
     </div>
 
     <script>
+        const API_URL = "https://solverestatistica.pythonanywhere.com/api/v1/analise/";
+        let currentModule = 'simples';
+        let arquivosData = { simples: null, fatorial: null, parcelas: null };
+
         function toggleMobileMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobile-menu-overlay');
             const isHidden = sidebar.classList.contains('-translate-x-full');
-            
-            if (isHidden) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            }
+            if (isHidden) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
+            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
         }
 
         function showPage(id) {
@@ -562,16 +206,100 @@
             document.getElementById(id).classList.add('page-active');
         }
 
-        function showModule(mod) {
-            document.querySelectorAll('.module-content').forEach(m => m.classList.add('hidden'));
-            document.getElementById(`module-${mod}`).classList.remove('hidden');
-            
+        function selectModule(mod) {
+            currentModule = mod;
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`nav-${mod}`).classList.add('active');
             
-            if(window.innerWidth >= 640) {
-                const titles = { simples: "Fator Único (DBC/DIC)", fatorial: "Fatorial Duplo (AxB)", parcelas: "Parcelas Subdivididas" };
+            if(window.innerWidth < 640) toggleMobileMenu();
+            
+            const titles = { simples: "Fator Único (DIC/DBC)", fatorial: "Fatorial Duplo (AxB)", parcelas: "Parcelas Subdivididas" };
+            const descs = { simples: "Delineamentos inteiramente casualizados ou em blocos.", fatorial: "Interação entre dois fatores principais.", parcelas: "Fatores aplicados em diferentes níveis de parcelas." };
+            
+            if(document.getElementById('module-title')) {
                 document.getElementById('module-title').innerText = titles[mod];
+                document.getElementById('module-desc').innerText = descs[mod];
+            }
+            
+            renderModule(mod);
+        }
+
+        function renderModule(mod) {
+            const container = document.getElementById('module-content-area');
+            container.innerHTML = `
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-1 space-y-6">
+                        <div class="agro-card p-6 sm:p-8">
+                            <div class="agro-tabs">
+                                <div class="agro-tab active" onclick="switchTab(this, 'upload-${mod}')">Importar CSV</div>
+                                <div class="agro-tab" onclick="switchTab(this, 'manual-${mod}')">Lançamento de Campo</div>
+                            </div>
+
+                            <div id="upload-${mod}" class="tab-pane">
+                                ${mod === 'simples' ? `
+                                <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2 tracking-widest">Delineamento</label>
+                                    <select id="delin-simples" class="agro-input text-sm" onchange="updateSimplesHint()">
+                                        <option value="dbc">DBC (Blocos)</option>
+                                        <option value="dic">DIC (Casualizado)</option>
+                                        <option value="dql">DQL (Quadrado Latino)</option>
+                                    </select>
+                                </div>` : ''}
+                                
+                                <div class="p-8 border-2 border-dashed border-slate-200 rounded-[24px] text-center hover:border-agro-400 transition-all group">
+                                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-300 mb-4 group-hover:text-agro-400 transition-colors"></i>
+                                    <p class="text-sm font-bold text-slate-600 mb-1">Arraste sua planilha aqui</p>
+                                    <p class="text-xs text-slate-400 mb-6" id="format-hint-${mod}">${mod === 'simples' ? 'Tratamento; Bloco; Valor' : (mod === 'fatorial' ? 'FatorA; FatorB; Bloco; Valor' : 'Parcela; Subparcela; Bloco; Valor')}</p>
+                                    <input type="file" id="file-${mod}" accept=".csv" class="hidden" onchange="handleFileUpload('${mod}')">
+                                    <button onclick="document.getElementById('file-${mod}').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
+                                    
+                                    <div id="file-info-${mod}" class="mt-6 hidden animate-fade-in">
+                                        <div class="bg-agro-50 p-3 rounded-xl border border-agro-100 mb-4">
+                                            <p class="text-xs font-bold text-agro-700 truncate" id="file-name-${mod}"></p>
+                                        </div>
+                                        <button id="btn-start-${mod}" onclick="processarAnalise('${mod}', false, this)" class="agro-btn agro-btn-primary w-full shadow-agro-glow">INICIAR MINHA ANÁLISE</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="manual-${mod}" class="tab-pane hidden">
+                                ${renderManualInputs(mod)}
+                                <button onclick="gerarMatriz('${mod}')" class="agro-btn agro-btn-outline w-full mb-4">Montar Grade de Campo</button>
+                                <div id="matriz-${mod}" class="max-h-[350px] overflow-y-auto rounded-2xl border border-slate-100 bg-slate-50/30"></div>
+                                <button id="btn-calc-manual-${mod}" onclick="processarAnalise('${mod}', true, this)" class="agro-btn agro-btn-primary w-full mt-6 hidden">PROCESSAR ESTATÍSTICA</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="xl:col-span-2">
+                        <div id="result-${mod}" class="hidden space-y-8"></div>
+                        <div id="placeholder-${mod}" class="flex flex-col items-center justify-center py-24 text-center">
+                            <div class="w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center text-slate-200 text-4xl mb-6"><i class="fa-solid fa-microscope"></i></div>
+                            <h3 class="text-xl font-bold text-slate-400 tracking-tight">Aguardando dados...</h3>
+                            <p class="text-slate-400 max-w-xs mt-2 text-sm">Importe um arquivo ou preencha a grade para visualizar os resultados estatísticos.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderManualInputs(mod) {
+            if(mod === 'simples') return `<div class="grid grid-cols-2 gap-4 mb-4"><div><label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Trats</label><input type="number" id="inp-t-simples" value="4" class="agro-input"></div><div><label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Reps</label><input type="number" id="inp-r-simples" value="3" class="agro-input"></div></div>`;
+            return `<div class="grid grid-cols-3 gap-3 mb-4"><div><label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Nível A</label><input type="number" id="inp-a-${mod}" value="2" class="agro-input"></div><div><label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Nível B</label><input type="number" id="inp-b-${mod}" value="3" class="agro-input"></div><div><label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Reps</label><input type="number" id="inp-r-${mod}" value="3" class="agro-input"></div></div>`;
+        }
+
+        function updateSimplesHint() {
+            const val = document.getElementById('delin-simples').value;
+            document.getElementById('format-hint-simples').innerText = val === 'dql' ? "Tratamento; Linha; Coluna; Valor" : "Tratamento; Bloco; Valor";
+        }
+
+        function handleFileUpload(mod) {
+            const file = document.getElementById(`file-${mod}`).files[0];
+            if(file) {
+                arquivosData[mod] = file;
+                document.getElementById(`file-name-${mod}`).innerText = file.name;
+                document.getElementById(`file-info-${mod}`).classList.remove('hidden');
+                showToast("Arquivo carregado com sucesso!", "success");
             }
         }
 
@@ -579,72 +307,105 @@
             const parent = el.parentElement;
             parent.querySelectorAll('.agro-tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            
-            const paneContainer = el.closest('.space-y-5');
-            paneContainer.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            parent.parentElement.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
             document.getElementById(targetId).classList.remove('hidden');
+        }
+
+        function showToast(msg, type) {
+            const container = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : (type === 'erro' ? 'fa-x' : 'fa-info')}"></i> <span>${msg}</span>`;
+            container.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3000);
+        }
+
+        function gerarMatriz(mod) {
+            const container = document.getElementById(`matriz-${mod}`);
+            let html = '<table class="w-full"><thead><tr>';
+            if(mod === 'simples') {
+                const t = parseInt(document.getElementById('inp-t-simples').value);
+                const r = parseInt(document.getElementById('inp-r-simples').value);
+                html += '<th>Trat</th><th>Rep</th><th>Valor</th></tr></thead><tbody>';
+                for(let i=1; i<=t; i++) for(let j=1; j<=r; j++) html += `<tr><td><input type="text" value="T${i}" class="grid-input font-bold text-agro-600"></td><td class="text-center text-slate-400 font-bold">R${j}</td><td><input type="number" step="any" class="grid-input data-val"></td></tr>`;
+            } else {
+                const a = parseInt(document.getElementById(`inp-a-${mod}`).value);
+                const b = parseInt(document.getElementById(`inp-b-${mod}`).value);
+                const r = parseInt(document.getElementById(`inp-r-${mod}`).value);
+                html += `<th>Fator A</th><th>Fator B</th><th>Rep</th><th>Valor</th></tr></thead><tbody>`;
+                for(let i=1; i<=a; i++) for(let j=1; j<=b; j++) for(let k=1; k<=r; k++) html += `<tr><td class="text-center font-bold">A${i}</td><td class="text-center font-bold">B${j}</td><td class="text-center text-slate-400 font-bold">R${k}</td><td><input type="number" step="any" class="grid-input data-val"></td></tr>`;
+            }
+            container.innerHTML = html + '</tbody></table>';
+            document.getElementById(`btn-calc-manual-${mod}`).classList.remove('hidden');
+        }
+
+        async function processarAnalise(mod, isManual, btn) {
+            let file;
+            if(isManual) {
+                const rows = document.querySelectorAll(`#matriz-${mod} tbody tr`);
+                let csv = mod === 'simples' ? "Tratamento;Bloco;Valor\n" : (mod === 'fatorial' ? "A;B;Bloco;Valor\n" : "Parcela;Subparcela;Bloco;Valor\n");
+                for(let row of rows) {
+                    const inputs = row.querySelectorAll('input');
+                    const val = row.querySelector('.data-val').value;
+                    if(!val) { showToast("Preencha todos os campos da grade!", "erro"); return; }
+                    if(mod === 'simples') csv += `${inputs[0].value};${row.cells[1].innerText};${val}\n`;
+                    else csv += `${row.cells[0].innerText};${row.cells[1].innerText};${row.cells[2].innerText};${val}\n`;
+                }
+                file = new File([csv], "manual.csv", {type: "text/csv"});
+            } else { file = arquivosData[mod]; }
+
+            if(!file) { showToast("Selecione um arquivo primeiro!", "erro"); return; }
+            
+            const fd = new FormData(); fd.append("file", file);
+            if(mod === 'simples') fd.append("tipo_delineamento", document.getElementById('delin-simples').value);
+            
+            btn.disabled = true; const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            
+            try {
+                const res = await fetch(API_URL + mod, { method: 'POST', body: fd });
+                const data = await res.json();
+                if(data.status === "sucesso") renderResults(mod, data);
+                else showToast(data.mensagem || "Erro no processamento", "erro");
+            } catch(e) { showToast("Erro de conexão com o servidor", "erro"); }
+            finally { btn.disabled = false; btn.innerHTML = originalText; }
+        }
+
+        function renderResults(mod, data) {
+            const resDiv = document.getElementById(`result-${mod}`);
+            document.getElementById(`placeholder-${mod}`).classList.add('hidden');
+            resDiv.classList.remove('hidden');
+            
+            let html = `
+                <div class="agro-card p-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+                        <div><h3 class="text-xl font-extrabold text-agro-900 tracking-tight">ANOVA</h3><p class="text-sm text-slate-500 font-medium">Análise de Variância do Experimento</p></div>
+                        <div class="bg-agro-50 px-4 py-2 rounded-xl border border-agro-200 text-center"><span class="text-[10px] font-bold text-agro-600 block uppercase tracking-widest">Coef. Variação</span><span class="font-black text-agro-800 text-lg">${data.cv}</span></div>
+                    </div>
+                    <div class="table-wrapper mb-8">
+                        <table><thead><tr><th>Causa de Variação</th><th class="text-center">GL</th><th>SQ</th><th>QM</th><th>F Calc</th><th>Sig</th></tr></thead><tbody>
+                            ${data.anova.map(l => `<tr><td class="font-bold text-agro-950">${l.FV}</td><td class="text-center data-mono">${l.GL}</td><td class="data-mono text-slate-500">${l.SQ}</td><td class="data-mono text-slate-500">${l.QM}</td><td class="font-black text-agro-700">${l['F Calc']}</td><td><span class="sig-badge ${l.Sig.includes('*') ? 'sig-active' : 'bg-slate-50 text-slate-400'}">${l.Sig}</span></td></tr>`).join('')}
+                        </tbody></table>
+                    </div>
+                    <div class="bg-agro-50/50 p-6 rounded-2xl border border-agro-100">
+                        <h4 class="font-bold text-agro-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-agro-600"></i> Testes de Médias & Regressão</h4>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <select id="metodo-${mod}" class="agro-input text-sm"><option value="tukey">Teste de Tukey (HSD)</option><option value="duncan">Teste de Duncan</option><option value="regr">Regressão Polinomial</option></select>
+                            <button class="agro-btn agro-btn-primary px-8">Executar</button>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-8 border-t border-slate-100 flex justify-center"><button class="agro-btn agro-btn-outline w-full sm:w-auto px-12"><i class="fa-solid fa-file-pdf"></i> Baixar Laudo Técnico Completo</button></div>
+                </div>`;
+            resDiv.innerHTML = html;
+            showToast("Análise concluída com sucesso!", "success");
+            resDiv.scrollIntoView({ behavior: 'smooth' });
         }
 
         function abrirManual() { document.getElementById('manual-modal').classList.remove('hidden'); }
         function fecharManual() { document.getElementById('manual-modal').classList.add('hidden'); }
 
-        function showToast(mensagem, tipo = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            
-            let icone = tipo === 'success' ? '<i class="fa-solid fa-check"></i>' : (tipo === 'erro' ? '<i class="fa-solid fa-x"></i>' : '<i class="fa-solid fa-info"></i>');
-            
-            toast.innerHTML = `<span>${icone}</span> <span class="flex-1">${mensagem}</span>`;
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
-        }
-
-        // Simulação de processamento
-        function processarSimples(isManual, btn) {
-            btn.disabled = true;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-            showToast("Calculando...", "info");
-
-            setTimeout(() => {
-                document.getElementById('placeholder-simples').classList.add('hidden');
-                document.getElementById('result-simples').classList.remove('hidden');
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                
-                document.getElementById('anova-simples-table').innerHTML = `
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr><th>FV</th><th class="text-center">GL</th><th>F Calc</th><th>Sig</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="font-bold">Trat</td><td class="text-center">3</td><td class="font-bold">12.45</td><td><span class="sig-badge sig-active">**</span></td></tr>
-                                <tr><td class="font-bold">Resid</td><td class="text-center">8</td><td>-</td><td><span class="sig-badge sig-inactive">ns</span></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-                
-                document.getElementById('cv-simples-badge').innerHTML = `
-                    <div class="bg-agro-50 px-3 py-2 rounded-xl border border-agro-200 text-center">
-                        <span class="text-[10px] font-bold text-agro-600 block">CV</span>
-                        <span class="font-black text-agro-800">7.42%</span>
-                    </div>
-                `;
-                showToast("Sucesso!", "success");
-            }, 1000);
-        }
-
-        function gerarMatrizSimples() {
-            document.getElementById('matriz-simples').innerHTML = '<div class="p-4 text-center text-xs text-slate-400">Grade pronta para entrada de dados.</div>';
-            document.getElementById('btn-calc-matriz-simples').classList.remove('hidden');
-        }
+        // Init
+        selectModule('simples');
     </script>
 </body>
 </html>
