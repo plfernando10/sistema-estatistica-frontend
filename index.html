@@ -620,9 +620,23 @@
                                 </div>
                             </div>
                             <div id="manual-fatorial" class="tab-pane hidden">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Dados manuais: A;B;Bloco;Valor</label>
-                                <textarea id="manual-text-fatorial" rows="10" class="agro-input font-mono" placeholder="0;Cultivar_1;1;16,1&#10;0;Cultivar_1;2;16,3&#10;30;Cultivar_1;1;18,5&#10;30;Cultivar_2;1;18,9"></textarea>
-                                <button onclick="processarModuloManual('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4"><i class="fa-solid fa-calculator"></i> Processar Dados Manuais</button>
+                                <div class="grid grid-cols-3 gap-3 mb-4">
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Níveis Fator A</label>
+                                        <input type="number" id="inp-a-fatorial" value="5" min="2" class="agro-input">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Níveis Fator B</label>
+                                        <input type="number" id="inp-b-fatorial" value="2" min="2" class="agro-input">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Blocos</label>
+                                        <input type="number" id="inp-r-fatorial" value="3" min="2" class="agro-input">
+                                    </div>
+                                </div>
+                                <button onclick="gerarMatrizCruzada('fatorial')" class="agro-btn agro-btn-outline w-full py-3 mb-4"><i class="fa-solid fa-table-columns"></i> Gerar Matriz de Preenchimento</button>
+                                <div id="matriz-fatorial" class="max-h-[420px] overflow-y-auto rounded-xl border border-slate-100"></div>
+                                <button id="btn-calc-matriz-fatorial" onclick="processarModuloManualMatriz('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-calculator"></i> Processar Dados da Matriz</button>
                             </div>
                         </div>
                     </div>
@@ -630,7 +644,7 @@
                         <div id="result-fatorial" class="hidden agro-card p-8"></div>
                         <div id="placeholder-fatorial" class="flex flex-col items-center justify-center py-24 text-center">
                             <i class="fa-solid fa-table-cells-large text-6xl text-slate-200 mb-6"></i>
-                            <h3 class="text-xl font-bold text-slate-400">Aguardando CSV fatorial...</h3>
+                            <h3 class="text-xl font-bold text-slate-400">Aguardando dados fatoriais...</h3>
                         </div>
                     </div>
                 </div>
@@ -656,9 +670,23 @@
                                 </div>
                             </div>
                             <div id="manual-parcelas" class="tab-pane hidden">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Dados manuais: A;B;Bloco;Valor</label>
-                                <textarea id="manual-text-parcelas" rows="10" class="agro-input font-mono" placeholder="0;Manejo_1;1;16,1&#10;0;Manejo_1;2;16,3&#10;30;Manejo_1;1;18,5&#10;30;Manejo_2;1;18,9"></textarea>
-                                <button onclick="processarModuloManual('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4"><i class="fa-solid fa-calculator"></i> Processar Dados Manuais</button>
+                                <div class="grid grid-cols-3 gap-3 mb-4">
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Níveis Fator A</label>
+                                        <input type="number" id="inp-a-parcelas" value="5" min="2" class="agro-input">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Níveis Fator B</label>
+                                        <input type="number" id="inp-b-parcelas" value="2" min="2" class="agro-input">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Blocos</label>
+                                        <input type="number" id="inp-r-parcelas" value="3" min="2" class="agro-input">
+                                    </div>
+                                </div>
+                                <button onclick="gerarMatrizCruzada('parcelas')" class="agro-btn agro-btn-outline w-full py-3 mb-4"><i class="fa-solid fa-table-columns"></i> Gerar Matriz de Preenchimento</button>
+                                <div id="matriz-parcelas" class="max-h-[420px] overflow-y-auto rounded-xl border border-slate-100"></div>
+                                <button id="btn-calc-matriz-parcelas" onclick="processarModuloManualMatriz('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-calculator"></i> Processar Dados da Matriz</button>
                             </div>
                         </div>
                     </div>
@@ -666,7 +694,7 @@
                         <div id="result-parcelas" class="hidden agro-card p-8"></div>
                         <div id="placeholder-parcelas" class="flex flex-col items-center justify-center py-24 text-center">
                             <i class="fa-solid fa-sitemap text-6xl text-slate-200 mb-6"></i>
-                            <h3 class="text-xl font-bold text-slate-400">Aguardando CSV de parcelas...</h3>
+                            <h3 class="text-xl font-bold text-slate-400">Aguardando dados de parcelas...</h3>
                         </div>
                     </div>
                 </div>
@@ -889,6 +917,100 @@
             } finally {
                 btnElement.disabled = false;
                 btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        async function processarSimples(modoManual, btnElement) {
+            const result = document.getElementById('result-simples');
+            const placeholder = document.getElementById('placeholder-simples');
+            const delineamento = document.querySelector('input[name="delinSimples"]:checked').value;
+            let file;
+            try {
+                file = modoManual ? gerarCsvSimplesManual(delineamento) : document.getElementById('file-simples').files[0];
+                if (!file) throw new Error('Selecione um arquivo CSV antes de iniciar o cálculo.');
+            } catch (err) {
+                showToast(err.message, 'erro', 6000);
+                return;
+            }
+
+            arquivosData.simples = file;
+            const originalHtml = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                form.append('tipo_delineamento', delineamento);
+                form.append('tipo_teste', 'anova');
+                form.append('modelo_regr', 'quadratica');
+                const resp = await fetch(`${API_BASE}/simples`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
+                analises.simples = { anova: data, posthoc: null };
+                placeholder.classList.add('hidden');
+                result.classList.remove('hidden');
+                document.getElementById('cv-simples-badge').innerHTML = `<div class="px-4 py-2 rounded-xl bg-agro-50 border border-agro-200 text-agro-800 font-black text-lg">CV: ${data.cv || '-'}</div>`;
+                document.getElementById('anova-simples-table').innerHTML = tabelaHtml(data.anova || []);
+                const out = document.getElementById('posthoc-simples-output');
+                if (out) { out.classList.add('hidden'); out.innerHTML = ''; }
+                showToast('Cálculo concluído com sucesso!', 'success');
+            } catch (err) {
+                showToast(err.message, 'erro', 7000);
+            } finally {
+                btnElement.disabled = false;
+                btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        function gerarMatrizCruzada(modulo) {
+            const a = parseInt(document.getElementById(`inp-a-${modulo}`).value || '0', 10);
+            const b = parseInt(document.getElementById(`inp-b-${modulo}`).value || '0', 10);
+            const r = parseInt(document.getElementById(`inp-r-${modulo}`).value || '0', 10);
+            if (a < 2 || b < 2 || r < 2) { showToast('Informe pelo menos 2 níveis para A, 2 níveis para B e 2 blocos.', 'erro'); return; }
+            const container = document.getElementById(`matriz-${modulo}`);
+            let html = '<div class="p-3 space-y-3">';
+            html += '<div class="grid grid-cols-4 gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 px-1"><span>Fator A</span><span>Fator B</span><span>Bloco</span><span>Valor</span></div>';
+            for (let ia = 1; ia <= a; ia++) {
+                for (let ib = 1; ib <= b; ib++) {
+                    for (let ir = 1; ir <= r; ir++) {
+                        html += `<div class="grid grid-cols-4 gap-2 items-center matriz-row">
+                            <input class="agro-input text-xs" data-campo="a" value="${ia}" placeholder="A">
+                            <input class="agro-input text-xs" data-campo="b" value="${ib}" placeholder="B">
+                            <input class="agro-input text-xs" data-campo="bloco" value="${ir}" placeholder="Bloco">
+                            <input class="agro-input text-xs" data-campo="valor" placeholder="Valor">
+                        </div>`;
+                    }
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById(`btn-calc-matriz-${modulo}`).classList.remove('hidden');
+            showToast('Matriz gerada. Preencha a coluna Valor e processe.', 'success');
+        }
+
+        function gerarCsvCruzadoManual(modulo) {
+            const linhas = ['A;B;Bloco;Valor'];
+            const container = document.getElementById(`matriz-${modulo}`);
+            const rows = Array.from(container.querySelectorAll('.matriz-row'));
+            if (!rows.length) throw new Error('Gere a matriz antes de processar.');
+            rows.forEach(row => {
+                const a = row.querySelector('[data-campo="a"]').value.trim();
+                const b = row.querySelector('[data-campo="b"]').value.trim();
+                const bloco = row.querySelector('[data-campo="bloco"]').value.trim();
+                const valor = row.querySelector('[data-campo="valor"]').value.trim();
+                if (valor !== '') linhas.push(`${a};${b};${bloco};${valor}`);
+            });
+            if (linhas.length < 5) throw new Error('Preencha os valores da matriz antes de processar.');
+            return new File([linhas.join('\n')], `${modulo}_manual.csv`, { type: 'text/csv;charset=utf-8' });
+        }
+
+        async function processarModuloManualMatriz(modulo, btnElement) {
+            try {
+                const file = gerarCsvCruzadoManual(modulo);
+                arquivosData[modulo] = file;
+                await processarModuloComArquivo(modulo, file, btnElement);
+            } catch (err) {
+                showToast(err.message, 'erro', 6000);
             }
         }
 
