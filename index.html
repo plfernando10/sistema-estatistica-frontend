@@ -704,7 +704,7 @@ a
                         <i class="fa-solid fa-bars"></i>
                     </button>
                     <div>
-                    <h2 id="module-title" class="text-3xl font-black text-agro-950 tracking-tight">Análise de Fator Único</h2>
+                    <h2 id="module-title" class="text-3xl font-black text-agro-950 tracking-tight">Análise de Fator único</h2>
                     <p id="module-desc" class="text-slate-500 font-medium mt-1">Delineamentos inteiramente casualizados ou em blocos.</p>
                     </div>
                 </div>
@@ -6004,6 +6004,810 @@ a
 })();
 </script>
 
+
+
+<script id="solver-v27-analysis-visual-bridge">
+(function(){
+    function injectAnalysisTheme(){
+        if(document.getElementById('solver-v27-analysis-visual-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'solver-v27-analysis-visual-styles';
+        style.textContent = `
+            /* ====================== Solver v27: conexão visual landing -> análise ====================== */
+            #analysis-page{
+                background:
+                    radial-gradient(circle at 9% 8%, rgba(61,142,86,.20), transparent 30%),
+                    radial-gradient(circle at 92% 12%, rgba(177,131,86,.18), transparent 28%),
+                    radial-gradient(circle at 50% 110%, rgba(220,241,225,.72), transparent 38%),
+                    linear-gradient(135deg,#fcfcfa 0%,#ecf8f0 48%,#f7efe5 100%) !important;
+                color:#071f18;
+            }
+
+            #analysis-page::before{
+                content:"";
+                position:fixed;
+                inset:0;
+                pointer-events:none;
+                z-index:0;
+                background-image:
+                    linear-gradient(rgba(45,142,86,.055) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(45,142,86,.055) 1px, transparent 1px);
+                background-size:44px 44px;
+                mask-image:linear-gradient(to bottom,rgba(0,0,0,.62),transparent 88%);
+            }
+
+            #analysis-page main{
+                position:relative;
+                z-index:1;
+                background:
+                    radial-gradient(circle at 86% 2%, rgba(61,142,86,.12), transparent 30%),
+                    radial-gradient(circle at 10% 96%, rgba(177,131,86,.10), transparent 30%),
+                    linear-gradient(180deg, rgba(255,255,255,.36), rgba(255,255,255,.18)) !important;
+            }
+
+            #analysis-sidebar{
+                position:relative;
+                overflow:hidden;
+                background:
+                    radial-gradient(circle at 20% 4%, rgba(94,171,117,.32), transparent 32%),
+                    radial-gradient(circle at 88% 74%, rgba(177,131,86,.18), transparent 30%),
+                    linear-gradient(180deg,#0e2116 0%,#12331f 48%,#071f18 100%) !important;
+                border-right:1px solid rgba(187,225,198,.18);
+                box-shadow:24px 0 70px rgba(14,33,22,.20);
+            }
+
+            #analysis-sidebar::before{
+                content:"";
+                position:absolute;
+                inset:0;
+                pointer-events:none;
+                background-image:
+                    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+                background-size:34px 34px;
+                opacity:.7;
+            }
+
+            #analysis-sidebar > *{
+                position:relative;
+                z-index:1;
+            }
+
+            #analysis-sidebar .w-10.h-10,
+            #analysis-sidebar .w-12.h-12{
+                background:linear-gradient(135deg,#3d8e56,#0e2116) !important;
+                box-shadow:0 18px 34px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.16);
+            }
+
+            #analysis-sidebar .nav-item{
+                border:1px solid transparent;
+                color:rgba(255,255,255,.66);
+                backdrop-filter:blur(10px);
+            }
+
+            #analysis-sidebar .nav-item:hover{
+                color:#ffffff;
+                background:rgba(255,255,255,.08);
+                border-color:rgba(187,225,198,.18);
+                transform:translateX(2px);
+            }
+
+            #analysis-sidebar .nav-item.active{
+                color:#ffffff !important;
+                background:
+                    radial-gradient(circle at 16% 18%, rgba(255,255,255,.18), transparent 34%),
+                    linear-gradient(135deg,#3d8e56 0%,#2d7244 48%,#0e2116 100%) !important;
+                border-color:rgba(220,241,225,.30);
+                box-shadow:0 18px 40px rgba(14,33,22,.34), inset 0 1px 0 rgba(255,255,255,.17);
+            }
+
+            #analysis-page header{
+                position:relative;
+                z-index:2;
+                padding:1.1rem 1.25rem;
+                border:1px solid rgba(203,213,225,.68);
+                border-radius:1.65rem;
+                background:rgba(255,255,255,.66);
+                backdrop-filter:blur(18px) saturate(1.12);
+                box-shadow:0 24px 70px rgba(15,23,42,.075), inset 0 1px 0 rgba(255,255,255,.88);
+            }
+
+            #module-title{
+                letter-spacing:-.045em;
+                color:#061b14 !important;
+                font-weight:950 !important;
+            }
+
+            #module-desc{
+                color:#52627a !important;
+                font-weight:650;
+            }
+
+            #analysis-page header .bg-white{
+                background:rgba(240,249,241,.78) !important;
+                border-color:rgba(187,225,198,.82) !important;
+                box-shadow:0 12px 30px rgba(15,23,42,.04);
+            }
+
+            #analysis-page .module-content{
+                position:relative;
+                z-index:1;
+            }
+
+            #analysis-page .agro-card,
+            #analysis-page .solver-output-card,
+            #analysis-page .solver-posthoc-card,
+            #result-fatorial,
+            #result-parcelas,
+            #result-direto{
+                border:1px solid rgba(203,213,225,.72) !important;
+                background:
+                    radial-gradient(circle at 96% 0%, rgba(220,241,225,.50), transparent 28%),
+                    linear-gradient(145deg, rgba(255,255,255,.86), rgba(248,252,249,.72)) !important;
+                backdrop-filter:blur(16px) saturate(1.08);
+                box-shadow:0 28px 80px rgba(15,23,42,.09), inset 0 1px 0 rgba(255,255,255,.86) !important;
+            }
+
+            #analysis-page .agro-card:hover{
+                transform:translateY(-2px);
+                box-shadow:0 34px 92px rgba(15,23,42,.115), inset 0 1px 0 rgba(255,255,255,.88) !important;
+            }
+
+            #analysis-page .agro-card h3,
+            #analysis-page .solver-result-hero h3,
+            #analysis-page h3,
+            #analysis-page h4{
+                color:#061b14;
+                letter-spacing:-.025em;
+            }
+
+            #analysis-page .solver-result-hero{
+                border:1px solid rgba(187,225,198,.86) !important;
+                background:
+                    radial-gradient(circle at right top, rgba(220,241,225,.85), transparent 38%),
+                    linear-gradient(135deg, rgba(255,255,255,.88), rgba(248,250,252,.72)) !important;
+                backdrop-filter:blur(16px);
+                box-shadow:0 22px 58px rgba(15,23,42,.06);
+            }
+
+            #analysis-page .solver-metric,
+            #analysis-page .solver-kpi{
+                background:rgba(240,249,241,.82) !important;
+                border-color:rgba(187,225,198,.88) !important;
+                box-shadow:0 14px 32px rgba(14,33,22,.055);
+            }
+
+            #analysis-page .agro-tabs{
+                gap:1rem;
+                border-bottom:0;
+                padding:.38rem;
+                border-radius:1.1rem;
+                background:rgba(248,250,252,.78);
+                border:1px solid rgba(226,232,240,.95);
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+            }
+
+            #analysis-page .agro-tab{
+                flex:1;
+                text-align:center;
+                padding:.82rem .9rem;
+                border-radius:.85rem;
+                border-bottom:0 !important;
+                margin-bottom:0;
+                color:#64748b;
+            }
+
+            #analysis-page .agro-tab.active{
+                color:#0e2116 !important;
+                background:#ffffff;
+                box-shadow:0 12px 26px rgba(15,23,42,.07);
+                border-bottom:0 !important;
+            }
+
+            #analysis-page .agro-input{
+                border-color:rgba(203,213,225,.9) !important;
+                background:rgba(255,255,255,.82) !important;
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+            }
+
+            #analysis-page .agro-input:focus{
+                border-color:#3d8e56 !important;
+                box-shadow:0 0 0 4px rgba(61,142,86,.13), inset 0 1px 0 rgba(255,255,255,.95) !important;
+            }
+
+            #analysis-page input[type="radio"]:checked + span{
+                color:#0e2116;
+            }
+
+            #analysis-page .agro-btn-primary{
+                background:linear-gradient(135deg,#3d8e56 0%,#2d7244 45%,#0e2116 100%) !important;
+                box-shadow:0 18px 34px -18px rgba(14,33,22,.68), inset 0 1px 0 rgba(255,255,255,.16) !important;
+            }
+
+            #analysis-page .agro-btn-primary:hover:not(:disabled){
+                transform:translateY(-2px);
+                filter:brightness(1.06);
+                box-shadow:0 24px 42px -20px rgba(14,33,22,.74), inset 0 1px 0 rgba(255,255,255,.18) !important;
+            }
+
+            #analysis-page .agro-btn-outline{
+                background:rgba(255,255,255,.76) !important;
+                border-color:rgba(187,225,198,.80) !important;
+                color:#1b3c28 !important;
+                box-shadow:0 12px 30px rgba(15,23,42,.045);
+            }
+
+            #analysis-page .agro-btn-outline:hover:not(:disabled){
+                background:rgba(240,249,241,.92) !important;
+                border-color:#3d8e56 !important;
+                color:#0e2116 !important;
+                transform:translateY(-1px);
+            }
+
+            #analysis-page .table-wrapper,
+            #analysis-page .solver-table{
+                border:1px solid rgba(203,213,225,.78) !important;
+                background:rgba(255,255,255,.72);
+                box-shadow:0 24px 56px rgba(15,23,42,.06) !important;
+            }
+
+            #analysis-page table th{
+                background:linear-gradient(180deg,rgba(248,250,252,.96),rgba(240,249,241,.80)) !important;
+                color:#334155 !important;
+                border-bottom-color:rgba(226,232,240,.95) !important;
+            }
+
+            #analysis-page table td{
+                background:rgba(255,255,255,.78) !important;
+            }
+
+            #analysis-page tbody tr:hover td{
+                background:rgba(240,249,241,.72) !important;
+            }
+
+            #analysis-page .sig-active{
+                background:#dcf1e1 !important;
+                color:#0e2116 !important;
+                border:1px solid rgba(187,225,198,.92);
+            }
+
+            #analysis-page .sig-inactive{
+                background:#f1f5f9 !important;
+                color:#94a3b8 !important;
+                border:1px solid #e2e8f0;
+            }
+
+            #analysis-page .solver-posthoc-card{
+                border-top:4px solid #3d8e56 !important;
+            }
+
+            #analysis-page #placeholder-simples,
+            #analysis-page #placeholder-fatorial,
+            #analysis-page #placeholder-parcelas,
+            #analysis-page #placeholder-direto{
+                border:1px dashed rgba(187,225,198,.86);
+                border-radius:2rem;
+                background:rgba(255,255,255,.42);
+                backdrop-filter:blur(12px);
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.78);
+            }
+
+            #analysis-page #placeholder-simples .w-24,
+            #analysis-page #placeholder-direto .w-24{
+                background:rgba(240,249,241,.84) !important;
+                color:#bbe1c6 !important;
+            }
+
+            #analysis-page .solver-matrix{
+                border:1px solid rgba(226,232,240,.92);
+                background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(248,250,252,.72)) !important;
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+            }
+
+            #analysis-page .solver-matrix-head{
+                background:rgba(248,250,252,.82) !important;
+                border-radius:1rem;
+            }
+
+            #loading-overlay{
+                background:rgba(14,33,22,.20) !important;
+                backdrop-filter:blur(14px) saturate(1.16) !important;
+            }
+
+            #loading-overlay .loading-card{
+                background:
+                    radial-gradient(circle at right top, rgba(220,241,225,.74), transparent 34%),
+                    rgba(255,255,255,.94) !important;
+                border-color:rgba(187,225,198,.92) !important;
+                box-shadow:0 38px 120px rgba(14,33,22,.36) !important;
+            }
+
+            @media(max-width:767px){
+                #analysis-page header{
+                    border-radius:1.25rem;
+                    padding:1rem;
+                }
+                #analysis-page main{
+                    padding:1rem !important;
+                }
+                #analysis-sidebar{
+                    box-shadow:24px 0 80px rgba(14,33,22,.36);
+                }
+                #analysis-page .agro-tabs{
+                    gap:.45rem;
+                }
+                #analysis-page .agro-tab{
+                    font-size:.82rem;
+                    padding:.75rem .55rem;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function applyAnalysisBridge(){
+        injectAnalysisTheme();
+
+        const header = document.querySelector('#analysis-page main > header');
+        if(header && header.dataset.v27Bridge !== '1'){
+            header.dataset.v27Bridge = '1';
+            const status = header.querySelector('.bg-white span');
+            if(status && /Servidor Online/i.test(status.textContent || '')){
+                status.textContent = 'Dashboard conectado';
+            }
+        }
+
+        const sidebar = document.getElementById('analysis-sidebar');
+        if(sidebar && sidebar.dataset.v27Bridge !== '1'){
+            sidebar.dataset.v27Bridge = '1';
+            const logoText = sidebar.querySelector('span.text-white');
+            if(logoText && !logoText.parentElement.querySelector('.solver-v27-sidebar-sub')){
+                const sub = document.createElement('div');
+                sub.className = 'solver-v27-sidebar-sub';
+                sub.style.cssText = 'font-size:.52rem;letter-spacing:.24em;font-weight:900;color:rgba(220,241,225,.68);margin-top:.2rem;';
+                sub.textContent = 'DASHBOARD ESTATÍSTICO';
+                logoText.parentElement.appendChild(sub);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', applyAnalysisBridge);
+    setTimeout(applyAnalysisBridge, 250);
+    setTimeout(applyAnalysisBridge, 900);
+})();
+</script>
+
+
+<script id="solver-v28-minimal-analysis-ui">
+(function(){
+    const moduleInfo = {
+        simples: { title: 'Fator único', desc: 'DIC, DBC e DQL com ANOVA, médias, regressão e PDF.', icon: 'fa-vial' },
+        fatorial: { title: 'Fatorial Duplo', desc: 'Dois fatores, interação A×B e testes posteriores por fator.', icon: 'fa-layer-group' },
+        parcelas: { title: 'Parcelas Subdivididas', desc: 'Análise com Erro A, Erro B e interpretação por subparcela.', icon: 'fa-table-cells' },
+        regressaodireta: { title: 'Regressão Direta', desc: 'Dose, produtividade, curva ajustada e dose ótima.', icon: 'fa-bullseye' }
+    };
+
+    function currentModule(){
+        const active = document.querySelector('#analysis-sidebar .nav-item.active[id^="nav-"]');
+        if(active && active.id) return active.id.replace('nav-', '');
+        const visible = Array.from(document.querySelectorAll('.module-content')).find(el => !el.classList.contains('hidden'));
+        return visible ? visible.id.replace('module-', '') : 'simples';
+    }
+
+    function injectStyles(){
+        if(document.getElementById('solver-v28-minimal-analysis-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'solver-v28-minimal-analysis-styles';
+        style.textContent = `
+            /* ====================== Solver v28: painel de análise limpo e moderno ====================== */
+            #analysis-page{
+                background:
+                    radial-gradient(circle at 8% 8%, rgba(61,142,86,.18), transparent 28%),
+                    radial-gradient(circle at 92% 12%, rgba(177,131,86,.14), transparent 26%),
+                    linear-gradient(135deg,#fbfdfb 0%,#eef8f1 50%,#f7f1e8 100%) !important;
+                color:#071f18;
+            }
+            #analysis-page::before{
+                content:"";
+                position:fixed;
+                inset:0;
+                pointer-events:none;
+                z-index:0;
+                background-image:
+                    linear-gradient(rgba(45,142,86,.045) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(45,142,86,.045) 1px, transparent 1px);
+                background-size:42px 42px;
+                mask-image:linear-gradient(to bottom,rgba(0,0,0,.62),transparent 86%);
+            }
+            #analysis-page main{
+                position:relative;
+                z-index:1;
+                background:transparent !important;
+                padding:2rem 2.3rem !important;
+            }
+            #analysis-sidebar{
+                position:relative;
+                overflow:hidden;
+                width:17.25rem !important;
+                background:linear-gradient(180deg,#071f18 0%,#0e2a1c 52%,#061812 100%) !important;
+                border-right:1px solid rgba(187,225,198,.16);
+                box-shadow:22px 0 70px rgba(14,33,22,.18);
+            }
+            #analysis-sidebar::before{
+                content:"";
+                position:absolute;
+                inset:0;
+                pointer-events:none;
+                background:
+                    radial-gradient(circle at 18% 8%, rgba(61,142,86,.36), transparent 26%),
+                    radial-gradient(circle at 95% 86%, rgba(177,131,86,.18), transparent 28%);
+                opacity:.95;
+            }
+            #analysis-sidebar > *{position:relative;z-index:1;}
+            #analysis-sidebar .p-8{padding:1.55rem 1.35rem 1.1rem !important;margin-bottom:.6rem !important;}
+            #analysis-sidebar .p-8 .flex.items-center.gap-3{
+                padding:.6rem;
+                border-radius:1.2rem;
+                background:rgba(255,255,255,.04);
+                border:1px solid rgba(255,255,255,.08);
+            }
+            #analysis-sidebar .w-10.h-10{
+                width:2.65rem !important;height:2.65rem !important;
+                border-radius:.95rem !important;
+                background:linear-gradient(135deg,#3d8e56,#0e2116) !important;
+                box-shadow:0 16px 30px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.16);
+            }
+            #analysis-sidebar span.text-white{
+                font-size:1.1rem !important;
+                letter-spacing:-.04em !important;
+                line-height:1.02 !important;
+                display:block;
+            }
+            .solver-v28-brand-copy{
+                display:flex;
+                flex-direction:column;
+                justify-content:center;
+                min-width:0;
+                gap:.18rem;
+            }
+            .solver-v28-sidebar-sub{
+                font-size:.53rem;
+                line-height:1;
+                letter-spacing:.22em;
+                font-weight:950;
+                color:rgba(220,241,225,.62);
+                margin-top:.25rem;
+            }
+            #analysis-sidebar nav{padding:.3rem .75rem;}
+            #analysis-sidebar .nav-item{
+                width:100% !important;
+                margin:.25rem 0 !important;
+                padding:.86rem .95rem !important;
+                border-radius:1rem !important;
+                color:rgba(255,255,255,.66) !important;
+                border:1px solid transparent;
+                background:transparent;
+                gap:.78rem;
+            }
+            #analysis-sidebar .nav-item i{width:1.05rem;text-align:center;color:rgba(220,241,225,.72);}
+            #analysis-sidebar .nav-item:hover{
+                color:#fff !important;
+                background:rgba(255,255,255,.07) !important;
+                border-color:rgba(187,225,198,.16);
+                transform:translateX(2px);
+            }
+            #analysis-sidebar .nav-item.active{
+                color:#061812 !important;
+                background:linear-gradient(135deg,#d9fbe3 0%,#70de9a 52%,#3d8e56 100%) !important;
+                border-color:rgba(220,241,225,.36);
+                box-shadow:0 18px 34px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.34);
+            }
+            #analysis-sidebar .nav-item.active i{color:#061812 !important;}
+            #analysis-sidebar .mx-6{margin-left:.75rem!important;margin-right:.75rem!important;border-color:rgba(255,255,255,.10)!important;}
+            #analysis-sidebar .p-6{padding:1rem .95rem 1.25rem !important;}
+            #analysis-sidebar .p-6 .agro-btn{
+                border-radius:1rem !important;
+                background:rgba(255,255,255,.05) !important;
+                color:rgba(255,255,255,.78) !important;
+                border-color:rgba(255,255,255,.12) !important;
+            }
+            #analysis-sidebar .p-6 .agro-btn:hover{background:rgba(255,255,255,.09)!important;color:#fff!important;}
+
+            #analysis-page .solver-v28-header{
+                position:relative;
+                z-index:2;
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:1rem;
+                margin-bottom:1.55rem;
+                padding:1.05rem 1.1rem;
+                border-radius:1.55rem;
+                border:1px solid rgba(203,213,225,.72);
+                background:rgba(255,255,255,.72);
+                backdrop-filter:blur(18px) saturate(1.12);
+                box-shadow:0 22px 64px rgba(15,23,42,.075), inset 0 1px 0 rgba(255,255,255,.88);
+            }
+            .solver-v28-header-left{display:flex;align-items:center;gap:.9rem;min-width:0;}
+            .solver-v28-module-icon{
+                width:3.2rem;height:3.2rem;flex:none;
+                border-radius:1.1rem;
+                display:flex;align-items:center;justify-content:center;
+                color:#fff;
+                background:linear-gradient(135deg,#3d8e56,#0e2116);
+                box-shadow:0 16px 32px rgba(14,33,22,.20), inset 0 1px 0 rgba(255,255,255,.16);
+            }
+            .solver-v28-kicker{
+                display:block;
+                font-size:.66rem;
+                line-height:1;
+                font-weight:950;
+                letter-spacing:.14em;
+                text-transform:uppercase;
+                color:#2d7244;
+                margin-bottom:.36rem;
+            }
+            #module-title{
+                font-size:clamp(1.45rem,2vw,2.05rem) !important;
+                line-height:1.04 !important;
+                letter-spacing:-.05em !important;
+                font-weight:950 !important;
+                color:#061b14 !important;
+                margin:0 !important;
+            }
+            #module-desc{
+                margin-top:.28rem !important;
+                color:#52627a !important;
+                font-size:.92rem !important;
+                font-weight:650 !important;
+                max-width:720px;
+            }
+            .solver-v28-header-actions{display:flex;align-items:center;gap:.65rem;flex:none;}
+            .solver-v28-status{
+                display:inline-flex;align-items:center;gap:.45rem;
+                padding:.68rem .85rem;
+                border-radius:999px;
+                border:1px solid rgba(187,225,198,.88);
+                background:rgba(240,249,241,.82);
+                color:#1b3c28;
+                font-size:.72rem;
+                font-weight:950;
+                letter-spacing:.08em;
+                text-transform:uppercase;
+                box-shadow:0 10px 28px rgba(15,23,42,.045);
+            }
+            .solver-v28-status span{width:.45rem;height:.45rem;border-radius:999px;background:#3d8e56;box-shadow:0 0 0 5px rgba(61,142,86,.11);}
+            #analysis-page .solver-v28-header .agro-btn{height:2.75rem;padding:.65rem .9rem;border-radius:.9rem;font-size:.82rem;}
+
+            #analysis-page .agro-card,
+            #analysis-page .solver-output-card,
+            #analysis-page .solver-posthoc-card,
+            #result-fatorial,#result-parcelas,#result-direto{
+                border:1px solid rgba(203,213,225,.74) !important;
+                border-radius:1.6rem !important;
+                background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(249,252,250,.78)) !important;
+                backdrop-filter:blur(14px) saturate(1.08);
+                box-shadow:0 22px 62px rgba(15,23,42,.072), inset 0 1px 0 rgba(255,255,255,.90) !important;
+                overflow:hidden;
+            }
+            #analysis-page .agro-card:hover{transform:none;box-shadow:0 24px 70px rgba(15,23,42,.085), inset 0 1px 0 rgba(255,255,255,.92)!important;}
+            #analysis-page .agro-card h3,#analysis-page h3,#analysis-page h4{color:#061b14;letter-spacing:-.03em;}
+            #analysis-page .grid.grid-cols-1.xl\:grid-cols-3{gap:1.35rem !important;}
+            #analysis-page .xl\:col-span-1 .agro-card{border-top:4px solid #3d8e56 !important;}
+            #analysis-page .xl\:col-span-2 .agro-card,#result-fatorial,#result-parcelas,#result-direto{min-height:300px;}
+
+            #analysis-page .agro-tabs{
+                gap:.35rem !important;
+                border-bottom:0 !important;
+                padding:.32rem;
+                border-radius:1rem;
+                background:#f8fafc;
+                border:1px solid #e2e8f0;
+                margin-bottom:1rem !important;
+            }
+            #analysis-page .agro-tab{
+                flex:1;
+                text-align:center;
+                margin:0 !important;
+                padding:.75rem .65rem !important;
+                border:0 !important;
+                border-radius:.78rem;
+                color:#64748b;
+                font-size:.84rem;
+            }
+            #analysis-page .agro-tab.active{
+                background:#fff;
+                color:#0e2116 !important;
+                box-shadow:0 10px 22px rgba(15,23,42,.065);
+            }
+            #analysis-page .agro-input{
+                border-radius:.95rem !important;
+                border-color:#e2e8f0 !important;
+                background:rgba(255,255,255,.88) !important;
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+            }
+            #analysis-page .agro-input:focus{border-color:#3d8e56!important;box-shadow:0 0 0 4px rgba(61,142,86,.12)!important;}
+            #analysis-page label.flex.items-center.gap-3.p-3{
+                border-radius:1rem !important;
+                background:rgba(255,255,255,.68);
+                border-color:#e2e8f0;
+            }
+            #analysis-page label.flex.items-center.gap-3.p-3:has(input:checked){
+                background:#f0f9f1 !important;
+                border-color:#8fc8a0 !important;
+                box-shadow:inset 0 0 0 1px rgba(61,142,86,.08);
+            }
+            #analysis-page .p-6.border-2.border-dashed{
+                border-radius:1.25rem !important;
+                background:linear-gradient(180deg,#fff,#fbfdfb);
+                border-color:#dbe8df !important;
+            }
+            #analysis-page .agro-btn-primary{
+                background:linear-gradient(135deg,#3d8e56,#0e2116) !important;
+                box-shadow:0 16px 32px -18px rgba(14,33,22,.70), inset 0 1px 0 rgba(255,255,255,.16) !important;
+            }
+            #analysis-page .agro-btn-outline{
+                background:rgba(255,255,255,.82) !important;
+                border-color:#dbe8df !important;
+                color:#1b3c28 !important;
+                box-shadow:0 10px 26px rgba(15,23,42,.045);
+            }
+            #analysis-page .agro-btn:hover:not(:disabled){transform:translateY(-1px);}
+            #analysis-page .table-wrapper,#analysis-page .solver-table{
+                border-radius:1.25rem !important;
+                border-color:#e2e8f0 !important;
+                box-shadow:0 18px 44px rgba(15,23,42,.055) !important;
+            }
+            #analysis-page table th{background:#f8fafc!important;color:#475569!important;}
+            #analysis-page table td{background:rgba(255,255,255,.88)!important;}
+            #analysis-page tbody tr:hover td{background:#f0f9f1!important;}
+            #analysis-page #placeholder-simples,#analysis-page #placeholder-fatorial,#analysis-page #placeholder-parcelas,#analysis-page #placeholder-direto{
+                border:1px dashed rgba(187,225,198,.88);
+                border-radius:1.7rem;
+                background:rgba(255,255,255,.42);
+                backdrop-filter:blur(12px);
+            }
+            #analysis-page .solver-result-hero{
+                border-radius:1.4rem !important;
+                border-color:#dbe8df !important;
+                background:linear-gradient(135deg,#fff,#f8fbf9) !important;
+            }
+            #analysis-page .solver-metric,#analysis-page .solver-kpi{border-radius:1.15rem !important;background:#f0f9f1!important;border-color:#bbe1c6!important;}
+            #analysis-page .sig-active{background:#dcf1e1!important;color:#0e2116!important;}
+            #analysis-page .sig-inactive{background:#f1f5f9!important;color:#94a3b8!important;}
+
+            .solver-v28-hidden-extra{display:none!important;}
+            #loading-overlay{background:rgba(14,33,22,.18)!important;backdrop-filter:blur(14px)!important;}
+            #loading-overlay .loading-card{border-color:#bbe1c6!important;box-shadow:0 36px 110px rgba(14,33,22,.32)!important;}
+
+            @media(max-width:1100px){
+                #analysis-page main{padding:1.35rem!important;}
+                .solver-v28-header{align-items:flex-start;}
+                .solver-v28-header-actions{align-self:flex-start;}
+            }
+            @media(max-width:767px){
+                #analysis-page main{padding:1rem!important;}
+                #analysis-sidebar{width:18rem!important;max-width:82vw;}
+                #analysis-page .solver-v28-header{padding:.9rem;border-radius:1.25rem;align-items:flex-start;}
+                .solver-v28-header-left{align-items:flex-start;}
+                .solver-v28-module-icon{display:none;}
+                .solver-v28-header-actions .agro-btn{display:none!important;}
+                .solver-v28-status{font-size:.64rem;padding:.58rem .68rem;}
+                #module-title{font-size:1.45rem!important;}
+                #module-desc{font-size:.84rem!important;}
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function simplifySidebar(){
+        const sidebar = document.getElementById('analysis-sidebar');
+        if(!sidebar || sidebar.dataset.v28Minimal === '1') return;
+        sidebar.dataset.v28Minimal = '1';
+        const logoRow = sidebar.querySelector('.p-8 .flex.items-center.gap-3');
+        if(logoRow){
+            const textSpan = logoRow.querySelector('span.text-white');
+            if(textSpan){
+                textSpan.textContent = 'SOLVER';
+                let wrap = logoRow.querySelector('.solver-v28-brand-copy');
+                if(!wrap){
+                    wrap = document.createElement('div');
+                    wrap.className = 'solver-v28-brand-copy';
+                    textSpan.parentNode.insertBefore(wrap, textSpan);
+                    wrap.appendChild(textSpan);
+                }
+                let sub = wrap.querySelector('.solver-v28-sidebar-sub');
+                if(!sub){
+                    sub = document.createElement('div');
+                    sub.className = 'solver-v28-sidebar-sub';
+                    wrap.appendChild(sub);
+                }
+                sub.textContent = 'ANÁLISE EXPERIMENTAL';
+            }
+        }
+        const labels = {
+            'nav-simples': '<i class="fa-solid fa-vial"></i> Fator único',
+            'nav-fatorial': '<i class="fa-solid fa-layer-group"></i> Fatorial Duplo',
+            'nav-parcelas': '<i class="fa-solid fa-table-cells"></i> Parcelas Subdivididas',
+            'nav-regressaodireta': '<i class="fa-solid fa-bullseye"></i> Regressão Direta'
+        };
+        Object.entries(labels).forEach(([id, html]) => {
+            const el = document.getElementById(id);
+            if(el) el.innerHTML = html;
+        });
+    }
+
+    function rebuildHeader(){
+        const old = document.querySelector('#analysis-page main > header');
+        if(!old) return;
+        if(old.dataset.v28Minimal === '1') return;
+        const mod = currentModule();
+        const info = moduleInfo[mod] || moduleInfo.simples;
+        old.dataset.v28Minimal = '1';
+        old.className = 'solver-v28-header';
+        old.innerHTML = `
+            <div class="solver-v28-header-left">
+                <button id="mobile-menu-btn" onclick="toggleSidebarMobile()" class="agro-btn agro-btn-outline p-3 shrink-0" aria-label="Abrir menu de delineamentos">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="solver-v28-module-icon"><i id="solver-v28-module-icon-i" class="fa-solid ${info.icon}"></i></div>
+                <div class="min-w-0">
+                    <span class="solver-v28-kicker">Painel de análise</span>
+                    <h2 id="module-title">${info.title}</h2>
+                    <p id="module-desc">${info.desc}</p>
+                </div>
+            </div>
+            <div class="solver-v28-header-actions">
+                <button onclick="abrirManual()" class="agro-btn agro-btn-outline"><i class="fa-regular fa-circle-question"></i> Formatos</button>
+                <span class="solver-v28-status"><span></span> Online</span>
+            </div>`;
+    }
+
+    function syncHeader(){
+        const mod = currentModule();
+        const info = moduleInfo[mod] || moduleInfo.simples;
+        const title = document.getElementById('module-title');
+        const desc = document.getElementById('module-desc');
+        const icon = document.getElementById('solver-v28-module-icon-i');
+        if(title) title.textContent = info.title;
+        if(desc) desc.textContent = info.desc;
+        if(icon) icon.className = `fa-solid ${info.icon}`;
+    }
+
+    function hideNoisyCommandCenter(){
+        // Remove painéis demonstrativos grandes que ocupam espaço na segunda página, caso existam em versões intermediárias.
+        document.querySelectorAll('#analysis-page [class*="command"], #analysis-page [class*="Command"], #analysis-page [class*="hero-banner"], #analysis-page [class*="stat-card"], #analysis-page [class*="top-kpi"]').forEach(el => {
+            const txt = (el.textContent || '').toLowerCase();
+            if(txt.includes('command') || txt.includes('versão') || txt.includes('módulos') || txt.includes('laboratório estatístico')){
+                el.classList.add('solver-v28-hidden-extra');
+            }
+        });
+    }
+
+    function apply(){
+        injectStyles();
+        simplifySidebar();
+        rebuildHeader();
+        syncHeader();
+        hideNoisyCommandCenter();
+    }
+
+    document.addEventListener('DOMContentLoaded', apply);
+    setTimeout(apply, 120);
+    setTimeout(apply, 600);
+    setTimeout(apply, 1400);
+
+    const originalShowModule = window.showModule;
+    if(typeof originalShowModule === 'function' && !window.showModule.__solverV28Minimal){
+        window.showModule = function(mod){
+            const result = originalShowModule.apply(this, arguments);
+            setTimeout(() => { apply(); syncHeader(); }, 0);
+            return result;
+        };
+        window.showModule.__solverV28Minimal = true;
+    }
+})();
+</script>
 
 </body>
 </html>
