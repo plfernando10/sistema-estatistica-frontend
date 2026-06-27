@@ -4287,304 +4287,238 @@
 </script>
 
 
-<script id="solver-v23-branding-patch">
+<script id="solver-v24-corrected-landing">
 (function(){
-    function addStylesV23(){
-        if(document.getElementById('solver-v23-styles')) return;
+    function injectStyles(){
+        if(document.getElementById('solver-v24-corrected-styles')) return;
         const style = document.createElement('style');
-        style.id = 'solver-v23-styles';
+        style.id = 'solver-v24-corrected-styles';
         style.textContent = `
-            .solver-wordmark-v23{
-                display:flex;
-                align-items:center;
-                gap:1rem;
+            #landing-page.solver-v24-corrected{
+                background:
+                    radial-gradient(circle at 82% 10%, rgba(61,142,86,.13), transparent 30%),
+                    radial-gradient(circle at 15% 86%, rgba(194,139,74,.10), transparent 28%),
+                    linear-gradient(135deg,#fffdfa 0%,#f7fbf8 50%,#eef8f1 100%) !important;
+                overflow-y:auto;
             }
-            .solver-wordmark-icon-v23{
-                width:3.25rem;
-                height:3.25rem;
-                border-radius:1.05rem;
+            .solver-v24-bg-grid{
+                position:absolute; inset:0; pointer-events:none;
+                background-image:
+                    linear-gradient(rgba(45,142,86,.055) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(45,142,86,.055) 1px, transparent 1px);
+                background-size:42px 42px;
+                mask-image:linear-gradient(to bottom,rgba(0,0,0,.62),transparent 92%);
+            }
+            .solver-v24-brand{display:flex;align-items:center;gap:1rem}
+            .solver-v24-brand-icon{
+                width:3.35rem;height:3.35rem;border-radius:1.05rem;
+                display:flex;align-items:center;justify-content:center;
                 background:linear-gradient(135deg,#3d8e56,#18452c);
-                box-shadow:0 18px 34px rgba(27,76,48,.18);
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                position:relative;
-                overflow:hidden;
-                flex:0 0 auto;
+                color:#fff;box-shadow:0 18px 34px rgba(27,76,48,.18);
             }
-            .solver-wordmark-icon-v23::before{
-                content:"";
-                width:1.62rem;
-                height:1.04rem;
-                border-radius:999px;
-                background:#fff;
-                position:absolute;
-                transform:rotate(-25deg);
+            .solver-v24-brand-icon i{font-size:1.35rem}
+            .solver-v24-brand-title{
+                font-size:2rem;line-height:.92;font-weight:950;
+                letter-spacing:-.045em;color:#071f18;
             }
-            .solver-wordmark-icon-v23::after{
-                content:"";
-                width:1.75rem;
-                height:.15rem;
-                background:#18452c;
-                border-radius:999px;
-                position:absolute;
-                transform:rotate(-25deg);
+            .solver-v24-brand-sub{
+                margin-top:.45rem;font-size:.62rem;line-height:1;
+                font-weight:900;letter-spacing:.32em;color:#0e462d;
             }
-            .solver-wordmark-title-v23{
-                font-size:2rem;
-                line-height:.92;
-                font-weight:950;
-                letter-spacing:-.045em;
-                color:#071f18;
+            .solver-v24-kicker{
+                display:inline-flex;align-items:center;gap:.55rem;padding:.62rem .95rem;
+                border-radius:999px;background:rgba(255,255,255,.78);
+                border:1px solid #cfeeda;color:#1f6d3c;
+                font-weight:900;font-size:.72rem;letter-spacing:.06em;
             }
-            .solver-wordmark-sub-v23{
-                margin-top:.45rem;
-                font-size:.62rem;
-                line-height:1;
-                font-weight:900;
-                letter-spacing:.32em;
-                color:#0e462d;
+            .solver-v24-title{
+                font-size:clamp(2.55rem,5.2vw,5.25rem);
+                line-height:.94;letter-spacing:-.065em;font-weight:950;color:#071f18;
             }
-            .solver-persona-modern-v23{
-                display:flex;
-                gap:1rem;
-                align-items:flex-start;
-                border:1px solid rgba(203,213,225,.78) !important;
-                background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(248,251,249,.9)) !important;
-                box-shadow:0 12px 32px rgba(15,23,42,.045);
+            .solver-v24-title span{color:#2d8e56}
+            .solver-v24-lead{
+                font-size:clamp(1rem,1.5vw,1.22rem);line-height:1.72;color:#52627a;
+                max-width:48rem;
+            }
+            .solver-v24-panel{
+                border:1px solid rgba(203,213,225,.72);
+                background:rgba(255,255,255,.82);
+                backdrop-filter:blur(18px);
+                box-shadow:0 28px 70px rgba(15,23,42,.08);
+                border-radius:2rem;
+            }
+            .solver-v24-audience{
+                display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:flex-start;
+                padding:1.15rem;border-radius:1.35rem;border:1px solid rgba(203,213,225,.72);
+                background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(248,251,249,.88));
                 transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
             }
-            .solver-persona-modern-v23:hover{
-                transform:translateY(-2px);
-                border-color:#bfe7ca !important;
-                box-shadow:0 20px 42px rgba(15,23,42,.075);
+            .solver-v24-audience:hover{transform:translateY(-2px);box-shadow:0 18px 35px rgba(15,23,42,.07);border-color:#bfe7ca}
+            .solver-v24-icon{
+                width:3rem;height:3rem;border-radius:1.05rem;display:flex;align-items:center;justify-content:center;
+                background:#f0f9f1;border:1px solid #cfeeda;color:#2d8e56;font-size:1.1rem;flex:0 0 auto;
             }
-            .solver-icon-modern-v23{
-                width:3.1rem !important;
-                height:3.1rem !important;
-                min-width:3.1rem !important;
-                border-radius:1.08rem !important;
-                background:linear-gradient(135deg,#eefaf1,#ffffff) !important;
-                border:1px solid #cfeeda !important;
-                color:#2d8e56 !important;
-                box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
-                display:flex !important;
-                align-items:center !important;
-                justify-content:center !important;
-                font-size:1.12rem !important;
+            .solver-v24-feature{
+                border:1px solid rgba(203,213,225,.72);
+                background:rgba(255,255,255,.86);
+                border-radius:1.65rem;padding:1.55rem;
+                box-shadow:0 20px 50px rgba(15,23,42,.06);
+                transition:.2s ease;
             }
-            .solver-feature-icon-v23{
-                width:3.35rem !important;
-                height:3.35rem !important;
-                border-radius:1.1rem !important;
-                background:linear-gradient(135deg,#eefaf1,#ffffff) !important;
-                border:1px solid #cfeeda !important;
-                color:#2d8e56 !important;
-                display:flex !important;
-                align-items:center !important;
-                justify-content:center !important;
-                font-size:1.12rem !important;
-                box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+            .solver-v24-feature:hover{transform:translateY(-3px);box-shadow:0 25px 60px rgba(15,23,42,.09)}
+            .solver-v24-feature-icon{
+                width:3.25rem;height:3.25rem;border-radius:1.1rem;
+                display:flex;align-items:center;justify-content:center;
+                background:#f0f9f1;border:1px solid #cfeeda;color:#2d8e56;font-size:1.1rem;margin-bottom:1.1rem;
             }
-            .solver-brand-mini-v23 .solver-wordmark-title-v23{
-                font-size:1.25rem;
+            .solver-v24-metric{
+                border:1px solid #cfeeda;background:rgba(255,255,255,.78);border-radius:1rem;
+                padding:.9rem 1rem;
             }
-            .solver-brand-mini-v23 .solver-wordmark-sub-v23{
-                font-size:.43rem;
-                letter-spacing:.22em;
+            .solver-v24-footer{
+                padding:2rem 1rem 2.4rem;text-align:center;color:#94a3b8;font-weight:700;
+                border-top:1px solid rgba(45,142,86,.12);margin-top:3.5rem;
             }
-            .solver-brand-mini-v23 .solver-wordmark-icon-v23{
-                width:2.4rem;
-                height:2.4rem;
-                border-radius:.8rem;
-            }
-            .solver-brand-mini-v23 .solver-wordmark-icon-v23::before{
-                width:1.16rem;
-                height:.74rem;
-            }
-            .solver-brand-mini-v23 .solver-wordmark-icon-v23::after{
-                width:1.25rem;
-                height:.12rem;
+            @media(max-width:768px){
+                .solver-v24-brand-title{font-size:1.62rem}
+                .solver-v24-brand-sub{font-size:.52rem;letter-spacing:.22em}
             }
         `;
         document.head.appendChild(style);
     }
 
-    function logoHtmlV23(mini=false){
+    function landingHtml(){
         return `
-            <div class="solver-wordmark-v23 ${mini ? 'solver-brand-mini-v23' : ''}">
-                <div class="solver-wordmark-icon-v23"></div>
-                <div>
-                    <div class="solver-wordmark-title-v23">SOLVER</div>
-                    <div class="solver-wordmark-sub-v23">INTELLIGENCE FOR FIELD TRIALS</div>
+            <div class="solver-v24-bg-grid"></div>
+
+            <nav class="relative z-10 container mx-auto px-6 py-8 flex justify-between items-center">
+                <div class="solver-v24-brand">
+                    <div class="solver-v24-brand-icon"><i class="fa-solid fa-leaf"></i></div>
+                    <div>
+                        <div class="solver-v24-brand-title">SOLVER</div>
+                        <div class="solver-v24-brand-sub">INTELLIGENCE FOR FIELD TRIALS</div>
+                    </div>
                 </div>
-            </div>
-        `;
+                <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary hidden sm:inline-flex">
+                    <i class="fa-solid fa-flask-vial"></i> Iniciar análise
+                </button>
+            </nav>
+
+            <main class="relative z-10 container mx-auto px-6 pt-8 pb-10">
+                <section class="grid grid-cols-1 xl:grid-cols-[1.08fr_.92fr] gap-12 items-center">
+                    <div>
+                        <div class="solver-v24-kicker mb-7">
+                            <i class="fa-solid fa-shield-halved"></i> Estatística experimental para rotina acadêmica e agrícola
+                        </div>
+                        <h1 class="solver-v24-title mb-7">
+                            Analise seus dados com clareza, rigor e <span>apresentação profissional</span>.
+                        </h1>
+                        <p class="solver-v24-lead mb-8">
+                            O Solver transforma planilhas, exercícios e ensaios de campo em resultados interpretados:
+                            ANOVA, teste F, comparação de médias, regressão, dose ótima e relatório técnico em PDF.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary px-8 py-4 text-base">
+                                <i class="fa-solid fa-chart-simple"></i> Iniciar análise estatística
+                            </button>
+                            <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-outline px-8 py-4 text-base bg-white/70">
+                                <i class="fa-regular fa-circle-question"></i> Ver formatos dos dados
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 max-w-3xl">
+                            <div class="solver-v24-metric"><strong class="block text-agro-950 text-lg">ANOVA</strong><span class="text-xs text-slate-500 font-bold">Teste F</span></div>
+                            <div class="solver-v24-metric"><strong class="block text-agro-950 text-lg">Tukey</strong><span class="text-xs text-slate-500 font-bold">Duncan/Dunnett</span></div>
+                            <div class="solver-v24-metric"><strong class="block text-agro-950 text-lg">Regressão</strong><span class="text-xs text-slate-500 font-bold">Dose ótima</span></div>
+                            <div class="solver-v24-metric"><strong class="block text-agro-950 text-lg">PDF</strong><span class="text-xs text-slate-500 font-bold">Laudo técnico</span></div>
+                        </div>
+                    </div>
+
+                    <div class="solver-v24-panel p-7 md:p-9">
+                        <div class="flex gap-4 items-start mb-7">
+                            <div class="solver-v24-icon"><i class="fa-solid fa-crosshairs"></i></div>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black text-agro-950 leading-tight">
+                                    Feito para quem precisa decidir com dados
+                                </h2>
+                                <p class="text-slate-500 font-semibold mt-2">
+                                    Da sala de aula à tomada de decisão no campo.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="solver-v24-audience">
+                                <div class="solver-v24-icon"><i class="fa-solid fa-seedling"></i></div>
+                                <div>
+                                    <h3 class="text-lg font-black text-agro-950">Agronegócio</h3>
+                                    <p class="text-slate-600 leading-relaxed">
+                                        Analise ensaios, compare tratamentos e transforme dados de campo em interpretações técnicas para decisão.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="solver-v24-audience">
+                                <div class="solver-v24-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                                <div>
+                                    <h3 class="text-lg font-black text-agro-950">Acadêmico</h3>
+                                    <p class="text-slate-600 leading-relaxed">
+                                        Confira exercícios, valide cálculos de estatística experimental e entenda ANOVA, testes de médias e regressão.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="solver-v24-audience">
+                                <div class="solver-v24-icon"><i class="fa-solid fa-microscope"></i></div>
+                                <div>
+                                    <h3 class="text-lg font-black text-agro-950">P&amp;D, analistas e pesquisa</h3>
+                                    <p class="text-slate-600 leading-relaxed">
+                                        Padronize análises, gere relatórios apresentáveis e apoie projetos, TCCs, consultorias e rotinas de avaliação experimental.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                    <div class="solver-v24-feature">
+                        <div class="solver-v24-feature-icon"><i class="fa-solid fa-table-list"></i></div>
+                        <h3 class="font-black text-xl text-agro-950 mb-2">Delineamentos experimentais</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            DIC, DBC, DQL, fatorial duplo e parcelas subdivididas com entrada por CSV ou matriz manual.
+                        </p>
+                    </div>
+                    <div class="solver-v24-feature">
+                        <div class="solver-v24-feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <h3 class="font-black text-xl text-agro-950 mb-2">Regressões e dose ótima</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            Modelos linear, quadrático, cúbico, exponencial e logarítmico, com ranking automático por aderência.
+                        </p>
+                    </div>
+                    <div class="solver-v24-feature">
+                        <div class="solver-v24-feature-icon"><i class="fa-solid fa-file-signature"></i></div>
+                        <h3 class="font-black text-xl text-agro-950 mb-2">Relatório apresentável</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            PDF com interpretação do teste F, comparação de médias, regressão, gráficos e conclusão técnica.
+                        </p>
+                    </div>
+                </section>
+
+                <footer class="solver-v24-footer">
+                    © 2026 Solver — Estatística Experimental de Precisão
+                </footer>
+            </main>`;
     }
 
-    function trocarLogoPrincipalV23(){
+    function apply(){
+        injectStyles();
         const landing = document.getElementById('landing-page');
-        if(!landing) return;
-
-        const logoAreas = Array.from(landing.querySelectorAll('.flex.items-center.gap-3, .flex.items-center.gap-4, .items-center.gap-3, .items-center.gap-4'));
-        const logoArea = logoAreas.find(el => /SOLVER\s*AGRO|SOLVER/i.test(el.textContent || '') && /INTELLIGENCE|FIELD|TRIALS/i.test(el.textContent || ''));
-        if(logoArea){
-            logoArea.outerHTML = logoHtmlV23(false);
-        }
-
-        // Corrige qualquer sobra textual do logo antigo no landing
-        landing.querySelectorAll('span,div,h1,h2,h3,p').forEach(el=>{
-            if(!el.children.length && /\bSOLVER\s+AGRO\b/.test(el.textContent || '')){
-                el.textContent = el.textContent.replace(/\bSOLVER\s+AGRO\b/g,'SOLVER');
-            }
-        });
+        if(!landing || landing.dataset.v24Corrected === '1') return;
+        landing.dataset.v24Corrected = '1';
+        landing.className = 'page flex flex-col fixed inset-0 z-50 overflow-y-auto w-full h-full solver-v24-corrected';
+        landing.innerHTML = landingHtml();
     }
 
-    function trocarLogoInferiorV23(){
-        const landing = document.getElementById('landing-page');
-        if(!landing) return;
-
-        const candidates = Array.from(landing.querySelectorAll('.agro-card, .rounded-3xl, .rounded-2xl, footer, section, div'))
-            .filter(el => /SOLVER\s*AGRO/i.test(el.textContent || '') && /INTELLIGENCE|FIELD|TRIALS/i.test(el.textContent || ''));
-
-        candidates.forEach(el => {
-            // Não mexer no logo principal já tratado
-            if(el.closest('nav')) return;
-            const first = Array.from(el.querySelectorAll('.flex.items-center.gap-3, .flex.items-center.gap-4, .items-center.gap-3, .items-center.gap-4'))
-                .find(x => /SOLVER\s*AGRO|SOLVER/i.test(x.textContent || ''));
-            if(first) first.outerHTML = logoHtmlV23(true);
-        });
-
-        landing.querySelectorAll('span,div,h1,h2,h3,p').forEach(el=>{
-            if(!el.children.length && /\bSOLVER\s+AGRO\b/.test(el.textContent || '')){
-                el.textContent = el.textContent.replace(/\bSOLVER\s+AGRO\b/g,'SOLVER');
-            }
-        });
-    }
-
-    function atualizarTextosV23(){
-        const landing = document.getElementById('landing-page');
-        if(!landing) return;
-
-        landing.querySelectorAll('h1,h2,h3,p,span,div').forEach(el=>{
-            if(el.children.length) return;
-            let t = el.textContent || '';
-
-            t = t.replace('Você do agro','Agronegócio');
-            t = t.replace('Você estudante de graduação','Acadêmico');
-            t = t.replace('Você no TCC ou pesquisa','P&D, analistas e pesquisa');
-
-            t = t.replace('Da sala de aula ao experimento de campo.','Da sala de aula à tomada de decisão no campo.');
-            t = t.replace(
-                'Organize ensaios, compare tratamentos e interprete respostas de produtividade com linguagem técnica pronta para relatório.',
-                'Analise ensaios, compare tratamentos e transforme dados de campo em interpretações técnicas para decisão.'
-            );
-            t = t.replace(
-                'Confira exercícios de estatística experimental, visualize a ANOVA e entenda quando aplicar testes de médias ou regressão.',
-                'Confira exercícios, valide cálculos de estatística experimental e entenda ANOVA, testes de médias e regressão.'
-            );
-            t = t.replace(
-                'Gere análises mais apresentáveis, com gráficos, conclusão técnica e recomendação do modelo de regressão mais adequado.',
-                'Padronize análises, gere relatórios apresentáveis e apoie projetos, TCCs, consultorias e rotinas de avaliação experimental.'
-            );
-
-            el.textContent = t;
-        });
-    }
-
-    function melhorarCardsPublicoV23(){
-        const landing = document.getElementById('landing-page');
-        if(!landing) return;
-
-        const configs = [
-            {
-                rx:/Agronegócio|Você do agro/i,
-                title:'Agronegócio',
-                icon:'fa-solid fa-seedling',
-                text:'Analise ensaios, compare tratamentos e transforme dados de campo em interpretações técnicas para decisão.'
-            },
-            {
-                rx:/Acadêmico|Você estudante/i,
-                title:'Acadêmico',
-                icon:'fa-solid fa-user-graduate',
-                text:'Confira exercícios, valide cálculos de estatística experimental e entenda ANOVA, testes de médias e regressão.'
-            },
-            {
-                rx:/P&D|TCC|pesquisa/i,
-                title:'P&D, analistas e pesquisa',
-                icon:'fa-solid fa-microscope',
-                text:'Padronize análises, gere relatórios apresentáveis e apoie projetos, TCCs, consultorias e rotinas de avaliação experimental.'
-            }
-        ];
-
-        configs.forEach(cfg=>{
-            const title = Array.from(landing.querySelectorAll('h3,h4,strong,div'))
-                .find(el => cfg.rx.test(el.textContent || '') && !el.children.length);
-            if(!title) return;
-
-            const card = title.closest('.rounded-2xl, .rounded-3xl, .border, .p-5, .p-6') || title.parentElement;
-            if(!card) return;
-
-            card.classList.add('solver-persona-modern-v23');
-
-            const icon = card.querySelector('i');
-            if(icon) icon.className = cfg.icon;
-
-            const iconWrap = icon?.closest('div');
-            if(iconWrap) iconWrap.classList.add('solver-icon-modern-v23');
-
-            title.textContent = cfg.title;
-
-            const p = Array.from(card.querySelectorAll('p')).find(x => !cfg.rx.test(x.textContent || ''));
-            if(p) p.textContent = cfg.text;
-        });
-    }
-
-    function melhorarCardsRecursosV23(){
-        const landing = document.getElementById('landing-page');
-        if(!landing) return;
-
-        const configs = [
-            [/Delineamentos experimentais/i, 'fa-solid fa-table-list'],
-            [/Regressões e dose ótima/i, 'fa-solid fa-chart-line'],
-            [/Relatório apresentável/i, 'fa-solid fa-file-signature']
-        ];
-
-        configs.forEach(([rx, iconClass])=>{
-            const h = Array.from(landing.querySelectorAll('h3,h4')).find(el => rx.test(el.textContent || ''));
-            const card = h?.closest('.agro-card, .rounded-3xl, .rounded-2xl, .border, .p-8, .p-6');
-            if(!card) return;
-
-            const icon = card.querySelector('i');
-            if(icon) icon.className = iconClass;
-
-            const iconWrap = icon?.closest('div');
-            if(iconWrap) iconWrap.classList.add('solver-feature-icon-v23');
-        });
-    }
-
-    function removerRodapeNomeV23(){
-        document.querySelectorAll('.solver-footer-v21, .solver-v22-footer').forEach(el => el.remove());
-        document.querySelectorAll('footer, div, p, span').forEach(el=>{
-            if(/Desenvolvido por:\s*Fernando P\. Lorena/i.test(el.textContent || '')){
-                el.remove();
-            }
-        });
-    }
-
-    function aplicarV23(){
-        addStylesV23();
-        trocarLogoPrincipalV23();
-        trocarLogoInferiorV23();
-        atualizarTextosV23();
-        melhorarCardsPublicoV23();
-        melhorarCardsRecursosV23();
-        removerRodapeNomeV23();
-    }
-
-    document.addEventListener('DOMContentLoaded', aplicarV23);
-    setTimeout(aplicarV23, 250);
-    setTimeout(aplicarV23, 900);
+    document.addEventListener('DOMContentLoaded', apply);
+    setTimeout(apply, 250);
 })();
 </script>
 
