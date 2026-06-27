@@ -61,6 +61,12 @@
 
     <style>
         body { background-color: #fdfdfb; color: #2d3748; -webkit-font-smoothing: antialiased; }
+        #landing-page {
+            background:
+                radial-gradient(circle at 12% 18%, rgba(61, 142, 86, 0.12), transparent 34%),
+                radial-gradient(circle at 84% 14%, rgba(177, 131, 86, 0.10), transparent 32%),
+                linear-gradient(135deg, #fdfdfb 0%, #f4fbf5 48%, #fbf8f4 100%) !important;
+        }
         
         .hidden-page { display: none !important; }
         .page-active { display: flex !important; }
@@ -1372,35 +1378,239 @@
             return y + 4;
         }
 
-        function baixarLaudoCompleto(modulo) {
+
+        function numeroRelatorio(v) {
+            if (v === null || v === undefined || v === '-' || v === '') return null;
+            if (typeof v === 'number') return v;
+            let s = String(v).trim().replace('%','').replace(/\s/g,'');
+            if (s.includes(',') && s.includes('.')) s = s.replace(/\./g,'').replace(',','.');
+            else s = s.replace(',','.');
+            const n = Number(s);
+            return Number.isFinite(n) ? n : null;
+        }
+
+        function nivelProbabilidade(row, fallback='5%') {
+            const sig = String(row?.Sig || row?.sig || '').toLowerCase();
+            if (sig.includes('1%') || sig.includes('**')) return '1%';
+            if (sig.includes('5%') || sig.includes('*')) return '5%';
+            return fallback;
+        }
+
+        function ehSignificativo(row) {
+            const sig = String(row?.Sig || row?.sig || '').toLowerCase();
+            if (sig.includes('ns') || sig === '-' || sig === '') return false;
+            if (sig.includes('*') || sig.includes('1%') || sig.includes('5%')) return true;
+            const fcalc = numeroRelatorio(row?.['F Calc']);
+            const ftab = numeroRelatorio(row?.['F Tab']);
+            return fcalc !== null && ftab !== null && fcalc > ftab;
+        }
+
+        function nomeFVInterpretavel(fv) {
+            const limpo = String(fv || '').replace(/\s+/g, ' ').trim();
+            if (/intera/i.test(limpo)) return 'interação entre os fatores A x B';
+            if (/fator a/i.test(limpo)) return 'níveis do fator A';
+            if (/fator b/i.test(limpo)) return 'níveis do fator B';
+            if (/trat/i.test(limpo)) return 'tratamentos';
+            if (/bloco/i.test(limpo)) return 'blocos';
+            return limpo.toLowerCase();
+        }
+
+        function linhasInterpretaveisAnova(modulo, anova) {
+            const ignorar = /(resíduo|residuo|erro|total|subtotal|parcelas)/i;
+            return (anova || []).filter(r => r && r.FV && !ignorar.test(String(r.FV)));
+        }
+
+        function textoAnovaRelatorio(modulo, anova) {
+            const linhas = linhasInterpretaveisAnova(modulo, anova);
+            if (!linhas.length) return ['Não foram encontradas fontes de variação interpretáveis para o teste F.'];
+            return linhas.map(row => {
+                const fv = nomeFVInterpretavel(row.FV);
+                const nivel = nivelProbabilidade(row);
+                const fcalc = row['F Calc'] ?? '-';
+                const ftab = row['F Tab'] ?? '-';
+                if (ehSignificativo(row)) {
+                    return `Para ${fv}, observou-se F calculado (${fcalc}) > F tabelado (${ftab}). Assim, rejeita-se a hipótese H₀ e aceita-se a hipótese Hₐ. Conclui-se que houve diferença estatística significativa entre pelo menos duas médias ou níveis avaliados, no nível de probabilidade de ${nivel}. Portanto, recomenda-se realizar uma análise posterior, por comparação de médias ou regressão, conforme a natureza quantitativa ou qualitativa do fator.`;
+                }
+                return `Para ${fv}, observou-se F calculado (${fcalc}) ≤ F tabelado (${ftab}) ou ausência de significância estatística. Assim, não se rejeita a hipótese H₀. Conclui-se que não houve evidência estatística suficiente para afirmar diferença entre as médias ou níveis avaliados no nível de probabilidade considerado. Nesse caso, a realização de teste posterior não é recomendada para essa fonte de variação.`;
+            });
+        }
+
+        function textoPostHocRelatorio(ph) {
+            if (!ph) return ['Nenhuma análise posterior foi executada.'];
+            if (ph.tipo === 'regressao') return textoRegressaoRelatorio(ph);
+            const nome = ph.nome_teste || (ph.tipo ? ph.tipo.toUpperCase() : 'comparação de médias');
+            const alfa = ph.alpha_txt || '5%';
+            if (ph.tipo === 'dunnett') {
+                return [`No teste de Dunnett, cada tratamento foi comparado com a testemunha ${ph.testemunha || ''}. Diferenças marcadas como significativas indicam médias estatisticamente distintas da testemunha no nível de probabilidade de ${alfa}.`];
+            }
+            return [`Na comparação de médias, médias seguidas pela mesma letra não diferem estatisticamente entre si pelo teste de ${nome}, no nível de probabilidade de ${alfa}. Médias com letras diferentes indicam diferença significativa entre os tratamentos avaliados.`];
+        }
+
+        function textoRegressaoRelatorio(ph) {
+            const textos = [];
+            const modelo = ph.modelo || 'modelo ajustado';
+            const r2 = numeroRelatorio(ph.r2);
+            const reg = (ph.anova_reg || []).find(r => /regress/i.test(String(r.FV)));
+            const desvio = (ph.anova_reg || []).find(r => /desvio/i.test(String(r.FV)));
+            const nivel = nivelProbabilidade(reg || {}, '5%');
+            if (reg && ehSignificativo(reg)) {
+                textos.push(`A análise de regressão indicou efeito significativo para o modelo ${modelo}, pois o F calculado da regressão foi superior ao F tabelado. Portanto, a curva ajustada pode ser utilizada para descrever a resposta da variável avaliada em função das doses, no nível de probabilidade de ${nivel}.`);
+            } else {
+                textos.push(`A análise de regressão não indicou ajuste estatisticamente significativo para o modelo ${modelo}. Portanto, essa curva deve ser interpretada com cautela e não é recomendada como base principal para tomada de decisão sem testar outros modelos.`);
+            }
+            if (r2 !== null) {
+                if (r2 >= 0.90) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica excelente capacidade de explicação dos dados pelo modelo ajustado.`);
+                else if (r2 >= 0.75) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica boa representação dos dados pelo modelo ajustado.`);
+                else if (r2 >= 0.60) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica representação moderada dos dados. O modelo pode ser útil, mas recomenda-se comparar com outros ajustes.`);
+                else textos.push(`O coeficiente de determinação R² = ${ph.r2} é baixo, indicando que o modelo escolhido não representa bem a variação observada. Recomenda-se testar modelos alternativos, como quadrático, cúbico, exponencial ou logarítmico, e escolher aquele com melhor significância, menor desvio e maior R².`);
+            }
+            if (desvio && ehSignificativo(desvio)) {
+                textos.push(`O desvio da regressão foi significativo, indicando que ainda existe variação não explicada pelo modelo. Nesse caso, recomenda-se avaliar outro tipo de regressão ou aumentar o número de doses para melhorar o ajuste.`);
+            } else if (desvio) {
+                textos.push(`O desvio da regressão não foi significativo, indicando que o modelo ajustado descreve adequadamente a tendência média dos dados dentro da precisão experimental.`);
+            }
+            if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
+                textos.push(`A dose ótima estimada foi ${ph.dose_otima || '-'}, com produtividade ótima estimada de ${ph.resposta_otima || ph.produtividade_otima || '-'}. Esses valores devem ser interpretados dentro do intervalo experimental avaliado.`);
+            }
+            return textos;
+        }
+
+        function addTextoQuebradoPdf(doc, texto, x, y, largura=182, linha=5) {
+            const partes = doc.splitTextToSize(texto, largura);
+            const pageH = doc.internal.pageSize.getHeight();
+            partes.forEach(p => {
+                if (y > pageH - 18) { doc.addPage(); y = 18; }
+                doc.text(p, x, y); y += linha;
+            });
+            return y;
+        }
+
+        function addTituloSecaoPdf(doc, titulo, y) {
+            const pageW = doc.internal.pageSize.getWidth();
+            if (y > 265) { doc.addPage(); y = 18; }
+            doc.setFillColor(240, 249, 241);
+            doc.setDrawColor(187, 225, 198);
+            doc.roundedRect(12, y - 5, pageW - 24, 11, 2, 2, 'FD');
+            doc.setTextColor(27, 60, 40);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+            doc.text(titulo, 16, y + 2);
+            doc.setTextColor(45, 55, 72);
+            return y + 12;
+        }
+
+        function addParagrafosPdf(doc, paragrafos, y) {
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            (paragrafos || []).forEach(txt => { y = addTextoQuebradoPdf(doc, txt, 14, y, 182, 5); y += 3; });
+            return y;
+        }
+
+        function addTabelaBonitaPdf(doc, titulo, linhas, y) {
+            if (!linhas || !linhas.length) return y;
+            y = addTituloSecaoPdf(doc, titulo, y);
+            const pageH = doc.internal.pageSize.getHeight();
+            const cols = Object.keys(linhas[0]);
+            const colW = Math.min(182 / cols.length, 42);
+            doc.setFontSize(7);
+            doc.setFont('helvetica', 'bold');
+            doc.setFillColor(248, 250, 252);
+            doc.rect(14, y - 4, 182, 8, 'F');
+            cols.forEach((c, i) => doc.text(String(c).slice(0, 18), 16 + i * colW, y));
+            y += 6;
+            doc.setFont('helvetica', 'normal');
+            linhas.forEach((l, idx) => {
+                if (y > pageH - 18) { doc.addPage(); y = 18; }
+                if (idx % 2 === 0) { doc.setFillColor(253, 253, 251); doc.rect(14, y - 4, 182, 7, 'F'); }
+                cols.forEach((c, i) => {
+                    const val = String(l[c] ?? '-').slice(0, 20);
+                    doc.text(val, 16 + i * colW, y);
+                });
+                y += 6;
+            });
+            return y + 6;
+        }
+
+        async function addGraficoRegressaoPdf(doc, ph, y) {
+            if (!ph || ph.tipo !== 'regressao' || !ph.img_png) return y;
+            if (y > 170) { doc.addPage(); y = 18; }
+            y = addTituloSecaoPdf(doc, 'Gráfico da regressão', y);
+            try {
+                doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 20, y, 170, 100);
+                y += 108;
+            } catch (e) {
+                y = addTextoQuebradoPdf(doc, 'Não foi possível inserir o gráfico automaticamente no PDF.', 14, y);
+            }
+            return y;
+        }
+
+        async function baixarLaudoCompleto(modulo) {
             const pacote = analises[modulo];
             if (!pacote || !pacote.anova) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast('Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            let y = 16;
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('Solver Agro - Laudo Técnico', 14, y); y += 8;
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text(`Módulo: ${modulo}`, 14, y); y += 6;
-            doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 14, y); y += 8;
-            const cvTxt = pacote.anova.cv ? `CV: ${pacote.anova.cv}` : `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}`;
-            doc.text(cvTxt, 14, y); y += 8;
-            y = linhasTabelaPdf(doc, 'Análise de Variância (ANOVA)', pacote.anova.anova || [], y);
-            const ph = pacote.posthoc;
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.text('Análise Posterior', 14, y); y += 7;
+            const pageW = doc.internal.pageSize.getWidth();
+
+            doc.setFillColor(27, 60, 40);
+            doc.rect(0, 0, pageW, 34, 'F');
+            doc.setFillColor(61, 142, 86);
+            doc.circle(pageW - 18, 17, 20, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+            doc.text('Solver Agro', 14, 15);
+            doc.setFontSize(12);
+            doc.text('Relatório técnico de análise estatística experimental', 14, 24);
+
+            let y = 44;
+            doc.setTextColor(45, 55, 72);
             doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta' };
+            doc.text(`Módulo: ${nomesModulos[modulo] || modulo}`, 14, y); y += 6;
+            doc.text(`Data de emissão: ${new Date().toLocaleString('pt-BR')}`, 14, y); y += 6;
+            const cvTxt = pacote.anova.cv ? `Coeficiente de variação: ${pacote.anova.cv}` : `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}`;
+            doc.text(cvTxt, 14, y); y += 10;
+
+            y = addTituloSecaoPdf(doc, 'Interpretação do teste F', y);
+            y = addParagrafosPdf(doc, textoAnovaRelatorio(modulo, pacote.anova.anova || []), y);
+            y = addTabelaBonitaPdf(doc, 'Tabela da análise de variância (ANOVA)', pacote.anova.anova || [], y);
+
+            const ph = pacote.posthoc;
+            y = addTituloSecaoPdf(doc, ph.tipo === 'regressao' ? 'Interpretação da regressão' : 'Interpretação do teste de comparação de médias', y);
+            y = addParagrafosPdf(doc, textoPostHocRelatorio(ph), y);
+
             if (ph.tipo === 'regressao') {
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
                 doc.text(`Modelo: ${ph.modelo || '-'} | R²: ${ph.r2 || '-'}`, 14, y); y += 6;
-                doc.text(doc.splitTextToSize(`Equação: ${ph.equacao || '-'}`, 180), 14, y); y += 10;
-                if (ph.dose_otima) { doc.text(`Dose ótima: ${ph.dose_otima} | Produtividade ótima: ${ph.resposta_otima || ph.produtividade_otima || '-'}`, 14, y); y += 8; }
-                y = linhasTabelaPdf(doc, 'ANOVA da regressão', ph.anova_reg || [], y);
+                doc.setFont('helvetica', 'normal');
+                y = addTextoQuebradoPdf(doc, `Equação ajustada: ${ph.equacao || '-'}`, 14, y);
+                y += 4;
+                if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
+                    doc.setFillColor(240, 249, 241); doc.roundedRect(14, y, 86, 14, 2, 2, 'F');
+                    doc.setFillColor(251, 248, 244); doc.roundedRect(108, y, 86, 14, 2, 2, 'F');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(45, 114, 68);
+                    doc.text('DOSE ÓTIMA', 18, y + 5); doc.setFontSize(12); doc.text(String(ph.dose_otima || '-'), 18, y + 11);
+                    doc.setTextColor(136, 92, 60); doc.setFontSize(8); doc.text('PRODUTIVIDADE ÓTIMA', 112, y + 5);
+                    doc.setFontSize(12); doc.text(String(ph.resposta_otima || ph.produtividade_otima || '-'), 112, y + 11);
+                    doc.setTextColor(45, 55, 72); y += 20;
+                }
+                y = addTabelaBonitaPdf(doc, 'ANOVA da regressão', ph.anova_reg || [], y);
+                y = await addGraficoRegressaoPdf(doc, ph, y);
             } else if (ph.tipo === 'dunnett') {
-                doc.text(`Teste de Dunnett | Testemunha: ${ph.testemunha} | DMS: ${ph.dms} | Alfa: ${ph.alpha_txt}`, 14, y); y += 8;
-                y = linhasTabelaPdf(doc, 'Resultado do teste', ph.resultados || [], y);
+                y = addTabelaBonitaPdf(doc, 'Resultado do teste de Dunnett', ph.resultados || [], y);
             } else {
-                doc.text(`Teste de ${ph.nome_teste || ph.tipo} | DMS: ${ph.dms || '-'} | Alfa: ${ph.alpha_txt || '-'}`, 14, y); y += 8;
-                y = linhasTabelaPdf(doc, 'Comparação de médias', ph.tabela || [], y);
+                y = addTabelaBonitaPdf(doc, `Resultado do teste de ${ph.nome_teste || ph.tipo}`, ph.tabela || [], y);
             }
+
+            if (y > 260) { doc.addPage(); y = 18; }
+            y = addTituloSecaoPdf(doc, 'Conclusão técnica', y);
+            const conclusao = ph.tipo === 'regressao'
+                ? 'A recomendação técnica deve considerar a significância do teste F da regressão, o valor de R², o comportamento biológico da curva e a dose ótima estimada dentro do intervalo experimental avaliado.'
+                : 'A interpretação final deve considerar a significância do teste F e o agrupamento das médias pelo teste posterior. Tratamentos com letras diferentes apresentam desempenho estatisticamente distinto.';
+            y = addParagrafosPdf(doc, [conclusao], y);
+
+            doc.setFontSize(8); doc.setTextColor(113, 128, 150);
+            doc.text('Relatório gerado automaticamente pelo Solver Agro.', 14, 287);
             doc.save(`laudo_solver_agro_${modulo}.pdf`);
         }
 
