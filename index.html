@@ -3952,5 +3952,339 @@
 })();
 </script>
 
+<script id="solver-v20-patch">
+(function(){
+    function escapeHtmlV20(text) {
+        return String(text ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function modeloNomeV20(v) {
+        const m = {linear:'Linear', quadratica:'Quadrática', cubica:'Cúbica', exponencial:'Exponencial', logaritmica:'Logarítmica'};
+        return m[String(v || '').toLowerCase()] || String(v || '');
+    }
+    function nomeDelineamentoRelatorioV20(modulo, pacote) {
+        if (modulo === 'simples') {
+            const d = String(pacote?.delineamento || document.querySelector('input[name="delinSimples"]:checked')?.value || '').toLowerCase();
+            if (d === 'dic') return 'DIC';
+            if (d === 'dbc') return 'DBC';
+            if (d === 'dql') return 'DQL';
+            return 'DIC/DBC/DQL';
+        }
+        if (modulo === 'fatorial') return 'Fatorial duplo';
+        if (modulo === 'parcelas') return 'Parcelas subdivididas';
+        if (modulo === 'regressaodireta') return 'Regressão direta';
+        return modulo || '-';
+    }
+    window.addSolverLogoPdf = function(doc, x = 14, y = 8, escala = 1) {
+        solverResetText(doc);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14.8 * escala);
+        doc.setTextColor(7, 31, 24);
+        doc.text('SOLVER', x, y + 7.6 * escala);
+        const solverW = doc.getTextWidth('SOLVER');
+        doc.setTextColor(45, 142, 86);
+        doc.text('AGRO', x + solverW + 3.2 * escala, y + 7.6 * escala);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(4.8 * escala);
+        doc.setTextColor(14, 70, 45);
+        doc.text('INTELLIGENCE FOR FIELD TRIALS', x, y + 13.0 * escala);
+    };
+    window.addCabecalhoPdf = function(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
+        solverResetText(doc);
+        const pageW = doc.internal.pageSize.getWidth();
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, pageW, 27, 'F');
+        addSolverLogoPdf(doc, 14, 6.4, 0.70);
+        doc.setDrawColor(203, 229, 208);
+        doc.setLineWidth(0.35);
+        doc.line(68, 7, 68, 21);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.1);
+        doc.setTextColor(71, 85, 105);
+        doc.text(limparTextoPdf(subtitulo), 73, 15);
+        doc.setDrawColor(214, 237, 220);
+        doc.line(14, 27, pageW - 14, 27);
+    };
+    window.addCapaRelatorioPdf = function(doc, modulo, pacote) {
+        solverResetText(doc);
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const del = nomeDelineamentoRelatorioV20(modulo, pacote);
+        doc.setFillColor(247, 251, 248);
+        doc.rect(0, 0, pageW, pageH, 'F');
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(10, 10, pageW - 20, pageH - 20, 8, 8, 'F');
+        doc.setFillColor(240, 249, 241);
+        doc.circle(pageW - 20, 20, 32, 'F');
+        doc.setFillColor(251, 248, 244);
+        doc.circle(11, pageH - 12, 27, 'F');
+        const rowY = 35;
+        const logoX = 42;
+        addSolverLogoPdf(doc, logoX, rowY, 1.02);
+        const barX = 96;
+        doc.setDrawColor(45, 142, 86);
+        doc.setLineWidth(0.7);
+        doc.line(barX, rowY - 2, barX, rowY + 17);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11.2);
+        doc.setTextColor(45, 142, 86);
+        doc.text('RELATÓRIO TÉCNICO DE ESTATÍSTICA', barX + 8, rowY + 4);
+        doc.setFontSize(9.7);
+        doc.setTextColor(37, 47, 63);
+        doc.text(`Delineamento: ${limparTextoPdf(del)}`, barX + 8, rowY + 13);
+        doc.setDrawColor(203, 229, 208);
+        doc.setLineWidth(0.4);
+        doc.line(24, 68, pageW - 24, 68);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(29);
+        doc.setTextColor(7, 31, 24);
+        doc.text('Análise estatística', 24, 98);
+        doc.text('experimental', 24, 112);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11.0);
+        doc.setTextColor(71, 85, 105);
+        const resumo = doc.splitTextToSize('Relatório gerado para apresentar os resultados estatísticos de forma clara, elegante e tecnicamente interpretável, apoiando decisões em exercícios acadêmicos, TCCs, pesquisas e experimentos agrícolas.', pageW - 54);
+        doc.text(resumo, 24, 130);
+        doc.setFillColor(255, 255, 255);
+        doc.setDrawColor(210, 235, 216);
+        doc.setLineWidth(0.55);
+        doc.roundedRect(24, 160, pageW - 48, 56, 5, 5, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.2);
+        doc.setTextColor(45, 142, 86);
+        doc.text('MÓDULO', 34, 174);
+        doc.setFontSize(12.2);
+        doc.setTextColor(7, 31, 24);
+        doc.text(limparTextoPdf(del), 34, 185);
+        doc.setFontSize(8.2);
+        doc.setTextColor(45, 142, 86);
+        doc.text('DATA DE EMISSÃO', 34, 200);
+        doc.setFontSize(10.4);
+        doc.setTextColor(37, 47, 63);
+        doc.text(new Date().toLocaleString('pt-BR'), 34, 209);
+        doc.setFillColor(240, 249, 241);
+        doc.roundedRect(24, 232, pageW - 48, 28, 5, 5, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.4);
+        doc.setTextColor(27, 76, 48);
+        doc.text('Nota técnica', 34, 245);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.2);
+        doc.setTextColor(71, 85, 105);
+        const nota = doc.splitTextToSize('A interpretação deve considerar o planejamento experimental, a qualidade dos dados, a significância estatística e a coerência agronômica dos resultados.', pageW - 68);
+        doc.text(nota, 34, 254);
+    };
+    function reordenarDelineamentosV20() {
+        const wrap = document.querySelector('input[name="delinSimples"]')?.closest('.grid');
+        if (!wrap) return;
+        const labels = Array.from(wrap.querySelectorAll('label'));
+        const order = {dic: 1, dbc: 2, dql: 3};
+        labels.sort((a,b) => (order[a.querySelector('input')?.value] || 9) - (order[b.querySelector('input')?.value] || 9));
+        labels.forEach(l => wrap.appendChild(l));
+    }
+    function getManualGridSimplesV20() {
+        const wrap = document.querySelector('#manual-simples > .grid');
+        if (wrap) { wrap.id = 'grid-config-simples'; return wrap; }
+        return null;
+    }
+    function ensureCampoColunasDqlV20() {
+        const grid = getManualGridSimplesV20();
+        if (!grid) return null;
+        let extra = document.getElementById('div-c-simples');
+        if (!extra) {
+            extra = document.createElement('div');
+            extra.id = 'div-c-simples';
+            extra.innerHTML = '<label id="lbl-c-simples" class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Nº Colunas</label><input type="number" id="inp-c-simples" value="5" min="2" class="agro-input">';
+            grid.appendChild(extra);
+        }
+        return extra;
+    }
+    window.configurarSimples = function() {
+        const d = document.querySelector('input[name="delinSimples"]:checked')?.value || 'dbc';
+        const lblFormat = document.getElementById('lbl-formato-simples');
+        const grid = getManualGridSimplesV20();
+        const divR = document.getElementById('div-r-simples');
+        const lblR = divR ? divR.querySelector('label') : null;
+        const extra = ensureCampoColunasDqlV20();
+        const mat = document.getElementById('matriz-simples');
+        const btn = document.getElementById('btn-calc-matriz-simples');
+        if (mat) mat.innerHTML = '';
+        if (btn) btn.classList.add('hidden');
+        if (d === 'dic') {
+            if (lblFormat) lblFormat.innerText = 'Tratamento;Repetição;Valor';
+            if (lblR) lblR.textContent = 'Nº Repetições';
+            if (grid) grid.className = 'grid grid-cols-2 gap-4 mb-4';
+            if (extra) extra.classList.add('hidden');
+        } else if (d === 'dbc') {
+            if (lblFormat) lblFormat.innerText = 'Tratamento;Bloco;Valor';
+            if (lblR) lblR.textContent = 'Nº Blocos';
+            if (grid) grid.className = 'grid grid-cols-2 gap-4 mb-4';
+            if (extra) extra.classList.add('hidden');
+        } else {
+            if (lblFormat) lblFormat.innerText = 'Tratamento;Linha;Coluna;Valor';
+            if (lblR) lblR.textContent = 'Nº Linhas';
+            if (grid) grid.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-4';
+            if (extra) extra.classList.remove('hidden');
+        }
+    };
+    window.gerarMatrizSimples = function() {
+        const delineamento = document.querySelector('input[name="delinSimples"]:checked')?.value || 'dbc';
+        const t = parseInt(document.getElementById('inp-t-simples')?.value || '0', 10);
+        const r = parseInt(document.getElementById('inp-r-simples')?.value || '0', 10);
+        const c = parseInt(document.getElementById('inp-c-simples')?.value || '0', 10);
+        const container = document.getElementById('matriz-simples');
+        if (!container) return;
+        if (t < 2) { showToast('Informe pelo menos 2 tratamentos.', 'erro'); return; }
+        if (delineamento === 'dql') {
+            if (r < 2 || c < 2) { showToast('Informe número de linhas e colunas para o DQL.', 'erro'); return; }
+            if (!(t === r && r === c)) {
+                showToast('No DQL, o número de tratamentos, linhas e colunas precisa ser igual para gerar a matriz de dados. Exemplo: 5 tratamentos, 5 linhas e 5 colunas.', 'erro', 9000);
+                return;
+            }
+            let html = '<div class="p-3 space-y-3"><div class="grid grid-cols-4 gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 px-1"><span>Tratamento</span><span>Linha</span><span>Coluna</span><span>Valor</span></div>';
+            for (let linha = 1; linha <= r; linha++) {
+                for (let coluna = 1; coluna <= c; coluna++) {
+                    const trat = ((linha + coluna - 2) % t) + 1;
+                    html += `<div class="grid grid-cols-4 gap-2 items-center matriz-row"><input class="agro-input text-xs" data-campo="trat" value="${trat}" placeholder="Tratamento"><input class="agro-input text-xs" data-campo="linha" value="${linha}" placeholder="Linha"><input class="agro-input text-xs" data-campo="coluna" value="${coluna}" placeholder="Coluna"><input class="agro-input text-xs" data-campo="valor" placeholder="Valor"></div>`;
+                }
+            }
+            container.innerHTML = html + '</div>';
+            document.getElementById('btn-calc-matriz-simples')?.classList.remove('hidden');
+            showToast('Matriz DQL gerada. Preencha os valores.', 'success');
+            return;
+        }
+        if (r < 2) { showToast(delineamento === 'dic' ? 'Informe pelo menos 2 repetições.' : 'Informe pelo menos 2 blocos.', 'erro'); return; }
+        const segunda = delineamento === 'dic' ? 'Repetição' : 'Bloco';
+        let html = `<div class="p-3 space-y-3"><div class="grid grid-cols-3 gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 px-1"><span>Tratamento</span><span>${segunda}</span><span>Valor</span></div>`;
+        for (let trat = 1; trat <= t; trat++) {
+            for (let rep = 1; rep <= r; rep++) {
+                html += `<div class="grid grid-cols-3 gap-2 items-center matriz-row"><input class="agro-input text-xs" data-campo="trat" value="${trat}" placeholder="Tratamento"><input class="agro-input text-xs" data-campo="bloco" value="${rep}" placeholder="${segunda}"><input class="agro-input text-xs" data-campo="valor" placeholder="Valor"></div>`;
+            }
+        }
+        container.innerHTML = html + '</div>';
+        document.getElementById('btn-calc-matriz-simples')?.classList.remove('hidden');
+        showToast('Matriz gerada. Preencha os valores.', 'success');
+    };
+    window.gerarCsvSimplesManual = function(delineamento) {
+        const rows = Array.from(document.querySelectorAll('#matriz-simples .matriz-row'));
+        if (!rows.length) throw new Error('Gere a matriz de dados antes de processar.');
+        const linhas = [];
+        if (delineamento === 'dql') {
+            linhas.push('Tratamento;Linha;Coluna;Valor');
+            rows.forEach((row, idx) => {
+                const trat = row.querySelector('[data-campo="trat"]')?.value?.trim();
+                const linha = row.querySelector('[data-campo="linha"]')?.value?.trim();
+                const coluna = row.querySelector('[data-campo="coluna"]')?.value?.trim();
+                const valor = row.querySelector('[data-campo="valor"]')?.value?.trim();
+                if (!trat || !linha || !coluna || !valor) throw new Error(`Preencha todos os campos da linha ${idx + 1}.`);
+                linhas.push(`${trat};${linha};${coluna};${valor}`);
+            });
+        } else {
+            linhas.push(delineamento === 'dic' ? 'Tratamento;Repetição;Valor' : 'Tratamento;Bloco;Valor');
+            rows.forEach((row, idx) => {
+                const trat = row.querySelector('[data-campo="trat"]')?.value?.trim();
+                const bloco = row.querySelector('[data-campo="bloco"]')?.value?.trim();
+                const valor = row.querySelector('[data-campo="valor"]')?.value?.trim();
+                if (!trat || !bloco || !valor) throw new Error(`Preencha todos os campos da linha ${idx + 1}.`);
+                linhas.push(`${trat};${bloco};${valor}`);
+            });
+        }
+        return arquivoCsvDeTexto(`simples_${delineamento}_manual.csv`, linhas.join('\n'));
+    };
+    function normalizarCabV20(c) { return String(c || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+    function lerPrimeiraLinhaArquivoV20(file) {
+        return new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(String(r.result || '').split(/\r?\n/).find(l => l.trim()) || '');
+            r.onerror = () => reject(new Error('Não foi possível ler o arquivo enviado.'));
+            r.readAsText(file.slice(0, 4096));
+        });
+    }
+    async function validarEstruturaArquivoV20(file, modulo, delineamento = '') {
+        const basic = validarArquivoCsvBasico(file);
+        if (!basic.ok) throw new Error(basic.msg);
+        const line = await lerPrimeiraLinhaArquivoV20(file);
+        const sep = line.includes(';') ? ';' : ',';
+        const cols = line.split(sep).map(normalizarCabV20);
+        const n = cols.length;
+        const has = (terms) => terms.some(t => cols.some(c => c.includes(t)));
+        if (modulo === 'simples') {
+            if (delineamento === 'dql') {
+                if (n !== 4) throw new Error('Formato incorreto para DQL. Use: Tratamento;Linha;Coluna;Valor.');
+                if (has(['a','fatora']) && has(['b','fatorb']) && has(['bloco'])) throw new Error('Este arquivo parece ser fatorial/subparcelas. Para DQL use Tratamento;Linha;Coluna;Valor.');
+            } else {
+                if (n !== 3) throw new Error(delineamento === 'dic' ? 'Formato incorreto para DIC. Use: Tratamento;Repetição;Valor.' : 'Formato incorreto para DBC. Use: Tratamento;Bloco;Valor.');
+                if (has(['fator a','fatora']) || has(['fator b','fatorb'])) throw new Error('Este arquivo parece ser fatorial/subparcelas. Escolha o módulo correto ou ajuste para Tratamento;Bloco;Valor.');
+            }
+        } else if (modulo === 'fatorial' || modulo === 'parcelas') {
+            if (n !== 4) throw new Error(`Formato incorreto para ${modulo === 'fatorial' ? 'fatorial' : 'parcelas subdivididas'}. Use: A;B;Bloco;Valor.`);
+            if (has(['tratamento']) || has(['linha']) || has(['coluna'])) throw new Error('Este arquivo parece ser de DIC/DBC/DQL. Para fatorial ou subparcelas use: A;B;Bloco;Valor.');
+        }
+        return true;
+    }
+    window.processarModuloUpload = async function(modulo, btnElement) {
+        const file = document.getElementById(`file-${modulo}`)?.files?.[0];
+        try {
+            await validarEstruturaArquivoV20(file, modulo);
+            arquivosData[modulo] = file;
+            await processarModuloComArquivo(modulo, file, btnElement);
+        } catch (err) { showToast(err.message, 'erro', 8500); }
+    };
+    const processarModuloComArquivoOriginalV20 = window.processarModuloComArquivo;
+    window.processarModuloComArquivo = async function(modulo, file, btnElement) {
+        try { await validarEstruturaArquivoV20(file, modulo); }
+        catch (err) { showToast(err.message, 'erro', 8500); return; }
+        return processarModuloComArquivoOriginalV20(modulo, file, btnElement);
+    };
+    const processarSimplesOriginalV20 = window.processarSimples;
+    window.processarSimples = async function(modoManual, btnElement) {
+        const delineamento = document.querySelector('input[name="delinSimples"]:checked')?.value || 'dbc';
+        try {
+            const file = modoManual ? gerarCsvSimplesManual(delineamento) : document.getElementById('file-simples')?.files?.[0];
+            await validarEstruturaArquivoV20(file, 'simples', delineamento);
+        } catch (err) { showToast(err.message, 'erro', 8500); return; }
+        const ret = await processarSimplesOriginalV20(modoManual, btnElement);
+        if (analises?.simples) analises.simples.delineamento = delineamento;
+        return ret;
+    };
+    function obterListaPosthocsV20(modulo) {
+        const pacote = analises[modulo] || {};
+        if (Array.isArray(pacote.posthocs) && pacote.posthocs.length) return pacote.posthocs;
+        if (pacote.posthoc) return [pacote.posthoc];
+        return [];
+    }
+    function rowSignificativoV20(row) {
+        if (!row) return false;
+        const sig = String(row.Sig || row.sig || '').toLowerCase();
+        if (sig.includes('ns') || sig === '-' || sig === '') return false;
+        return sig.includes('*') || sig.includes('1%') || sig.includes('5%');
+    }
+    function outroFatorSignificativoV20(modulo, fatorAtual) {
+        if (!(modulo === 'fatorial' || modulo === 'parcelas')) return null;
+        const outro = fatorAtual === 'a' ? 'b' : 'a';
+        const anova = analises[modulo]?.anova?.anova || [];
+        const row = anova.find(r => {
+            const fv = String(r.FV || '').toLowerCase();
+            return outro === 'a' ? fv.includes('fator a') : fv.includes('fator b');
+        });
+        return rowSignificativoV20(row) ? outro : null;
+    }
+    function promptOutroFatorV20(modulo, outro) {
+        const label = outro.toUpperCase();
+        const modal = document.createElement('div');
+        modal.className = 'solver-report-modal';
+        modal.innerHTML = `<div class="solver-report-card max-w-md"><button class="solver-report-close" aria-label="Fechar" onclick="this.closest('.solver-report-modal').remove()"><i class="fa-solid fa-xmark"></i></button><div class="flex items-start gap-4"><div class="w-11 h-11 rounded-2xl bg-agro-50 text-agro-700 flex items-center justify-center border border-agro-100"><i class="fa-solid fa-chart-simple"></i></div><div><h3 class="font-black text-agro-950 text-xl">Fator ${label} também foi significativo</h3><p class="text-sm text-slate-600 mt-2">Como o teste F indicou significância para o Fator ${label}, é recomendado executar também a comparação ou regressão desse fator.</p></div></div><div class="flex flex-col sm:flex-row gap-3 mt-6"><button class="agro-btn agro-btn-primary flex-1" onclick="document.getElementById('fator-${modulo}').value='${outro}'; this.closest('.solver-report-modal').remove(); showToast('Fator ${label} selecionado. Escolha o método e clique em Executar Teste.', 'info', 6500);"><i class="fa-solid fa-check"></i> Analisar Fator ${label}</button><button class="agro-btn agro-btn-outline flex-1" onclick="this.closest('.solver-report-modal').remove()">Depois</button></div></div>`;
+        document.body.appendChild(modal);
+    }
+    const rodarPostHocOriginalV20 = window.rodarPostHoc;
+    window.rodarPostHoc = async function(modulo, btnElement) {
+        const fatorAntes = (modulo === 'fatorial' || modulo === 'parcelas') ? (document.getElementById(`fator-${modulo}`)?.value || '') : '';
+        await rodarPostHocOriginalV20(modulo, btnElement);
+        const outro = outroFatorSignificativoV20(modulo, fatorAntes);
+        if (outro && !obterListaPosthocsV20(modulo).some(p => p?._meta?.factor === outro)) setTimeout(() => promptOutroFatorV20(modulo, outro), 700);
+    };
+    document.addEventListener('DOMContentLoaded', function(){ try { reordenarDelineamentosV20(); configurarSimples(); } catch(e) {} });
+})();
+</script>
+
 </body>
 </html>
