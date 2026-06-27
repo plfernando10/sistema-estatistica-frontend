@@ -249,6 +249,13 @@
             border: 6px solid #dcf1e1; border-top-color: #3d8e56;
             margin: 0 auto 1.25rem; animation: solverSpin 0.85s linear infinite;
         }
+        .loading-logo-row { display: flex; justify-content: center; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+        .loading-logo-icon { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, #3d8e56, #1b3c28); color: white; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(27,60,40,.18); }
+        .loading-progress-wrap { width: 100%; height: 10px; border-radius: 999px; background: #eaf4ed; overflow: hidden; margin-top: 1.25rem; border: 1px solid #d6eadb; }
+        .loading-progress-bar { width: 8%; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #5eab75, #1b3c28); transition: width .35s ease; }
+        .loading-steps { margin-top: 1rem; text-align: left; display: grid; gap: .35rem; font-size: .78rem; color: #64748b; }
+        .loading-step { display: flex; align-items: center; gap: .5rem; }
+        .loading-step i { color: #3d8e56; width: 1rem; text-align: center; }
         @keyframes solverSpin { to { transform: rotate(360deg); } }
 
 
@@ -294,9 +301,24 @@
 
     <div id="loading-overlay" aria-live="polite" aria-busy="true">
         <div class="loading-card">
+            <div class="loading-logo-row">
+                <div class="loading-logo-icon"><i class="fa-solid fa-leaf"></i></div>
+                <div class="text-left">
+                    <div class="text-agro-950 font-black tracking-tight leading-none">SOLVER <span class="text-agro-500">AGRO</span></div>
+                    <div class="text-[10px] text-agro-700 font-bold tracking-[0.22em] uppercase mt-1">Processamento</div>
+                </div>
+            </div>
             <div class="loading-spinner"></div>
             <h3 id="loading-title" class="text-2xl font-black text-agro-900 mb-2">Processando análise</h3>
             <p id="loading-message" class="text-slate-500 font-medium leading-relaxed">Aguarde enquanto o Solver Agro calcula os resultados estatísticos.</p>
+            <div class="loading-progress-wrap"><div id="loading-progress-bar" class="loading-progress-bar"></div></div>
+            <div id="loading-percent" class="mt-2 text-xs font-black text-agro-700">0%</div>
+            <div id="loading-steps" class="loading-steps">
+                <div class="loading-step"><i class="fa-solid fa-circle-notch fa-spin"></i><span>Lendo arquivo...</span></div>
+                <div class="loading-step"><i class="fa-regular fa-circle"></i><span>Validando dados...</span></div>
+                <div class="loading-step"><i class="fa-regular fa-circle"></i><span>Calculando ANOVA...</span></div>
+                <div class="loading-step"><i class="fa-regular fa-circle"></i><span>Preparando resultados...</span></div>
+            </div>
         </div>
     </div>
 
@@ -797,6 +819,8 @@
         const API_BASE = 'https://api-estatistica.onrender.com/api/analise';
         let arquivosData = { simples: null, fatorial: null, parcelas: null };
         let analises = { simples: {}, fatorial: {}, parcelas: {} };
+        let loadingTimer = null;
+        let loadingProgress = 0;
 
         function toggleSidebarMobile() {
             document.getElementById('analysis-sidebar').classList.toggle('sidebar-open');
@@ -809,10 +833,22 @@
         }
 
         function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden-page'));
-            document.getElementById(id).classList.remove('hidden-page');
-            document.getElementById(id).classList.add('page-active');
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('page-active');
+                p.classList.add('hidden-page');
+            });
+            const destino = document.getElementById(id);
+            if (!destino) return;
+            destino.classList.remove('hidden-page');
+            destino.classList.add('page-active');
             closeSidebarMobile();
+            setTimeout(() => {
+                if (id === 'landing-page') destino.scrollTop = 0;
+                if (id === 'analysis-page') {
+                    const main = destino.querySelector('main');
+                    if (main) main.scrollTop = 0;
+                }
+            }, 0);
         }
 
         function showModule(mod) {
@@ -874,6 +910,34 @@
         // (Nota: Mantive a lógica original do usuário para garantir funcionalidade)
 
 
+        function atualizarEtapasCarregamento(progresso) {
+            const etapas = [
+                'Lendo arquivo...',
+                'Validando dados...',
+                'Calculando ANOVA e teste F...',
+                'Calculando comparações/regressão...',
+                'Preparando tabelas e gráficos...',
+                'Finalizando relatório...'
+            ];
+            const ativo = Math.min(etapas.length - 1, Math.floor((progresso / 100) * etapas.length));
+            const box = document.getElementById('loading-steps');
+            if (!box) return;
+            box.innerHTML = etapas.map((txt, i) => {
+                if (i < ativo) return `<div class="loading-step"><i class="fa-solid fa-circle-check"></i><span>${txt.replace('...', ' concluído')}</span></div>`;
+                if (i === ativo) return `<div class="loading-step"><i class="fa-solid fa-circle-notch fa-spin"></i><span>${txt}</span></div>`;
+                return `<div class="loading-step"><i class="fa-regular fa-circle"></i><span>${txt}</span></div>`;
+            }).join('');
+        }
+
+        function setLoadingProgress(valor) {
+            loadingProgress = Math.max(0, Math.min(100, valor));
+            const bar = document.getElementById('loading-progress-bar');
+            const pct = document.getElementById('loading-percent');
+            if (bar) bar.style.width = `${loadingProgress}%`;
+            if (pct) pct.textContent = `${Math.round(loadingProgress)}%`;
+            atualizarEtapasCarregamento(loadingProgress);
+        }
+
         function mostrarCarregamento(titulo = 'Processando análise', mensagem = 'Aguarde enquanto o Solver Agro calcula os resultados estatísticos.') {
             const overlay = document.getElementById('loading-overlay');
             const title = document.getElementById('loading-title');
@@ -881,11 +945,21 @@
             if (title) title.textContent = titulo;
             if (msg) msg.textContent = mensagem;
             if (overlay) overlay.classList.add('active');
+            if (loadingTimer) clearInterval(loadingTimer);
+            setLoadingProgress(8);
+            loadingTimer = setInterval(() => {
+                if (loadingProgress < 88) setLoadingProgress(loadingProgress + Math.random() * 8 + 3);
+            }, 520);
         }
 
         function ocultarCarregamento() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.classList.remove('active');
+            if (loadingTimer) { clearInterval(loadingTimer); loadingTimer = null; }
+            setLoadingProgress(100);
+            setTimeout(() => {
+                const overlay = document.getElementById('loading-overlay');
+                if (overlay) overlay.classList.remove('active');
+                setLoadingProgress(0);
+            }, 320);
         }
 
         function mostrarArquivoSelecionado(modulo) {
@@ -1529,6 +1603,104 @@
             return textos;
         }
 
+        function addSolverLogoPdf(doc, x = 14, y = 10, escala = 1) {
+            const s = escala;
+            doc.setFillColor(31, 73, 47);
+            doc.roundedRect(x, y, 12 * s, 12 * s, 3 * s, 3 * s, 'F');
+            doc.setFillColor(255, 255, 255);
+            doc.ellipse(x + 6.5 * s, y + 5.8 * s, 3.4 * s, 2.1 * s, 'F');
+            doc.setDrawColor(31, 73, 47);
+            doc.setLineWidth(0.45 * s);
+            doc.line(x + 4.6 * s, y + 7.2 * s, x + 8.4 * s, y + 4.5 * s);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(13 * s);
+            doc.setTextColor(14, 33, 22);
+            doc.text('SOLVER', x + 15 * s, y + 5.1 * s);
+            doc.setTextColor(61, 142, 86);
+            doc.text('AGRO', x + 42 * s, y + 5.1 * s);
+            doc.setFontSize(4.6 * s);
+            doc.setTextColor(27, 60, 40);
+            doc.text('INTELLIGENCE FOR FIELD TRIALS', x + 15 * s, y + 9.6 * s);
+        }
+
+        function addCabecalhoPdf(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
+            const pageW = doc.internal.pageSize.getWidth();
+            doc.setFillColor(253, 253, 251);
+            doc.rect(0, 0, pageW, 24, 'F');
+            addSolverLogoPdf(doc, 14, 7, 0.82);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(71, 85, 105);
+            doc.text(limparTextoPdf(subtitulo), pageW - 14, 14, { align: 'right' });
+            doc.setDrawColor(187, 225, 198);
+            doc.setLineWidth(0.4);
+            doc.line(14, 24, pageW - 14, 24);
+        }
+
+        function novaPaginaPdf(doc) {
+            doc.addPage();
+            addCabecalhoPdf(doc);
+            return 34;
+        }
+
+        function addCapaRelatorioPdf(doc, modulo, pacote) {
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            doc.setFillColor(253, 253, 251);
+            doc.rect(0, 0, pageW, pageH, 'F');
+            doc.setFillColor(240, 249, 241);
+            doc.circle(pageW - 25, 20, 42, 'F');
+            doc.setFillColor(251, 248, 244);
+            doc.circle(12, pageH - 8, 38, 'F');
+            addSolverLogoPdf(doc, 28, 32, 1.35);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(24);
+            doc.setTextColor(14, 33, 22);
+            doc.text('Relatório técnico', 28, 86);
+            doc.setFontSize(15);
+            doc.setTextColor(45, 55, 72);
+            doc.text('Análise estatística experimental', 28, 98);
+            const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta' };
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(220, 241, 225);
+            doc.roundedRect(28, 118, pageW - 56, 52, 4, 4, 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(61, 142, 86);
+            doc.text('MÓDULO', 36, 132);
+            doc.setFontSize(12);
+            doc.setTextColor(14, 33, 22);
+            doc.text(limparTextoPdf(nomesModulos[modulo] || modulo), 36, 141);
+            doc.setFontSize(9);
+            doc.setTextColor(61, 142, 86);
+            doc.text('DATA DE EMISSÃO', 36, 155);
+            doc.setFontSize(11);
+            doc.setTextColor(45, 55, 72);
+            doc.text(new Date().toLocaleString('pt-BR'), 36, 164);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(100, 116, 139);
+            doc.text('Documento gerado automaticamente pelo Solver Agro.', 28, pageH - 30);
+            doc.text('Use a interpretação técnica junto ao conhecimento agronômico e ao planejamento experimental.', 28, pageH - 24);
+        }
+
+        function aplicarRodapePdf(doc) {
+            const total = doc.internal.getNumberOfPages();
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            for (let i = 1; i <= total; i++) {
+                doc.setPage(i);
+                doc.setDrawColor(226, 232, 240);
+                doc.setLineWidth(0.25);
+                doc.line(14, pageH - 14, pageW - 14, pageH - 14);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.5);
+                doc.setTextColor(100, 116, 139);
+                doc.text('Solver Agro • Relatório técnico experimental', 14, pageH - 8);
+                doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
+            }
+        }
+
         function limparTextoPdf(texto) {
             return String(texto ?? '')
                 .replace(/[\u0000-\u001F\u007F]/g, ' ')
@@ -1549,7 +1721,7 @@
             doc.setTextColor(30, 41, 59);
             if (doc.setCharSpace) doc.setCharSpace(0);
             partes.forEach(p => {
-                if (y > pageH - 20) { doc.addPage(); y = 20; }
+                if (y > pageH - 22) y = novaPaginaPdf(doc);
                 doc.text(p, x, y);
                 y += linha;
             });
@@ -1558,7 +1730,7 @@
 
         function addTituloSecaoPdf(doc, titulo, y) {
             const pageW = doc.internal.pageSize.getWidth();
-            if (y > 265) { doc.addPage(); y = 20; }
+            if (y > 264) y = novaPaginaPdf(doc);
             doc.setFillColor(240, 249, 241);
             doc.setDrawColor(187, 225, 198);
             doc.roundedRect(14, y - 6, pageW - 28, 12, 2.5, 2.5, 'FD');
@@ -1587,33 +1759,44 @@
             y = addTituloSecaoPdf(doc, titulo, y);
             const pageH = doc.internal.pageSize.getHeight();
             const cols = Object.keys(linhas[0]);
-            const colW = Math.min(182 / cols.length, 42);
-            doc.setFontSize(7);
+            const widths = cols.length <= 4 ? [55, 42, 42, 42] : [42, 19, 31, 31, 31, 31, 28];
+            const totalW = Math.min(182, widths.slice(0, cols.length).reduce((a,b)=>a+b,0));
+            doc.setFontSize(7.2);
             doc.setFont('helvetica', 'bold');
-            doc.setFillColor(248, 250, 252);
-            doc.rect(14, y - 4, 182, 8, 'F');
-            cols.forEach((c, i) => doc.text(String(c).slice(0, 18), 16 + i * colW, y));
-            y += 6;
+            doc.setFillColor(31, 73, 47);
+            doc.setTextColor(255, 255, 255);
+            doc.roundedRect(14, y - 5, 182, 8, 1.6, 1.6, 'F');
+            let x = 17;
+            cols.forEach((c, i) => { doc.text(limparTextoPdf(String(c)).slice(0, 18), x, y); x += widths[i] || (totalW / cols.length); });
+            y += 7;
             doc.setFont('helvetica', 'normal');
+            doc.setTextColor(30, 41, 59);
             linhas.forEach((l, idx) => {
-                if (y > pageH - 18) { doc.addPage(); y = 18; }
-                if (idx % 2 === 0) { doc.setFillColor(253, 253, 251); doc.rect(14, y - 4, 182, 7, 'F'); }
+                if (y > pageH - 20) { y = novaPaginaPdf(doc); }
+                if (idx % 2 === 0) { doc.setFillColor(248, 250, 252); doc.rect(14, y - 5, 182, 7.5, 'F'); }
+                let x2 = 17;
                 cols.forEach((c, i) => {
-                    const val = String(l[c] ?? '-').slice(0, 20);
-                    doc.text(val, 16 + i * colW, y);
+                    const val = limparTextoPdf(String(l[c] ?? '-')).slice(0, i === 0 ? 26 : 18);
+                    doc.text(val, x2, y);
+                    x2 += widths[i] || (totalW / cols.length);
                 });
-                y += 6;
+                y += 6.5;
             });
-            return y + 6;
+            doc.setDrawColor(226, 232, 240);
+            doc.rect(14, y - (linhas.length * 6.5) - 7, 182, linhas.length * 6.5 + 8, 'S');
+            return y + 7;
         }
 
         async function addGraficoRegressaoPdf(doc, ph, y) {
             if (!ph || ph.tipo !== 'regressao' || !ph.img_png) return y;
-            if (y > 170) { doc.addPage(); y = 18; }
+            if (y > 166) y = novaPaginaPdf(doc);
             y = addTituloSecaoPdf(doc, 'Gráfico da regressão', y);
             try {
-                doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 20, y, 170, 100);
-                y += 108;
+                doc.setFillColor(255, 255, 255);
+                doc.setDrawColor(226, 232, 240);
+                doc.roundedRect(18, y - 2, 174, 106, 3, 3, 'FD');
+                doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 22, y + 2, 166, 96);
+                y += 110;
             } catch (e) {
                 y = addTextoQuebradoPdf(doc, 'Não foi possível inserir o gráfico automaticamente no PDF.', 14, y);
             }
@@ -1625,75 +1808,89 @@
             if (!pacote || !pacote.anova) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast('Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
-            mostrarCarregamento('Gerando relatório PDF', 'Estamos formatando o laudo técnico com textos, tabelas e gráficos.');
+            mostrarCarregamento('Gerando relatório PDF', 'Estamos montando a capa, interpretações, tabelas e gráficos no padrão Solver Agro.');
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            const pageW = doc.internal.pageSize.getWidth();
-
-            if (doc.setCharSpace) doc.setCharSpace(0);
-            doc.setFont('helvetica', 'normal');
-            doc.setFillColor(27, 60, 40);
-            doc.rect(0, 0, pageW, 36, 'F');
-            doc.setFillColor(61, 142, 86);
-            doc.roundedRect(pageW - 48, 0, 48, 36, 0, 0, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(19);
-            doc.text('Solver Agro', 14, 15);
-            doc.setFontSize(12);
-            doc.text('Relatório técnico de análise estatística experimental', 14, 25);
-
-            let y = 46;
-            doc.setTextColor(30, 41, 59);
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-            const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta' };
-            doc.text(`Módulo: ${nomesModulos[modulo] || modulo}`, 14, y); y += 6;
-            doc.text(`Data de emissão: ${new Date().toLocaleString('pt-BR')}`, 14, y); y += 6;
-            const cvTxt = pacote.anova.cv ? `Coeficiente de variação: ${pacote.anova.cv}` : `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}`;
-            doc.text(cvTxt, 14, y); y += 10;
-
-            y = addTituloSecaoPdf(doc, 'Interpretação do teste F', y);
-            y = addParagrafosPdf(doc, textoAnovaRelatorio(modulo, pacote.anova.anova || []), y);
-            y = addTabelaBonitaPdf(doc, 'Tabela da análise de variância (ANOVA)', pacote.anova.anova || [], y);
-
-            const ph = pacote.posthoc;
-            y = addTituloSecaoPdf(doc, ph.tipo === 'regressao' ? 'Interpretação da regressão' : 'Interpretação do teste de comparação de médias', y);
-            y = addParagrafosPdf(doc, textoPostHocRelatorio(ph), y);
-
-            if (ph.tipo === 'regressao') {
-                doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
-                doc.text(`Modelo: ${ph.modelo || '-'} | R²: ${ph.r2 || '-'}`, 14, y); y += 6;
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+                if (doc.setCharSpace) doc.setCharSpace(0);
                 doc.setFont('helvetica', 'normal');
-                y = addTextoQuebradoPdf(doc, `Equação ajustada: ${ph.equacao || '-'}`, 14, y);
-                y += 4;
-                if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
-                    doc.setFillColor(240, 249, 241); doc.roundedRect(14, y, 86, 14, 2, 2, 'F');
-                    doc.setFillColor(251, 248, 244); doc.roundedRect(108, y, 86, 14, 2, 2, 'F');
-                    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(45, 114, 68);
-                    doc.text('DOSE ÓTIMA', 18, y + 5); doc.setFontSize(12); doc.text(String(ph.dose_otima || '-'), 18, y + 11);
-                    doc.setTextColor(136, 92, 60); doc.setFontSize(8); doc.text('PRODUTIVIDADE ÓTIMA', 112, y + 5);
-                    doc.setFontSize(12); doc.text(String(ph.resposta_otima || ph.produtividade_otima || '-'), 112, y + 11);
-                    doc.setTextColor(45, 55, 72); y += 20;
+
+                addCapaRelatorioPdf(doc, modulo, pacote);
+                doc.addPage();
+                addCabecalhoPdf(doc);
+                let y = 36;
+
+                const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta' };
+                doc.setFillColor(255, 255, 255);
+                doc.setDrawColor(220, 241, 225);
+                doc.roundedRect(14, y, 182, 24, 3, 3, 'FD');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(61, 142, 86);
+                doc.text('IDENTIFICAÇÃO DA ANÁLISE', 20, y + 7);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                doc.setTextColor(30, 41, 59);
+                const cvTxt = pacote.anova.cv ? `CV: ${pacote.anova.cv}` : `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}`;
+                doc.text(`Módulo: ${nomesModulos[modulo] || modulo}`, 20, y + 15);
+                doc.text(cvTxt, 112, y + 15);
+                y += 34;
+
+                y = addTituloSecaoPdf(doc, '1. Interpretação do teste F', y);
+                y = addParagrafosPdf(doc, textoAnovaRelatorio(modulo, pacote.anova.anova || []), y);
+                y = addTabelaBonitaPdf(doc, '2. Tabela da análise de variância (ANOVA)', pacote.anova.anova || [], y);
+
+                const ph = pacote.posthoc;
+                y = addTituloSecaoPdf(doc, ph.tipo === 'regressao' ? '3. Interpretação da regressão' : '3. Interpretação do teste de comparação de médias', y);
+                y = addParagrafosPdf(doc, textoPostHocRelatorio(ph), y);
+
+                if (ph.tipo === 'regressao') {
+                    if (y > 240) y = novaPaginaPdf(doc);
+                    doc.setFillColor(248, 250, 252);
+                    doc.setDrawColor(226, 232, 240);
+                    doc.roundedRect(14, y, 182, 22, 3, 3, 'FD');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(61, 142, 86);
+                    doc.text('MODELO AJUSTADO', 20, y + 7);
+                    doc.setTextColor(30, 41, 59);
+                    doc.text(`Modelo: ${limparTextoPdf(ph.modelo || '-')}`, 20, y + 15);
+                    doc.text(`R²: ${limparTextoPdf(ph.r2 || '-')}`, 82, y + 15);
+                    y += 30;
+                    y = addTextoQuebradoPdf(doc, `Equação ajustada: ${ph.equacao || '-'}`, 18, y, 174, 5.2);
+                    y += 5;
+                    if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
+                        if (y > 252) y = novaPaginaPdf(doc);
+                        doc.setFillColor(240, 249, 241); doc.setDrawColor(187, 225, 198); doc.roundedRect(14, y, 86, 18, 3, 3, 'FD');
+                        doc.setFillColor(251, 248, 244); doc.setDrawColor(232, 216, 195); doc.roundedRect(108, y, 88, 18, 3, 3, 'FD');
+                        doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(45, 114, 68);
+                        doc.text('DOSE ÓTIMA', 19, y + 6); doc.setFontSize(14); doc.text(String(ph.dose_otima || '-'), 19, y + 14);
+                        doc.setTextColor(136, 92, 60); doc.setFontSize(8); doc.text('PRODUTIVIDADE ÓTIMA', 113, y + 6);
+                        doc.setFontSize(14); doc.text(String(ph.resposta_otima || ph.produtividade_otima || '-'), 113, y + 14);
+                        doc.setTextColor(45, 55, 72); y += 26;
+                    }
+                    y = addTabelaBonitaPdf(doc, '4. ANOVA da regressão', ph.anova_reg || [], y);
+                    y = await addGraficoRegressaoPdf(doc, ph, y);
+                } else if (ph.tipo === 'dunnett') {
+                    y = addTabelaBonitaPdf(doc, '4. Resultado do teste de Dunnett', ph.resultados || [], y);
+                } else {
+                    y = addTabelaBonitaPdf(doc, `4. Resultado do teste de ${ph.nome_teste || ph.tipo}`, ph.tabela || [], y);
                 }
-                y = addTabelaBonitaPdf(doc, 'ANOVA da regressão', ph.anova_reg || [], y);
-                y = await addGraficoRegressaoPdf(doc, ph, y);
-            } else if (ph.tipo === 'dunnett') {
-                y = addTabelaBonitaPdf(doc, 'Resultado do teste de Dunnett', ph.resultados || [], y);
-            } else {
-                y = addTabelaBonitaPdf(doc, `Resultado do teste de ${ph.nome_teste || ph.tipo}`, ph.tabela || [], y);
+
+                if (y > 254) y = novaPaginaPdf(doc);
+                y = addTituloSecaoPdf(doc, '5. Conclusão técnica', y);
+                const conclusao = ph.tipo === 'regressao'
+                    ? 'A recomendação técnica deve considerar a significância do teste F da regressão, o valor de R², o comportamento biológico da curva e a dose ótima estimada dentro do intervalo experimental avaliado.'
+                    : 'A interpretação final deve considerar a significância do teste F e o agrupamento das médias pelo teste posterior. Tratamentos com letras diferentes apresentam desempenho estatisticamente distinto.';
+                y = addParagrafosPdf(doc, [conclusao], y);
+
+                aplicarRodapePdf(doc);
+                doc.save(`laudo_solver_agro_${modulo}.pdf`);
+                showToast('Relatório PDF gerado com sucesso.', 'success');
+            } catch (err) {
+                showToast(`Erro ao gerar PDF: ${err.message}`, 'erro', 7000);
+            } finally {
+                ocultarCarregamento();
             }
-
-            if (y > 260) { doc.addPage(); y = 18; }
-            y = addTituloSecaoPdf(doc, 'Conclusão técnica', y);
-            const conclusao = ph.tipo === 'regressao'
-                ? 'A recomendação técnica deve considerar a significância do teste F da regressão, o valor de R², o comportamento biológico da curva e a dose ótima estimada dentro do intervalo experimental avaliado.'
-                : 'A interpretação final deve considerar a significância do teste F e o agrupamento das médias pelo teste posterior. Tratamentos com letras diferentes apresentam desempenho estatisticamente distinto.';
-            y = addParagrafosPdf(doc, [conclusao], y);
-
-            doc.setFontSize(8); doc.setTextColor(113, 128, 150);
-            doc.text('Relatório gerado automaticamente pelo Solver Agro.', 14, 287);
-            doc.save(`laudo_solver_agro_${modulo}.pdf`);
-            ocultarCarregamento();
         }
 
         function renderResultadoDireto(data, result, placeholder) {
