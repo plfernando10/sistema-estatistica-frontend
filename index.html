@@ -4522,5 +4522,600 @@
 })();
 </script>
 
+
+<script id="solver-pdf-premium-v1">
+(function(){
+    const PDF_GREEN_950 = [14, 33, 22];
+    const PDF_GREEN_800 = [31, 73, 47];
+    const PDF_GREEN_600 = [45, 142, 86];
+    const PDF_GREEN_100 = [220, 241, 225];
+    const PDF_GREEN_50  = [240, 249, 241];
+    const PDF_SLATE_700 = [51, 65, 85];
+    const PDF_SLATE_500 = [100, 116, 139];
+    const PDF_SLATE_100 = [241, 245, 249];
+    const PDF_EARTH_50  = [251, 248, 244];
+    const PDF_EARTH_500 = [177, 131, 86];
+
+    function pdfClean(text) {
+        if (typeof limparTextoPdf === 'function') return limparTextoPdf(text);
+        return String(text ?? '')
+            .replace(/[\u0000-\u001F\u007F]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .replace(/≤/g, '<=')
+            .replace(/≥/g, '>=')
+            .replace(/₀/g, '0')
+            .replace(/ₐ/g, 'a')
+            .trim();
+    }
+
+    function pdfReset(doc) {
+        if (typeof solverResetText === 'function') solverResetText(doc);
+        if (doc.setCharSpace) doc.setCharSpace(0);
+    }
+
+    function pdfFontName(doc) {
+        return doc.__solver_pdf_font || 'helvetica';
+    }
+
+    function pdfSetFont(doc, style = 'normal', size = null) {
+        try { doc.setFont(pdfFontName(doc), style); }
+        catch(e) { doc.setFont('helvetica', style); }
+        if (size !== null) doc.setFontSize(size);
+    }
+
+    async function solverLoadOpenSansFont(doc) {
+        // Tenta usar Open Sans no jsPDF. Se a rede/CDN falhar, o PDF usa Helvetica como fallback seguro.
+        if (window.__solverOpenSansBase64) {
+            try {
+                doc.addFileToVFS('OpenSans.ttf', window.__solverOpenSansBase64);
+                doc.addFont('OpenSans.ttf', 'OpenSans', 'normal');
+                doc.addFont('OpenSans.ttf', 'OpenSans', 'bold');
+                doc.__solver_pdf_font = 'OpenSans';
+                return true;
+            } catch(e) {}
+        }
+
+        const url = 'https://cdn.jsdelivr.net/gh/google/fonts@main/apache/opensans/OpenSans%5Bwdth,wght%5D.ttf';
+        try {
+            const resp = await fetch(url, { mode: 'cors', cache: 'force-cache' });
+            if (!resp.ok) throw new Error('Fonte Open Sans indisponível.');
+            const buffer = await resp.arrayBuffer();
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            const chunk = 0x8000;
+            for (let i = 0; i < bytes.length; i += chunk) {
+                binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+            }
+            const base64 = btoa(binary);
+            window.__solverOpenSansBase64 = base64;
+            doc.addFileToVFS('OpenSans.ttf', base64);
+            doc.addFont('OpenSans.ttf', 'OpenSans', 'normal');
+            doc.addFont('OpenSans.ttf', 'OpenSans', 'bold');
+            doc.__solver_pdf_font = 'OpenSans';
+            return true;
+        } catch(e) {
+            doc.__solver_pdf_font = 'helvetica';
+            return false;
+        }
+    }
+
+    function pdfText(doc, text, x, y, options) {
+        doc.text(pdfClean(text), x, y, options || {});
+    }
+
+    function moduloNomePremium(modulo, pacote) {
+        if (modulo === 'simples') {
+            const d = String(pacote?.delineamento || document.querySelector('input[name="delinSimples"]:checked')?.value || '').toLowerCase();
+            if (d === 'dic') return 'DIC';
+            if (d === 'dbc') return 'DBC';
+            if (d === 'dql') return 'DQL';
+            return 'DIC/DBC/DQL';
+        }
+        if (modulo === 'fatorial') return 'Fatorial duplo';
+        if (modulo === 'parcelas') return 'Parcelas subdivididas';
+        if (modulo === 'regressaodireta') return 'Regressão direta';
+        return String(modulo || '-');
+    }
+
+    // Logo vetorial: ícone + wordmark, sem imagem rasterizada.
+    window.addSolverLogoPdf = addSolverLogoPdf = function(doc, x = 14, y = 8, escala = 1) {
+        pdfReset(doc);
+        const s = escala;
+        const icon = 14.8 * s;
+        const radius = 4.1 * s;
+
+        doc.setFillColor(27, 76, 48);
+        doc.roundedRect(x, y, icon, icon, radius, radius, 'F');
+
+        // Folha vetorial
+        doc.setFillColor(255, 255, 255);
+        doc.ellipse(x + 7.45*s, y + 7.45*s, 4.35*s, 2.35*s, 'F');
+        doc.setDrawColor(27, 76, 48);
+        doc.setLineWidth(0.52*s);
+        doc.line(x + 4.72*s, y + 9.08*s, x + 10.25*s, y + 5.05*s);
+
+        const tx = x + icon + 5.1*s;
+        const ty = y + 6.55*s;
+
+        pdfSetFont(doc, 'bold', 13.4*s);
+        doc.setTextColor(...PDF_GREEN_950);
+        doc.text('SOLVER', tx, ty);
+        const solverW = doc.getTextWidth('SOLVER');
+
+        doc.setTextColor(...PDF_GREEN_600);
+        doc.text('AGRO', tx + solverW + 3.1*s, ty);
+
+        pdfSetFont(doc, 'bold', 4.45*s);
+        doc.setTextColor(14, 70, 45);
+        doc.text('INTELLIGENCE FOR FIELD TRIALS', tx, y + 12.85*s);
+    };
+
+    window.addCabecalhoPdf = addCabecalhoPdf = function(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
+        pdfReset(doc);
+        const pageW = doc.internal.pageSize.getWidth();
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, pageW, 28, 'F');
+
+        addSolverLogoPdf(doc, 14, 6.2, 0.72);
+
+        doc.setDrawColor(...PDF_GREEN_100);
+        doc.setLineWidth(0.35);
+        doc.line(76, 7, 76, 21);
+
+        pdfSetFont(doc, 'bold', 7.7);
+        doc.setTextColor(...PDF_GREEN_600);
+        doc.text('RELATÓRIO TÉCNICO DE ESTATÍSTICA', 81, 12.5);
+
+        pdfSetFont(doc, 'normal', 7.2);
+        doc.setTextColor(...PDF_SLATE_500);
+        doc.text(pdfClean(subtitulo), 81, 18);
+
+        doc.setDrawColor(214, 237, 220);
+        doc.setLineWidth(0.35);
+        doc.line(14, 28, pageW - 14, 28);
+    };
+
+    window.novaPaginaPdf = novaPaginaPdf = function(doc) {
+        doc.addPage();
+        addCabecalhoPdf(doc);
+        return 38;
+    };
+
+    window.addCapaRelatorioPdf = addCapaRelatorioPdf = function(doc, modulo, pacote) {
+        pdfReset(doc);
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const del = moduloNomePremium(modulo, pacote);
+
+        // Fundo editorial premium
+        doc.setFillColor(247, 251, 248);
+        doc.rect(0, 0, pageW, pageH, 'F');
+
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(10, 10, pageW - 20, pageH - 20, 8, 8, 'F');
+
+        // Elementos suaves
+        doc.setFillColor(238, 247, 240);
+        doc.circle(pageW - 20, 20, 32, 'F');
+        doc.setFillColor(251, 248, 244);
+        doc.circle(12, pageH - 12, 28, 'F');
+        doc.setFillColor(27, 76, 48);
+        doc.roundedRect(10, 10, 4.2, pageH - 20, 2, 2, 'F');
+
+        // Cabeçalho de marca
+        const rowY = 34;
+        addSolverLogoPdf(doc, 25, rowY, 1.04);
+
+        doc.setDrawColor(...PDF_GREEN_600);
+        doc.setLineWidth(0.72);
+        doc.line(96, rowY - 1.5, 96, rowY + 18);
+
+        pdfSetFont(doc, 'bold', 10.8);
+        doc.setTextColor(...PDF_GREEN_600);
+        doc.text('RELATÓRIO TÉCNICO DE ESTATÍSTICA', 104, rowY + 5);
+
+        pdfSetFont(doc, 'bold', 9.4);
+        doc.setTextColor(...PDF_SLATE_700);
+        doc.text(`Delineamento: ${pdfClean(del)}`, 104, rowY + 14.5);
+
+        doc.setDrawColor(203, 229, 208);
+        doc.setLineWidth(0.4);
+        doc.line(25, 68, pageW - 25, 68);
+
+        // Título
+        pdfSetFont(doc, 'bold', 28);
+        doc.setTextColor(...PDF_GREEN_950);
+        doc.text('Análise estatística', 25, 98);
+        doc.text('experimental', 25, 112);
+
+        pdfSetFont(doc, 'normal', 10.6);
+        doc.setTextColor(54, 70, 97);
+        const resumo = doc.splitTextToSize(
+            'Relatório gerado para apresentar os resultados estatísticos com clareza, consistência visual e interpretação técnica, apoiando decisões em exercícios acadêmicos, TCCs, pesquisas e experimentos agrícolas.',
+            pageW - 58
+        );
+        doc.text(resumo, 25, 132);
+
+        // Cartão de identificação
+        doc.setFillColor(255, 255, 255);
+        doc.setDrawColor(203, 229, 208);
+        doc.setLineWidth(0.7);
+        doc.roundedRect(25, 164, pageW - 50, 60, 5, 5, 'FD');
+
+        doc.setFillColor(240, 249, 241);
+        doc.roundedRect(31, 171, 45, 10, 2.5, 2.5, 'F');
+        pdfSetFont(doc, 'bold', 7.8);
+        doc.setTextColor(...PDF_GREEN_600);
+        doc.text('MÓDULO', 36, 178);
+
+        pdfSetFont(doc, 'bold', 12.4);
+        doc.setTextColor(...PDF_GREEN_950);
+        doc.text(pdfClean(del), 36, 191);
+
+        doc.setFillColor(251, 248, 244);
+        doc.roundedRect(31, 200, 54, 10, 2.5, 2.5, 'F');
+        pdfSetFont(doc, 'bold', 7.8);
+        doc.setTextColor(136, 92, 60);
+        doc.text('DATA DE EMISSÃO', 36, 207);
+
+        pdfSetFont(doc, 'bold', 10.6);
+        doc.setTextColor(37, 47, 63);
+        doc.text(new Date().toLocaleString('pt-BR'), 36, 218);
+
+        // Nota técnica
+        doc.setFillColor(240, 249, 241);
+        doc.roundedRect(25, 242, pageW - 50, 27, 4, 4, 'F');
+        pdfSetFont(doc, 'bold', 9.2);
+        doc.setTextColor(27, 76, 48);
+        doc.text('Nota de interpretação', 34, 254);
+        pdfSetFont(doc, 'normal', 7.8);
+        doc.setTextColor(...PDF_SLATE_500);
+        const nota = doc.splitTextToSize(
+            'As conclusões devem ser interpretadas juntamente com o planejamento experimental, a qualidade dos dados, a significância estatística e a coerência agronômica dos resultados.',
+            pageW - 68
+        );
+        doc.text(nota, 34, 263);
+    };
+
+    window.aplicarRodapePdf = aplicarRodapePdf = function(doc) {
+        const total = doc.internal.getNumberOfPages();
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        for (let i = 1; i <= total; i++) {
+            doc.setPage(i);
+            pdfReset(doc);
+            doc.setDrawColor(226, 232, 240);
+            doc.setLineWidth(0.25);
+            doc.line(14, pageH - 14, pageW - 14, pageH - 14);
+
+            pdfSetFont(doc, 'normal', 7.4);
+            doc.setTextColor(...PDF_SLATE_500);
+            doc.text('Solver Agro • Relatório técnico experimental', 14, pageH - 8);
+            doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
+        }
+    };
+
+    window.addTituloSecaoPdf = addTituloSecaoPdf = function(doc, titulo, y) {
+        const pageW = doc.internal.pageSize.getWidth();
+        if (y > 264) y = novaPaginaPdf(doc);
+
+        doc.setFillColor(240, 249, 241);
+        doc.roundedRect(14, y - 7, pageW - 28, 13, 3, 3, 'F');
+        doc.setFillColor(45, 142, 86);
+        doc.roundedRect(14, y - 7, 3.2, 13, 1.8, 1.8, 'F');
+
+        pdfSetFont(doc, 'bold', 11.6);
+        doc.setTextColor(...PDF_GREEN_950);
+        doc.text(pdfClean(titulo), 21, y + 1.8);
+        doc.setTextColor(...PDF_SLATE_700);
+        return y + 14;
+    };
+
+    window.addParagrafosPdf = addParagrafosPdf = function(doc, paragrafos, y) {
+        pdfSetFont(doc, 'normal', 9.6);
+        doc.setTextColor(...PDF_SLATE_700);
+        (paragrafos || []).forEach(txt => {
+            if (typeof addTextoQuebradoPdf === 'function') {
+                y = addTextoQuebradoPdf(doc, txt, 18, y, 174, 5.15);
+            } else {
+                const linhas = doc.splitTextToSize(pdfClean(txt), 174);
+                doc.text(linhas, 18, y);
+                y += linhas.length * 5.15;
+            }
+            y += 3.5;
+        });
+        return y;
+    };
+
+    function formatarCelulaPdf(v) {
+        if (v === null || v === undefined) return '-';
+        return pdfClean(String(v));
+    }
+
+    window.addTabelaBonitaPdf = addTabelaBonitaPdf = function(doc, titulo, linhas, y) {
+        if (!linhas || !linhas.length) return y;
+        y = addTituloSecaoPdf(doc, titulo, y);
+
+        const pageH = doc.internal.pageSize.getHeight();
+        const cols = Object.keys(linhas[0]);
+        const tableX = 14;
+        const tableW = 182;
+
+        let widths;
+        if (cols.length <= 3) widths = [70, 56, 56];
+        else if (cols.length === 4) widths = [58, 41, 41, 42];
+        else if (cols.length === 5) widths = [50, 32, 32, 34, 34];
+        else widths = [41, 19, 30, 30, 31, 31, 28];
+
+        const sum = widths.slice(0, cols.length).reduce((a,b)=>a+b,0);
+        if (sum !== tableW) {
+            const factor = tableW / sum;
+            widths = widths.map(w => w * factor);
+        }
+
+        if (y > pageH - 36) y = novaPaginaPdf(doc);
+
+        // Cabeçalho
+        doc.setFillColor(27, 76, 48);
+        doc.roundedRect(tableX, y - 5.5, tableW, 9, 2, 2, 'F');
+
+        pdfSetFont(doc, 'bold', 7.15);
+        doc.setTextColor(255, 255, 255);
+        let x = tableX + 3;
+        cols.forEach((c, i) => {
+            doc.text(pdfClean(String(c)).slice(0, 18), x, y);
+            x += widths[i] || (tableW / cols.length);
+        });
+
+        y += 8.2;
+        pdfSetFont(doc, 'normal', 7.3);
+        doc.setTextColor(...PDF_SLATE_700);
+
+        linhas.forEach((linha, idx) => {
+            if (y > pageH - 22) {
+                y = novaPaginaPdf(doc);
+                doc.setFillColor(27, 76, 48);
+                doc.roundedRect(tableX, y - 5.5, tableW, 9, 2, 2, 'F');
+                pdfSetFont(doc, 'bold', 7.15);
+                doc.setTextColor(255, 255, 255);
+                let xh = tableX + 3;
+                cols.forEach((c, i) => {
+                    doc.text(pdfClean(String(c)).slice(0, 18), xh, y);
+                    xh += widths[i] || (tableW / cols.length);
+                });
+                y += 8.2;
+                pdfSetFont(doc, 'normal', 7.3);
+                doc.setTextColor(...PDF_SLATE_700);
+            }
+
+            if (idx % 2 === 0) {
+                doc.setFillColor(248, 250, 252);
+                doc.rect(tableX, y - 5.2, tableW, 7.8, 'F');
+            }
+
+            let xr = tableX + 3;
+            cols.forEach((c, i) => {
+                const raw = formatarCelulaPdf(linha[c]);
+                const maxChars = cols.length >= 6 ? 15 : 24;
+                const txt = raw.length > maxChars ? raw.slice(0, maxChars - 1) + '…' : raw;
+                doc.text(txt, xr, y);
+                xr += widths[i] || (tableW / cols.length);
+            });
+            y += 7.8;
+        });
+
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(0.25);
+        doc.roundedRect(tableX, y - (linhas.length * 7.8) - 5.5, tableW, (linhas.length * 7.8) + 9, 2, 2, 'S');
+
+        return y + 7;
+    };
+
+    function posthocsDoModuloPremium(modulo, pacote) {
+        if (modulo === 'regressaodireta') return pacote?.posthoc ? [pacote.posthoc] : [];
+        if (Array.isArray(pacote?.posthocs) && pacote.posthocs.length) return pacote.posthocs;
+        return pacote?.posthoc ? [pacote.posthoc] : [];
+    }
+
+    function textoAnovaPremium(modulo, anova) {
+        if (typeof textoAnovaRelatorio === 'function') return textoAnovaRelatorio(modulo, anova);
+        return ['A análise de variância foi processada pelo Solver Agro. A interpretação do teste F deve considerar a relação entre F calculado e F tabelado, o nível de probabilidade e a significância indicada na tabela.'];
+    }
+
+    function textoPostHocPremium(ph) {
+        if (typeof textoPostHocRelatorio === 'function') return textoPostHocRelatorio(ph);
+        if (ph?.tipo === 'regressao' || ph?.tipo === 'regressao_direta') {
+            return [`O modelo ${ph.modelo || 'selecionado'} foi ajustado aos dados observados. O valor de R² indica a proporção da variação explicada pelo modelo, devendo ser interpretado junto à significância da regressão e à coerência biológica da curva.`];
+        }
+        return ['As médias devem ser interpretadas conforme o agrupamento estatístico apresentado. Médias seguidas pela mesma letra não diferem estatisticamente entre si no nível de probabilidade adotado.'];
+    }
+
+    function rankingPremium(ph) {
+        if (typeof rankingModelosParaTabela === 'function') return rankingModelosParaTabela(ph);
+        const ranking = ph?.recomendacao_modelo?.ranking || [];
+        return ranking.map((r, i) => ({ Posição: i + 1, Modelo: r.modelo, R2: r.r2 }));
+    }
+
+    function conclusaoRegressaoPremium(ph) {
+        const melhor = ph?.recomendacao_modelo?.ranking?.[0];
+        let txt = ph?.recomendacao_modelo?.mensagem || 'A recomendação final deve considerar a significância da regressão, o R², o desvio da regressão e a coerência biológica da curva ajustada.';
+        if (melhor?.modelo) {
+            const atual = String(ph.modelo || '').toLowerCase();
+            const melhorNome = String(melhor.modelo || '');
+            if (atual && melhorNome.toLowerCase() !== atual) {
+                txt += ` Entre os modelos comparados automaticamente, o ajuste ${melhorNome} apresentou melhor aderência aos dados (R² = ${melhor.r2}) e é a principal sugestão para interpretação final.`;
+            } else {
+                txt += ` O ranking automático confirma o modelo ${melhorNome} como a alternativa mais aderente aos dados analisados.`;
+            }
+        }
+        return txt;
+    }
+
+    window.baixarLaudoCompleto = baixarLaudoCompleto = async function(modulo) {
+        const pacote = analises[modulo];
+        const posthocs = posthocsDoModuloPremium(modulo, pacote);
+        if (!pacote || (!pacote.anova && modulo !== 'regressaodireta')) {
+            showToast('Execute primeiro a ANOVA.', 'erro');
+            return;
+        }
+        if (!posthocs.length) {
+            showToast(modulo === 'regressaodireta' ? 'Calcule primeiro a regressão direta.' : 'Execute primeiro a regressão ou o teste de comparação de médias.', 'erro');
+            return;
+        }
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro');
+            return;
+        }
+
+        mostrarCarregamento('Gerando relatório PDF', 'Montando capa premium, tipografia Open Sans, tabelas, interpretação técnica e gráficos.');
+
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+            await solverLoadOpenSansFont(doc);
+            pdfReset(doc);
+
+            addCapaRelatorioPdf(doc, modulo, pacote);
+
+            doc.addPage();
+            addCabecalhoPdf(doc);
+
+            let y = 38;
+            const nomesModulos = {
+                simples: 'Fator único (DIC/DBC/DQL)',
+                fatorial: 'Fatorial duplo (A × B)',
+                parcelas: 'Parcelas subdivididas',
+                regressaodireta: 'Regressão direta para dose ótima'
+            };
+
+            // Cartão de identificação
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(...PDF_GREEN_100);
+            doc.setLineWidth(0.45);
+            doc.roundedRect(14, y, 182, 26, 3, 3, 'FD');
+
+            pdfSetFont(doc, 'bold', 8.4);
+            doc.setTextColor(...PDF_GREEN_600);
+            doc.text('IDENTIFICAÇÃO DA ANÁLISE', 20, y + 8);
+
+            pdfSetFont(doc, 'normal', 9.2);
+            doc.setTextColor(...PDF_SLATE_700);
+            doc.text(`Módulo: ${pdfClean(nomesModulos[modulo] || modulo)}`, 20, y + 18);
+
+            const cvTxt = pacote.anova?.cv ? `CV: ${pacote.anova.cv}` : (pacote.anova?.cv_a ? `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}` : 'CV: não se aplica');
+            doc.text(pdfClean(cvTxt), 112, y + 18);
+            y += 36;
+
+            if (modulo !== 'regressaodireta') {
+                y = addTituloSecaoPdf(doc, '1. Interpretação do teste F', y);
+                y = addParagrafosPdf(doc, textoAnovaPremium(modulo, pacote.anova.anova || []), y);
+                y = addTabelaBonitaPdf(doc, '2. Tabela da análise de variância (ANOVA)', pacote.anova.anova || [], y);
+            }
+
+            let secao = modulo === 'regressaodireta' ? 1 : 3;
+            for (let i = 0; i < posthocs.length; i++) {
+                const ph = posthocs[i];
+                const titulo = ph._meta?.titulo || (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta' ? 'Regressão' : 'Teste posterior');
+
+                y = addTituloSecaoPdf(doc, `${secao}. ${titulo}`, y);
+                y = addParagrafosPdf(doc, textoPostHocPremium(ph), y);
+
+                if (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') {
+                    if (y > 236) y = novaPaginaPdf(doc);
+
+                    doc.setFillColor(248, 250, 252);
+                    doc.setDrawColor(226, 232, 240);
+                    doc.roundedRect(14, y, 182, 24, 3, 3, 'FD');
+
+                    pdfSetFont(doc, 'bold', 8.4);
+                    doc.setTextColor(...PDF_GREEN_600);
+                    doc.text('MODELO AJUSTADO', 20, y + 8);
+
+                    pdfSetFont(doc, 'bold', 9.3);
+                    doc.setTextColor(...PDF_SLATE_700);
+                    doc.text(`Modelo: ${pdfClean(ph.modelo || '-')}`, 20, y + 17);
+                    doc.text(`R²: ${pdfClean(ph.r2 || '-')}`, 82, y + 17);
+                    y += 32;
+
+                    pdfSetFont(doc, 'normal', 9.4);
+                    doc.setTextColor(...PDF_SLATE_700);
+                    if (typeof addTextoQuebradoPdf === 'function') {
+                        y = addTextoQuebradoPdf(doc, `Equação ajustada: ${ph.equacao || '-'}`, 18, y, 174, 5.1);
+                    } else {
+                        const eq = doc.splitTextToSize(pdfClean(`Equação ajustada: ${ph.equacao || '-'}`), 174);
+                        doc.text(eq, 18, y);
+                        y += eq.length * 5.1;
+                    }
+                    y += 5;
+
+                    if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
+                        if (y > 252) y = novaPaginaPdf(doc);
+
+                        doc.setFillColor(...PDF_GREEN_50);
+                        doc.setDrawColor(187, 225, 198);
+                        doc.roundedRect(14, y, 86, 19, 3, 3, 'FD');
+
+                        doc.setFillColor(...PDF_EARTH_50);
+                        doc.setDrawColor(232, 216, 195);
+                        doc.roundedRect(108, y, 88, 19, 3, 3, 'FD');
+
+                        pdfSetFont(doc, 'bold', 7.5);
+                        doc.setTextColor(45, 114, 68);
+                        doc.text('DOSE ÓTIMA', 19, y + 6.5);
+                        pdfSetFont(doc, 'bold', 13.2);
+                        doc.text(String(ph.dose_otima || '-'), 19, y + 15);
+
+                        pdfSetFont(doc, 'bold', 7.5);
+                        doc.setTextColor(136, 92, 60);
+                        doc.text('PRODUTIVIDADE ÓTIMA', 113, y + 6.5);
+                        pdfSetFont(doc, 'bold', 13.2);
+                        doc.text(String(ph.resposta_otima || ph.produtividade_otima || '-'), 113, y + 15);
+                        y += 27;
+                    }
+
+                    if (ph.anova_reg && ph.anova_reg.length) {
+                        y = addTabelaBonitaPdf(doc, 'Tabela da regressão', ph.anova_reg || [], y);
+                    } else {
+                        y = addTabelaBonitaPdf(doc, 'Dados observados e estimados', ph.pontos || [], y);
+                    }
+
+                    const ranking = rankingPremium(ph);
+                    if (ranking && ranking.length) {
+                        y = addTabelaBonitaPdf(doc, 'Ranking de modelos avaliados', ranking, y);
+                    }
+
+                    if (typeof addGraficoRegressaoPdf === 'function') {
+                        y = await addGraficoRegressaoPdf(doc, ph, y);
+                    }
+                } else if (ph.tipo === 'dunnett') {
+                    y = addTabelaBonitaPdf(doc, 'Resultado do teste de Dunnett', ph.resultados || [], y);
+                } else {
+                    y = addTabelaBonitaPdf(doc, `Resultado do teste de ${ph.nome_teste || ph.tipo}`, ph.tabela || [], y);
+                }
+
+                secao += 1;
+            }
+
+            if (y > 254) y = novaPaginaPdf(doc);
+            y = addTituloSecaoPdf(doc, `${secao}. Conclusão técnica`, y);
+
+            const conclusoes = posthocs.map(ph => {
+                if (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') return conclusaoRegressaoPremium(ph);
+                return `Para ${ph._meta?.titulo || 'o teste complementar realizado'}, a interpretação final deve considerar a significância do teste F e o agrupamento das médias. Médias seguidas pela mesma letra não diferem estatisticamente entre si, enquanto letras diferentes indicam diferença significativa.`;
+            });
+            y = addParagrafosPdf(doc, conclusoes, y);
+
+            aplicarRodapePdf(doc);
+            doc.save(`laudo_solver_agro_${modulo}.pdf`);
+            showToast('Relatório PDF gerado com sucesso.', 'success');
+        } catch (err) {
+            showToast(`Erro ao gerar PDF: ${err.message}`, 'erro', 7000);
+        } finally {
+            ocultarCarregamento();
+        }
+    };
+})();
+</script>
+
 </body>
 </html>
