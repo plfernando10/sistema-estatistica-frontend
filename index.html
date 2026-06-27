@@ -755,7 +755,7 @@
                                         <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
                                         <p class="text-sm font-bold text-slate-600 mb-1">Arraste sua planilha aqui</p>
                                         <p class="text-xs text-slate-400 mb-4">Formato: <span id="lbl-formato-simples" class="font-mono">Tratamento;Bloco;Valor</span></p>
-                                        <input type="file" id="file-simples" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('simples')">
+                                        <input type="file" id="file-simples" accept=".csv,.txt,text/csv,text/plain" class="hidden" onchange="mostrarArquivoSelecionado('simples')">
                                         <button onclick="document.getElementById('file-simples').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
                                         <p id="file-name-simples" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
                                         <button id="btn-proc-simples" onclick="processarSimples(false, this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden">
@@ -875,7 +875,7 @@
                             <div id="upload-fatorial" class="tab-pane">
                                 <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
                                     <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
-                                    <input type="file" id="file-fatorial" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('fatorial')">
+                                    <input type="file" id="file-fatorial" accept=".csv,.txt,text/csv,text/plain" class="hidden" onchange="mostrarArquivoSelecionado('fatorial')">
                                     <button onclick="document.getElementById('file-fatorial').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
                                     <p id="file-name-fatorial" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
                                     <button id="btn-proc-fatorial" onclick="processarModuloUpload('fatorial', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
@@ -925,7 +925,7 @@
                             <div id="upload-parcelas" class="tab-pane">
                                 <div class="p-6 border-2 border-dashed border-slate-200 rounded-2xl hover:border-agro-400 transition-colors text-center">
                                     <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
-                                    <input type="file" id="file-parcelas" accept=".csv" class="hidden" onchange="mostrarArquivoSelecionado('parcelas')">
+                                    <input type="file" id="file-parcelas" accept=".csv,.txt,text/csv,text/plain" class="hidden" onchange="mostrarArquivoSelecionado('parcelas')">
                                     <button onclick="document.getElementById('file-parcelas').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar Arquivo</button>
                                     <p id="file-name-parcelas" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
                                     <button id="btn-proc-parcelas" onclick="processarModuloUpload('parcelas', this)" class="agro-btn agro-btn-primary w-full py-3 mt-4 hidden"><i class="fa-solid fa-play"></i> Iniciar Cálculo</button>
@@ -992,7 +992,7 @@
                                 </div>
                                 <div class="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center">
                                     <p class="text-xs text-slate-400 mb-3">Opcional: CSV no formato <span class="font-mono">Dose;Produtividade</span></p>
-                                    <input type="file" id="file-direto" accept=".csv" class="hidden" onchange="carregarCsvDireto(this)">
+                                    <input type="file" id="file-direto" accept=".csv,.txt,text/csv,text/plain" class="hidden" onchange="carregarCsvDireto(this)">
                                     <button onclick="document.getElementById('file-direto').click()" class="agro-btn agro-btn-outline w-full py-3">Selecionar CSV</button>
                                     <p id="file-name-direto" class="text-xs text-slate-400 mt-3">Nenhum arquivo selecionado</p>
                                 </div>
@@ -2521,6 +2521,555 @@
         }
 
 
-    </script>
+    
+
+        /* =========================
+           PATCH V15 — Relatório, CSV e UX
+           ========================= */
+        const SOLVER_REPORT_VERSION = 'v15';
+
+        function solverResetText(doc) {
+            try { if (doc.setCharSpace) doc.setCharSpace(0); } catch (_) {}
+            try { doc.setFont('helvetica', 'normal'); } catch (_) {}
+        }
+
+        function limparTextoPdf(texto) {
+            return String(texto ?? '')
+                .normalize('NFC')
+                .replace(/[\u0000-\u001F\u007F]/g, ' ')
+                .replace(/[\u200B-\u200D\uFEFF]/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/≤/g, '<=')
+                .replace(/≥/g, '>=')
+                .replace(/₀/g, '0')
+                .replace(/ₐ/g, 'a')
+                .replace(/H_0/g, 'H0')
+                .replace(/H_a/g, 'Ha')
+                .trim();
+        }
+
+        function addSolverLogoPdf(doc, x = 14, y = 10, escala = 1) {
+            solverResetText(doc);
+            const s = escala;
+            const icon = 12 * s;
+            doc.setFillColor(27, 76, 48);
+            doc.roundedRect(x, y, icon, icon, 3.3 * s, 3.3 * s, 'F');
+            doc.setFillColor(255, 255, 255);
+            doc.ellipse(x + 6.4 * s, y + 5.9 * s, 3.5 * s, 2.1 * s, 'F');
+            doc.setDrawColor(27, 76, 48);
+            doc.setLineWidth(0.48 * s);
+            doc.line(x + 4.7 * s, y + 7.4 * s, x + 8.4 * s, y + 4.5 * s);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11.5 * s);
+            doc.setTextColor(10, 33, 25);
+            doc.text('SOLVER', x + 15 * s, y + 5.1 * s);
+            doc.setTextColor(45, 142, 86);
+            doc.text('AGRO', x + 38 * s, y + 5.1 * s);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(3.8 * s);
+            doc.setTextColor(27, 60, 40);
+            doc.text('INTELLIGENCE FOR FIELD TRIALS', x + 15 * s, y + 9.4 * s);
+        }
+
+        function addCabecalhoPdf(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
+            solverResetText(doc);
+            const pageW = doc.internal.pageSize.getWidth();
+            doc.setFillColor(253, 253, 251);
+            doc.rect(0, 0, pageW, 25, 'F');
+            addSolverLogoPdf(doc, 14, 6, 0.78);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.6);
+            doc.setTextColor(71, 85, 105);
+            doc.text(limparTextoPdf(subtitulo), pageW - 14, 14, { align: 'right' });
+            doc.setDrawColor(187, 225, 198);
+            doc.setLineWidth(0.35);
+            doc.line(14, 25, pageW - 14, 25);
+        }
+
+        function novaPaginaPdf(doc) {
+            doc.addPage();
+            addCabecalhoPdf(doc);
+            return 36;
+        }
+
+        function addCapaRelatorioPdf(doc, modulo, pacote) {
+            solverResetText(doc);
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            doc.setFillColor(253, 253, 251);
+            doc.rect(0, 0, pageW, pageH, 'F');
+            doc.setFillColor(240, 249, 241);
+            doc.circle(pageW - 20, 22, 32, 'F');
+            doc.setFillColor(251, 248, 244);
+            doc.circle(12, pageH - 12, 30, 'F');
+            addSolverLogoPdf(doc, 28, 30, 1.18);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(14, 33, 22);
+            doc.setFontSize(22);
+            doc.text('Relatório técnico', 28, 82);
+            doc.setFontSize(14);
+            doc.setTextColor(45, 55, 72);
+            doc.text('Análise estatística experimental', 28, 94);
+            const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta para dose ótima' };
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(220, 241, 225);
+            doc.setLineWidth(0.45);
+            doc.roundedRect(28, 116, pageW - 56, 49, 4, 4, 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.6);
+            doc.setTextColor(45, 142, 86);
+            doc.text('MÓDULO', 36, 130);
+            doc.setFontSize(11.5);
+            doc.setTextColor(14, 33, 22);
+            doc.text(limparTextoPdf(nomesModulos[modulo] || modulo), 36, 139);
+            doc.setFontSize(8.6);
+            doc.setTextColor(45, 142, 86);
+            doc.text('DATA DE EMISSÃO', 36, 153);
+            doc.setFontSize(10.6);
+            doc.setTextColor(45, 55, 72);
+            doc.text(new Date().toLocaleString('pt-BR'), 36, 162);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.6);
+            doc.setTextColor(100, 116, 139);
+            doc.text('Documento gerado automaticamente pelo Solver Agro.', 28, pageH - 32);
+            doc.text('A interpretação deve ser combinada com o conhecimento agronômico e o planejamento experimental.', 28, pageH - 26);
+        }
+
+        function aplicarRodapePdf(doc) {
+            solverResetText(doc);
+            const total = doc.internal.getNumberOfPages();
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            for (let i = 1; i <= total; i++) {
+                doc.setPage(i);
+                solverResetText(doc);
+                doc.setDrawColor(226, 232, 240);
+                doc.setLineWidth(0.25);
+                doc.line(14, pageH - 14, pageW - 14, pageH - 14);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.2);
+                doc.setTextColor(100, 116, 139);
+                doc.text(`Solver Agro ${SOLVER_REPORT_VERSION} • Relatório técnico experimental`, 14, pageH - 8);
+                doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
+            }
+        }
+
+        function addTextoQuebradoPdf(doc, texto, x, y, largura = 182, linha = 5.1, opts = {}) {
+            solverResetText(doc);
+            const textoLimpo = limparTextoPdf(texto);
+            const partes = doc.splitTextToSize(textoLimpo, largura);
+            const pageH = doc.internal.pageSize.getHeight();
+            doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+            doc.setFontSize(opts.size || 9.8);
+            doc.setTextColor(...(opts.color || [30, 41, 59]));
+            partes.forEach(p => {
+                if (y > pageH - 22) y = novaPaginaPdf(doc);
+                solverResetText(doc);
+                doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+                doc.setFontSize(opts.size || 9.8);
+                doc.setTextColor(...(opts.color || [30, 41, 59]));
+                doc.text(p, x, y);
+                y += linha;
+            });
+            return y;
+        }
+
+        function addTituloSecaoPdf(doc, titulo, y) {
+            solverResetText(doc);
+            const pageW = doc.internal.pageSize.getWidth();
+            if (y > 264) y = novaPaginaPdf(doc);
+            doc.setFillColor(240, 249, 241);
+            doc.setDrawColor(187, 225, 198);
+            doc.setLineWidth(0.35);
+            doc.roundedRect(14, y - 6, pageW - 28, 11.2, 2.2, 2.2, 'FD');
+            doc.setTextColor(14, 33, 22);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11.2);
+            doc.text(limparTextoPdf(titulo), 18, y + 1.6);
+            return y + 12.5;
+        }
+
+        function addParagrafosPdf(doc, paragrafos, y) {
+            (paragrafos || []).forEach(txt => {
+                y = addTextoQuebradoPdf(doc, txt, 18, y, 174, 5.2, { size: 9.8, color: [30, 41, 59] });
+                y += 3.0;
+            });
+            return y;
+        }
+
+        function textoFitPdf(doc, texto, maxW) {
+            let t = limparTextoPdf(texto);
+            if (!t) return '-';
+            if (doc.getTextWidth(t) <= maxW) return t;
+            while (t.length > 3 && doc.getTextWidth(t + '…') > maxW) t = t.slice(0, -1);
+            return t + '…';
+        }
+
+        function colunasTabelaPdf(cols) {
+            const chave = cols.map(c => String(c).toLowerCase()).join('|');
+            if (chave.includes('fv') && chave.includes('gl') && chave.includes('f calc')) {
+                return [41, 12, 23, 23, 27, 27, 18].slice(0, cols.length);
+            }
+            if (cols.length === 3) return [58, 58, 58];
+            if (cols.length === 4) return [50, 41, 41, 42];
+            if (cols.length === 5) return [46, 32, 32, 32, 32];
+            const base = Array(cols.length).fill(Math.floor(174 / cols.length));
+            return base;
+        }
+
+        function addTabelaBonitaPdf(doc, titulo, linhas, y) {
+            if (!linhas || !linhas.length) return y;
+            y = addTituloSecaoPdf(doc, titulo, y);
+            const pageH = doc.internal.pageSize.getHeight();
+            const cols = Object.keys(linhas[0]);
+            let widths = colunasTabelaPdf(cols);
+            const soma = widths.reduce((a, b) => a + b, 0);
+            if (soma > 174) widths = widths.map(w => w * 174 / soma);
+            const x0 = 18;
+            const tableX = 14;
+            const tableW = 182;
+            const rowH = 7.0;
+            if (y > pageH - 32) y = novaPaginaPdf(doc);
+            solverResetText(doc);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(6.7);
+            doc.setFillColor(31, 73, 47);
+            doc.setTextColor(255, 255, 255);
+            doc.roundedRect(tableX, y - 5, tableW, 8, 1.6, 1.6, 'F');
+            let x = x0;
+            cols.forEach((c, i) => {
+                doc.text(textoFitPdf(doc, c, widths[i] - 2), x, y);
+                x += widths[i];
+            });
+            y += 7;
+            let bodyStart = y - 7;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(6.7);
+            linhas.forEach((l, idx) => {
+                if (y > pageH - 22) {
+                    doc.setDrawColor(226, 232, 240);
+                    doc.rect(tableX, bodyStart - 5, tableW, (y - bodyStart) + 1, 'S');
+                    y = novaPaginaPdf(doc);
+                    bodyStart = y;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(6.7);
+                    doc.setFillColor(31, 73, 47);
+                    doc.setTextColor(255, 255, 255);
+                    doc.roundedRect(tableX, y - 5, tableW, 8, 1.6, 1.6, 'F');
+                    let hx = x0;
+                    cols.forEach((c, i) => { doc.text(textoFitPdf(doc, c, widths[i] - 2), hx, y); hx += widths[i]; });
+                    y += 7;
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(6.7);
+                }
+                doc.setTextColor(30, 41, 59);
+                if (idx % 2 === 0) { doc.setFillColor(248, 250, 252); doc.rect(tableX, y - 5, tableW, rowH, 'F'); }
+                let cx = x0;
+                cols.forEach((c, i) => {
+                    const raw = l[c] ?? '-';
+                    const val = textoFitPdf(doc, raw, widths[i] - 2);
+                    doc.text(val, cx, y);
+                    cx += widths[i];
+                });
+                y += rowH;
+            });
+            doc.setDrawColor(226, 232, 240);
+            doc.rect(tableX, bodyStart - 5, tableW, (y - bodyStart) + 1.5, 'S');
+            return y + 7;
+        }
+
+        async function addGraficoRegressaoPdf(doc, ph, y) {
+            if (!ph || !(ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') || !ph.img_png) return y;
+            if (y > 165) y = novaPaginaPdf(doc);
+            y = addTituloSecaoPdf(doc, 'Gráfico da regressão', y);
+            try {
+                doc.setFillColor(255, 255, 255);
+                doc.setDrawColor(226, 232, 240);
+                doc.roundedRect(18, y - 2, 174, 104, 3, 3, 'FD');
+                doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 22, y + 2, 166, 94);
+                y += 108;
+            } catch (e) {
+                y = addTextoQuebradoPdf(doc, 'Não foi possível inserir o gráfico automaticamente no PDF.', 18, y);
+            }
+            return y;
+        }
+
+        function textoRegressaoRelatorio(ph) {
+            const textos = [];
+            const modelo = ph?.modelo || 'modelo ajustado';
+            const r2 = numeroRelatorio(ph?.r2);
+            const reg = (ph?.anova_reg || []).find(r => /regress/i.test(String(r.FV)));
+            const desvio = (ph?.anova_reg || []).find(r => /desvio/i.test(String(r.FV)));
+            const nivel = nivelProbabilidade(reg || {}, '5%');
+            if (reg && ehSignificativo(reg)) {
+                textos.push(`A análise de regressão indicou efeito significativo para o modelo ${modelo}, pois o F calculado da regressão foi superior ao F tabelado. Portanto, a curva ajustada pode ser utilizada para descrever a resposta da variável avaliada em função das doses, no nível de probabilidade de ${nivel}.`);
+            } else if (ph?.tipo === 'regressao_direta') {
+                textos.push(`Foi ajustado o modelo ${modelo} para os pares de dose e produtividade informados. Como a regressão direta não depende de um delineamento experimental completo, a interpretação deve priorizar o valor de R², o formato da curva, a dose ótima estimada e a coerência biológica do ajuste.`);
+            } else {
+                textos.push(`A análise de regressão não indicou ajuste estatisticamente significativo para o modelo ${modelo}. Portanto, essa curva deve ser interpretada com cautela e não é recomendada como base principal para tomada de decisão sem testar outros modelos.`);
+            }
+            if (r2 !== null) {
+                if (r2 >= 0.90) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica excelente capacidade de explicação dos dados pelo modelo ajustado.`);
+                else if (r2 >= 0.75) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica boa representação dos dados pelo modelo ajustado.`);
+                else if (r2 >= 0.60) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica representação moderada dos dados. O modelo pode ser útil, mas recomenda-se comparar com outros ajustes.`);
+                else textos.push(`O coeficiente de determinação R² = ${ph.r2} é baixo, indicando que o modelo escolhido não representa bem a variação observada. Recomenda-se testar modelos alternativos e escolher aquele com maior aderência estatística e coerência agronômica.`);
+            }
+            if (desvio && ehSignificativo(desvio)) {
+                textos.push('O desvio da regressão foi significativo, indicando que ainda existe variação não explicada pelo modelo. Nesse caso, recomenda-se avaliar outro tipo de regressão ou aumentar o número de doses para melhorar o ajuste.');
+            } else if (desvio) {
+                textos.push('O desvio da regressão não foi significativo, indicando que o modelo ajustado descreve adequadamente a tendência média dos dados dentro da precisão experimental.');
+            }
+            if (ph?.dose_otima || ph?.resposta_otima || ph?.produtividade_otima) {
+                textos.push(`A dose ótima estimada foi ${ph.dose_otima || '-'}, com produtividade ótima estimada de ${ph.resposta_otima || ph.produtividade_otima || '-'}. Esses valores devem ser interpretados dentro do intervalo experimental avaliado.`);
+            }
+            if (ph?.recomendacao_modelo?.mensagem) textos.push(ph.recomendacao_modelo.mensagem);
+            return textos;
+        }
+
+        function rankingModelosParaTabela(ph) {
+            const ranking = ph?.recomendacao_modelo?.ranking || [];
+            return ranking
+                .filter(r => r && r.modelo && r.r2 !== undefined)
+                .slice(0, 5)
+                .map((r, i) => ({
+                    Ordem: i + 1,
+                    Modelo: r.modelo,
+                    'R²': r.r2,
+                    'R² ajustado': r.r2_ajustado ?? '-',
+                    Indicação: i === 0 ? 'Melhor R²' : '-'
+                }));
+        }
+
+        async function baixarLaudoCompleto(modulo) {
+            const pacote = analises[modulo];
+            if (!pacote || (!pacote.anova && modulo !== 'regressaodireta')) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
+            if (!pacote.posthoc) { showToast(modulo === 'regressaodireta' ? 'Calcule primeiro a regressão direta.' : 'Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
+            if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
+            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver Agro v15.');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+                solverResetText(doc);
+                addCapaRelatorioPdf(doc, modulo, pacote);
+                doc.addPage();
+                addCabecalhoPdf(doc);
+                let y = 36;
+                const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta para dose ótima' };
+                doc.setFillColor(255, 255, 255);
+                doc.setDrawColor(220, 241, 225);
+                doc.roundedRect(14, y, 182, 25, 3, 3, 'FD');
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8.7); doc.setTextColor(45, 142, 86);
+                doc.text('IDENTIFICAÇÃO DA ANÁLISE', 20, y + 7);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor(30, 41, 59);
+                doc.text(`Módulo: ${limparTextoPdf(nomesModulos[modulo] || modulo)}`, 20, y + 16);
+                const cvTxt = pacote.anova?.cv ? `CV: ${pacote.anova.cv}` : (pacote.anova?.cv_a ? `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}` : 'CV: não se aplica');
+                doc.text(limparTextoPdf(cvTxt), 112, y + 16);
+                y += 35;
+
+                if (modulo !== 'regressaodireta') {
+                    y = addTituloSecaoPdf(doc, '1. Interpretação do teste F', y);
+                    y = addParagrafosPdf(doc, textoAnovaRelatorio(modulo, pacote.anova.anova || []), y);
+                    y = addTabelaBonitaPdf(doc, '2. Tabela da análise de variância (ANOVA)', pacote.anova.anova || [], y);
+                }
+
+                const ph = pacote.posthoc;
+                y = addTituloSecaoPdf(doc, modulo === 'regressaodireta' ? '1. Interpretação da regressão direta' : (ph.tipo === 'regressao' ? '3. Interpretação da regressão' : '3. Interpretação do teste de comparação de médias'), y);
+                y = addParagrafosPdf(doc, textoPostHocRelatorio(ph), y);
+
+                if (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') {
+                    if (y > 238) y = novaPaginaPdf(doc);
+                    doc.setFillColor(248, 250, 252); doc.setDrawColor(226, 232, 240); doc.roundedRect(14, y, 182, 22, 3, 3, 'FD');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.6); doc.setTextColor(45, 142, 86); doc.text('MODELO AJUSTADO', 20, y + 7);
+                    doc.setTextColor(30, 41, 59); doc.text(`Modelo: ${limparTextoPdf(ph.modelo || '-')}`, 20, y + 15); doc.text(`R²: ${limparTextoPdf(ph.r2 || '-')}`, 82, y + 15); y += 30;
+                    y = addTextoQuebradoPdf(doc, `Equação ajustada: ${ph.equacao || '-'}`, 18, y, 174, 5.1); y += 4;
+                    if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
+                        if (y > 252) y = novaPaginaPdf(doc);
+                        doc.setFillColor(240, 249, 241); doc.setDrawColor(187, 225, 198); doc.roundedRect(14, y, 86, 18, 3, 3, 'FD');
+                        doc.setFillColor(251, 248, 244); doc.setDrawColor(232, 216, 195); doc.roundedRect(108, y, 88, 18, 3, 3, 'FD');
+                        doc.setFont('helvetica', 'bold'); doc.setFontSize(7.6); doc.setTextColor(45, 114, 68); doc.text('DOSE ÓTIMA', 19, y + 6); doc.setFontSize(13); doc.text(String(ph.dose_otima || '-'), 19, y + 14);
+                        doc.setTextColor(136, 92, 60); doc.setFontSize(7.6); doc.text('PRODUTIVIDADE ÓTIMA', 113, y + 6); doc.setFontSize(13); doc.text(String(ph.resposta_otima || ph.produtividade_otima || '-'), 113, y + 14); y += 26;
+                    }
+                    if (ph.anova_reg && ph.anova_reg.length) y = addTabelaBonitaPdf(doc, modulo === 'regressaodireta' ? '2. Dados ajustados' : '4. ANOVA da regressão', ph.anova_reg || [], y);
+                    else y = addTabelaBonitaPdf(doc, '2. Dados observados e estimados', ph.pontos || [], y);
+                    const ranking = rankingModelosParaTabela(ph);
+                    if (ranking.length) y = addTabelaBonitaPdf(doc, modulo === 'regressaodireta' ? '3. Ranking de modelos avaliados' : '5. Ranking de modelos avaliados', ranking, y);
+                    y = await addGraficoRegressaoPdf(doc, ph, y);
+                } else if (ph.tipo === 'dunnett') {
+                    y = addTabelaBonitaPdf(doc, '4. Resultado do teste de Dunnett', ph.resultados || [], y);
+                } else {
+                    y = addTabelaBonitaPdf(doc, `4. Resultado do teste de ${ph.nome_teste || ph.tipo}`, ph.tabela || [], y);
+                }
+
+                if (y > 254) y = novaPaginaPdf(doc);
+                y = addTituloSecaoPdf(doc, modulo === 'regressaodireta' ? '4. Recomendação final' : '6. Conclusão técnica', y);
+                const conclusao = (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta')
+                    ? (ph.recomendacao_modelo?.mensagem || 'A recomendação técnica deve considerar a significância do teste F da regressão, o valor de R², o comportamento biológico da curva e a dose ótima estimada dentro do intervalo experimental avaliado.')
+                    : 'A interpretação final deve considerar a significância do teste F e o agrupamento das médias pelo teste posterior. Tratamentos com letras diferentes apresentam desempenho estatisticamente distinto.';
+                y = addParagrafosPdf(doc, [conclusao], y);
+                aplicarRodapePdf(doc);
+                doc.save(`laudo_solver_agro_${modulo}.pdf`);
+                showToast('Relatório PDF gerado com sucesso.', 'success');
+            } catch (err) {
+                showToast(`Erro ao gerar PDF: ${err.message}`, 'erro', 7000);
+            } finally {
+                ocultarCarregamento();
+            }
+        }
+
+        function validarArquivoCsvBasico(file) {
+            if (!file) return { ok: false, msg: 'Selecione um arquivo CSV antes de iniciar o cálculo.' };
+            const nome = (file.name || '').toLowerCase();
+            const extOk = nome.endsWith('.csv') || nome.endsWith('.txt');
+            if (!extOk) return { ok: false, msg: 'Formato de arquivo inválido. Envie um arquivo .csv ou .txt em formato CSV, com colunas separadas por ponto e vírgula (;).' };
+            if (file.size === 0) return { ok: false, msg: 'O arquivo está vazio. Verifique o conteúdo e envie novamente.' };
+            return { ok: true };
+        }
+
+        function mostrarArquivoSelecionado(modulo) {
+            const id = modulo === 'regressaodireta' ? 'direto' : modulo;
+            const input = document.getElementById(`file-${id}`);
+            const nome = document.getElementById(`file-name-${id}`);
+            const botao = document.getElementById(`btn-proc-${modulo}`);
+            if (input && input.files && input.files[0]) {
+                const file = input.files[0];
+                const valid = validarArquivoCsvBasico(file);
+                if (!valid.ok) {
+                    showToast(valid.msg, 'erro', 7500);
+                    input.value = '';
+                    if (nome) nome.textContent = 'Nenhum arquivo selecionado';
+                    if (botao) botao.classList.add('hidden');
+                    return;
+                }
+                if (nome) nome.innerHTML = `<i class="fa-solid fa-file-csv text-agro-600"></i> ${file.name}`;
+                if (botao) botao.classList.remove('hidden');
+                showToast(`Arquivo ${file.name} carregado. Clique em Iniciar Cálculo.`, 'success');
+            } else {
+                if (nome) nome.textContent = 'Nenhum arquivo selecionado';
+                if (botao) botao.classList.add('hidden');
+            }
+        }
+
+        async function processarModuloUpload(modulo, btnElement) {
+            const file = document.getElementById(`file-${modulo}`)?.files?.[0];
+            const valid = validarArquivoCsvBasico(file);
+            if (!valid.ok) { showToast(valid.msg, 'erro', 7500); return; }
+            arquivosData[modulo] = file;
+            await processarModuloComArquivo(modulo, file, btnElement);
+        }
+
+        function carregarCsvDireto(input) {
+            const file = input?.files?.[0];
+            const nome = document.getElementById('file-name-direto');
+            const valid = validarArquivoCsvBasico(file);
+            if (!valid.ok) {
+                showToast(valid.msg, 'erro', 7500);
+                if (input) input.value = '';
+                if (nome) nome.textContent = 'Nenhum arquivo selecionado';
+                return;
+            }
+            if (nome) nome.innerHTML = `<i class="fa-solid fa-file-csv text-agro-600"></i> ${file.name}`;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const linhas = String(reader.result || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                    const dados = linhas.filter((l, i) => i > 0 || !/[a-zA-ZÀ-ÿ]/.test(l));
+                    const doses = [];
+                    const prods = [];
+                    dados.forEach(l => {
+                        const sep = l.includes(';') ? ';' : ',';
+                        const p = l.split(sep).map(x => x.trim());
+                        if (p.length >= 2) { doses.push(p[0]); prods.push(p[1]); }
+                    });
+                    if (!doses.length || doses.length !== prods.length) throw new Error('O arquivo precisa ter duas colunas: Dose;Produtividade.');
+                    document.getElementById('doses-direto').value = doses.join('\n');
+                    document.getElementById('prod-direto').value = prods.join('\n');
+                    showToast('CSV carregado e campos preenchidos automaticamente.', 'success');
+                } catch (err) {
+                    showToast(`Arquivo CSV inválido: ${err.message}`, 'erro', 7500);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function calcularRegressaoDireta(btnElement) {
+            const result = document.getElementById('result-direto');
+            const placeholder = document.getElementById('placeholder-direto');
+            const form = new FormData();
+            const file = document.getElementById('file-direto')?.files?.[0];
+            if (file) {
+                const valid = validarArquivoCsvBasico(file);
+                if (!valid.ok) { showToast(valid.msg, 'erro', 7500); return; }
+                form.append('file', file);
+            }
+            const doses = document.getElementById('doses-direto').value;
+            const prod = document.getElementById('prod-direto').value;
+            if (!file && (!doses.trim() || !prod.trim())) { showToast('Informe as doses e produtividades ou carregue um arquivo CSV.', 'erro'); return; }
+            form.append('doses', doses);
+            form.append('produtividades', prod);
+            form.append('modelo_regr', document.getElementById('modelo-direto').value);
+            btnElement.disabled = true;
+            const originalHtml = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculando...';
+            mostrarCarregamento('Calculando regressão direta', 'Ajustando a curva, comparando modelos, estimando dose ótima e preparando o relatório.');
+            try {
+                const resp = await fetch(`${API_BASE}/regressao-direta`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha no cálculo.');
+                analises.regressaodireta = { anova: { cv: 'Não se aplica', anova: [] }, posthoc: data };
+                renderResultadoDireto(data, result, placeholder);
+                showToast('Regressão direta concluída!', 'success');
+            } catch (err) {
+                showToast(err.message, 'erro', 7000);
+            } finally {
+                ocultarCarregamento();
+                btnElement.disabled = false;
+                btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        function abrirRelatoProblema() {
+            const modulo = document.getElementById('module-title')?.textContent || 'Não identificado';
+            const texto = `Relato de problema - Solver Agro\n\nData: ${new Date().toLocaleString('pt-BR')}\nMódulo aberto: ${modulo}\nPágina: ${location.href}\nNavegador: ${navigator.userAgent}\n\nDescreva aqui o problema encontrado:\n`;
+            const modal = document.createElement('div');
+            modal.className = 'solver-report-modal';
+            modal.innerHTML = `<div class="solver-report-card"><button class="solver-report-close" aria-label="Fechar" onclick="this.closest('.solver-report-modal').remove()"><i class="fa-solid fa-xmark"></i></button><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-agro-900 text-white flex items-center justify-center"><i class="fa-solid fa-bug"></i></div><div><h3 class="font-black text-agro-950 text-xl">Relatar problema</h3><p class="text-sm text-slate-500">Copie ou baixe este resumo e envie para o responsável pelo Solver Agro.</p></div></div><textarea class="agro-input min-h-[210px] font-mono text-xs" id="solver-report-text">${texto}</textarea><div class="flex flex-col sm:flex-row gap-3 mt-4"><button class="agro-btn agro-btn-primary flex-1" onclick="navigator.clipboard?.writeText(document.getElementById('solver-report-text').value); showToast('Relato copiado para a área de transferência.', 'success')"><i class="fa-solid fa-copy"></i> Copiar relato</button><button class="agro-btn agro-btn-outline flex-1" onclick="baixarRelatoProblema()"><i class="fa-solid fa-download"></i> Baixar .txt</button></div></div>`;
+            document.body.appendChild(modal);
+        }
+
+        function baixarRelatoProblema() {
+            const conteudo = document.getElementById('solver-report-text')?.value || '';
+            const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'relato_problema_solver_agro.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+
+        function instalarBotaoRelatarProblema() {
+            if (document.getElementById('solver-problem-btn')) return;
+            const style = document.createElement('style');
+            style.textContent = `
+                #solver-problem-btn { position: fixed; right: 18px; bottom: 18px; z-index: 80; border: 1px solid rgba(45,114,68,.18); background: rgba(255,255,255,.82); color: #2d7244; backdrop-filter: blur(10px); border-radius: 999px; padding: 9px 13px; font-size: 12px; font-weight: 800; box-shadow: 0 10px 30px rgba(15,23,42,.08); opacity: .68; transition: all .2s ease; }
+                #solver-problem-btn:hover { opacity: 1; transform: translateY(-1px); background: #f0f9f1; }
+                .solver-report-modal { position: fixed; inset: 0; z-index: 120; background: rgba(15,23,42,.36); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 18px; }
+                .solver-report-card { width: min(620px, 100%); background: white; border-radius: 24px; padding: 24px; box-shadow: 0 30px 80px rgba(15,23,42,.22); border: 1px solid #dcf1e1; position: relative; }
+                .solver-report-close { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 999px; background: #f8fafc; color: #64748b; display: inline-flex; align-items: center; justify-content: center; }
+                @media (max-width: 640px) { #solver-problem-btn { right: 12px; bottom: 12px; font-size: 11px; padding: 8px 11px; } }
+            `;
+            document.head.appendChild(style);
+            const btn = document.createElement('button');
+            btn.id = 'solver-problem-btn';
+            btn.type = 'button';
+            btn.innerHTML = '<i class="fa-solid fa-bug mr-1"></i> Relatar problema';
+            btn.onclick = abrirRelatoProblema;
+            document.body.appendChild(btn);
+        }
+
+        instalarBotaoRelatarProblema();
+
+</script>
 </body>
 </html>
