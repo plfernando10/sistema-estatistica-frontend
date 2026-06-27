@@ -4286,5 +4286,307 @@
 })();
 </script>
 
+
+<script id="solver-v23-branding-patch">
+(function(){
+    function addStylesV23(){
+        if(document.getElementById('solver-v23-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'solver-v23-styles';
+        style.textContent = `
+            .solver-wordmark-v23{
+                display:flex;
+                align-items:center;
+                gap:1rem;
+            }
+            .solver-wordmark-icon-v23{
+                width:3.25rem;
+                height:3.25rem;
+                border-radius:1.05rem;
+                background:linear-gradient(135deg,#3d8e56,#18452c);
+                box-shadow:0 18px 34px rgba(27,76,48,.18);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                position:relative;
+                overflow:hidden;
+                flex:0 0 auto;
+            }
+            .solver-wordmark-icon-v23::before{
+                content:"";
+                width:1.62rem;
+                height:1.04rem;
+                border-radius:999px;
+                background:#fff;
+                position:absolute;
+                transform:rotate(-25deg);
+            }
+            .solver-wordmark-icon-v23::after{
+                content:"";
+                width:1.75rem;
+                height:.15rem;
+                background:#18452c;
+                border-radius:999px;
+                position:absolute;
+                transform:rotate(-25deg);
+            }
+            .solver-wordmark-title-v23{
+                font-size:2rem;
+                line-height:.92;
+                font-weight:950;
+                letter-spacing:-.045em;
+                color:#071f18;
+            }
+            .solver-wordmark-sub-v23{
+                margin-top:.45rem;
+                font-size:.62rem;
+                line-height:1;
+                font-weight:900;
+                letter-spacing:.32em;
+                color:#0e462d;
+            }
+            .solver-persona-modern-v23{
+                display:flex;
+                gap:1rem;
+                align-items:flex-start;
+                border:1px solid rgba(203,213,225,.78) !important;
+                background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(248,251,249,.9)) !important;
+                box-shadow:0 12px 32px rgba(15,23,42,.045);
+                transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+            }
+            .solver-persona-modern-v23:hover{
+                transform:translateY(-2px);
+                border-color:#bfe7ca !important;
+                box-shadow:0 20px 42px rgba(15,23,42,.075);
+            }
+            .solver-icon-modern-v23{
+                width:3.1rem !important;
+                height:3.1rem !important;
+                min-width:3.1rem !important;
+                border-radius:1.08rem !important;
+                background:linear-gradient(135deg,#eefaf1,#ffffff) !important;
+                border:1px solid #cfeeda !important;
+                color:#2d8e56 !important;
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+                display:flex !important;
+                align-items:center !important;
+                justify-content:center !important;
+                font-size:1.12rem !important;
+            }
+            .solver-feature-icon-v23{
+                width:3.35rem !important;
+                height:3.35rem !important;
+                border-radius:1.1rem !important;
+                background:linear-gradient(135deg,#eefaf1,#ffffff) !important;
+                border:1px solid #cfeeda !important;
+                color:#2d8e56 !important;
+                display:flex !important;
+                align-items:center !important;
+                justify-content:center !important;
+                font-size:1.12rem !important;
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+            }
+            .solver-brand-mini-v23 .solver-wordmark-title-v23{
+                font-size:1.25rem;
+            }
+            .solver-brand-mini-v23 .solver-wordmark-sub-v23{
+                font-size:.43rem;
+                letter-spacing:.22em;
+            }
+            .solver-brand-mini-v23 .solver-wordmark-icon-v23{
+                width:2.4rem;
+                height:2.4rem;
+                border-radius:.8rem;
+            }
+            .solver-brand-mini-v23 .solver-wordmark-icon-v23::before{
+                width:1.16rem;
+                height:.74rem;
+            }
+            .solver-brand-mini-v23 .solver-wordmark-icon-v23::after{
+                width:1.25rem;
+                height:.12rem;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function logoHtmlV23(mini=false){
+        return `
+            <div class="solver-wordmark-v23 ${mini ? 'solver-brand-mini-v23' : ''}">
+                <div class="solver-wordmark-icon-v23"></div>
+                <div>
+                    <div class="solver-wordmark-title-v23">SOLVER</div>
+                    <div class="solver-wordmark-sub-v23">INTELLIGENCE FOR FIELD TRIALS</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function trocarLogoPrincipalV23(){
+        const landing = document.getElementById('landing-page');
+        if(!landing) return;
+
+        const logoAreas = Array.from(landing.querySelectorAll('.flex.items-center.gap-3, .flex.items-center.gap-4, .items-center.gap-3, .items-center.gap-4'));
+        const logoArea = logoAreas.find(el => /SOLVER\s*AGRO|SOLVER/i.test(el.textContent || '') && /INTELLIGENCE|FIELD|TRIALS/i.test(el.textContent || ''));
+        if(logoArea){
+            logoArea.outerHTML = logoHtmlV23(false);
+        }
+
+        // Corrige qualquer sobra textual do logo antigo no landing
+        landing.querySelectorAll('span,div,h1,h2,h3,p').forEach(el=>{
+            if(!el.children.length && /\bSOLVER\s+AGRO\b/.test(el.textContent || '')){
+                el.textContent = el.textContent.replace(/\bSOLVER\s+AGRO\b/g,'SOLVER');
+            }
+        });
+    }
+
+    function trocarLogoInferiorV23(){
+        const landing = document.getElementById('landing-page');
+        if(!landing) return;
+
+        const candidates = Array.from(landing.querySelectorAll('.agro-card, .rounded-3xl, .rounded-2xl, footer, section, div'))
+            .filter(el => /SOLVER\s*AGRO/i.test(el.textContent || '') && /INTELLIGENCE|FIELD|TRIALS/i.test(el.textContent || ''));
+
+        candidates.forEach(el => {
+            // Não mexer no logo principal já tratado
+            if(el.closest('nav')) return;
+            const first = Array.from(el.querySelectorAll('.flex.items-center.gap-3, .flex.items-center.gap-4, .items-center.gap-3, .items-center.gap-4'))
+                .find(x => /SOLVER\s*AGRO|SOLVER/i.test(x.textContent || ''));
+            if(first) first.outerHTML = logoHtmlV23(true);
+        });
+
+        landing.querySelectorAll('span,div,h1,h2,h3,p').forEach(el=>{
+            if(!el.children.length && /\bSOLVER\s+AGRO\b/.test(el.textContent || '')){
+                el.textContent = el.textContent.replace(/\bSOLVER\s+AGRO\b/g,'SOLVER');
+            }
+        });
+    }
+
+    function atualizarTextosV23(){
+        const landing = document.getElementById('landing-page');
+        if(!landing) return;
+
+        landing.querySelectorAll('h1,h2,h3,p,span,div').forEach(el=>{
+            if(el.children.length) return;
+            let t = el.textContent || '';
+
+            t = t.replace('Você do agro','Agronegócio');
+            t = t.replace('Você estudante de graduação','Acadêmico');
+            t = t.replace('Você no TCC ou pesquisa','P&D, analistas e pesquisa');
+
+            t = t.replace('Da sala de aula ao experimento de campo.','Da sala de aula à tomada de decisão no campo.');
+            t = t.replace(
+                'Organize ensaios, compare tratamentos e interprete respostas de produtividade com linguagem técnica pronta para relatório.',
+                'Analise ensaios, compare tratamentos e transforme dados de campo em interpretações técnicas para decisão.'
+            );
+            t = t.replace(
+                'Confira exercícios de estatística experimental, visualize a ANOVA e entenda quando aplicar testes de médias ou regressão.',
+                'Confira exercícios, valide cálculos de estatística experimental e entenda ANOVA, testes de médias e regressão.'
+            );
+            t = t.replace(
+                'Gere análises mais apresentáveis, com gráficos, conclusão técnica e recomendação do modelo de regressão mais adequado.',
+                'Padronize análises, gere relatórios apresentáveis e apoie projetos, TCCs, consultorias e rotinas de avaliação experimental.'
+            );
+
+            el.textContent = t;
+        });
+    }
+
+    function melhorarCardsPublicoV23(){
+        const landing = document.getElementById('landing-page');
+        if(!landing) return;
+
+        const configs = [
+            {
+                rx:/Agronegócio|Você do agro/i,
+                title:'Agronegócio',
+                icon:'fa-solid fa-seedling',
+                text:'Analise ensaios, compare tratamentos e transforme dados de campo em interpretações técnicas para decisão.'
+            },
+            {
+                rx:/Acadêmico|Você estudante/i,
+                title:'Acadêmico',
+                icon:'fa-solid fa-user-graduate',
+                text:'Confira exercícios, valide cálculos de estatística experimental e entenda ANOVA, testes de médias e regressão.'
+            },
+            {
+                rx:/P&D|TCC|pesquisa/i,
+                title:'P&D, analistas e pesquisa',
+                icon:'fa-solid fa-microscope',
+                text:'Padronize análises, gere relatórios apresentáveis e apoie projetos, TCCs, consultorias e rotinas de avaliação experimental.'
+            }
+        ];
+
+        configs.forEach(cfg=>{
+            const title = Array.from(landing.querySelectorAll('h3,h4,strong,div'))
+                .find(el => cfg.rx.test(el.textContent || '') && !el.children.length);
+            if(!title) return;
+
+            const card = title.closest('.rounded-2xl, .rounded-3xl, .border, .p-5, .p-6') || title.parentElement;
+            if(!card) return;
+
+            card.classList.add('solver-persona-modern-v23');
+
+            const icon = card.querySelector('i');
+            if(icon) icon.className = cfg.icon;
+
+            const iconWrap = icon?.closest('div');
+            if(iconWrap) iconWrap.classList.add('solver-icon-modern-v23');
+
+            title.textContent = cfg.title;
+
+            const p = Array.from(card.querySelectorAll('p')).find(x => !cfg.rx.test(x.textContent || ''));
+            if(p) p.textContent = cfg.text;
+        });
+    }
+
+    function melhorarCardsRecursosV23(){
+        const landing = document.getElementById('landing-page');
+        if(!landing) return;
+
+        const configs = [
+            [/Delineamentos experimentais/i, 'fa-solid fa-table-list'],
+            [/Regressões e dose ótima/i, 'fa-solid fa-chart-line'],
+            [/Relatório apresentável/i, 'fa-solid fa-file-signature']
+        ];
+
+        configs.forEach(([rx, iconClass])=>{
+            const h = Array.from(landing.querySelectorAll('h3,h4')).find(el => rx.test(el.textContent || ''));
+            const card = h?.closest('.agro-card, .rounded-3xl, .rounded-2xl, .border, .p-8, .p-6');
+            if(!card) return;
+
+            const icon = card.querySelector('i');
+            if(icon) icon.className = iconClass;
+
+            const iconWrap = icon?.closest('div');
+            if(iconWrap) iconWrap.classList.add('solver-feature-icon-v23');
+        });
+    }
+
+    function removerRodapeNomeV23(){
+        document.querySelectorAll('.solver-footer-v21, .solver-v22-footer').forEach(el => el.remove());
+        document.querySelectorAll('footer, div, p, span').forEach(el=>{
+            if(/Desenvolvido por:\s*Fernando P\. Lorena/i.test(el.textContent || '')){
+                el.remove();
+            }
+        });
+    }
+
+    function aplicarV23(){
+        addStylesV23();
+        trocarLogoPrincipalV23();
+        trocarLogoInferiorV23();
+        atualizarTextosV23();
+        melhorarCardsPublicoV23();
+        melhorarCardsRecursosV23();
+        removerRodapeNomeV23();
+    }
+
+    document.addEventListener('DOMContentLoaded', aplicarV23);
+    setTimeout(aplicarV23, 250);
+    setTimeout(aplicarV23, 900);
+})();
+</script>
+
 </body>
 </html>
