@@ -5381,5 +5381,273 @@
 })();
 </script>
 
+
+<script id="solver-pdf-logo-cover-v3">
+(function(){
+    const GREEN_950 = [14, 33, 22];
+    const GREEN_900 = [27, 76, 48];
+    const GREEN_700 = [38, 91, 57];
+    const GREEN_600 = [45, 142, 86];
+    const GREEN_100 = [220, 241, 225];
+    const GREEN_50  = [240, 249, 241];
+    const SLATE_700 = [51, 65, 85];
+    const SLATE_500 = [100, 116, 139];
+    const EARTH_50  = [251, 248, 244];
+
+    function pdfCleanV3(text) {
+        if (typeof limparTextoPdf === 'function') return limparTextoPdf(text);
+        return String(text ?? '')
+            .replace(/[\u0000-\u001F\u007F]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .replace(/≤/g, '<=')
+            .replace(/≥/g, '>=')
+            .trim();
+    }
+
+    function resetPdfV3(doc) {
+        if (typeof solverResetText === 'function') solverResetText(doc);
+        if (doc.setCharSpace) doc.setCharSpace(0);
+    }
+
+    function setFontV3(doc, style='normal', size=null) {
+        const preferred = doc.__solver_pdf_font || 'OpenSans';
+        try { doc.setFont(preferred, style); }
+        catch(e) { doc.setFont('helvetica', style); }
+        if (size !== null) doc.setFontSize(size);
+    }
+
+    function moduloNomeV3(modulo, pacote) {
+        if (modulo === 'simples') {
+            const d = String(pacote?.delineamento || document.querySelector('input[name="delinSimples"]:checked')?.value || '').toLowerCase();
+            if (d === 'dic') return 'DIC';
+            if (d === 'dbc') return 'DBC';
+            if (d === 'dql') return 'DQL';
+            return 'DIC/DBC/DQL';
+        }
+        if (modulo === 'fatorial') return 'Fatorial duplo';
+        if (modulo === 'parcelas') return 'Parcelas subdivididas';
+        if (modulo === 'regressaodireta') return 'Regressão direta';
+        return String(modulo || '-');
+    }
+
+    function drawSolverLeafIconV3(doc, x, y, size) {
+        const s = size / 18;
+
+        doc.setFillColor(...GREEN_900);
+        doc.roundedRect(x, y, size, size, 4.6*s, 4.6*s, 'F');
+
+        /*
+          Folha vetorial: usa curvas de Bézier, não imagem.
+          Fica mais próxima do símbolo usado na capa do site.
+        */
+        doc.setFillColor(255, 255, 255);
+        doc.setDrawColor(255, 255, 255);
+        doc.setLineWidth(0.1);
+
+        try {
+            doc.path([
+                { op: 'm', c: [x + 5.0*s, y + 10.6*s] },
+                { op: 'c', c: [x + 6.4*s, y + 5.0*s, x + 12.7*s, y + 4.0*s, x + 15.0*s, y + 4.9*s] },
+                { op: 'c', c: [x + 14.2*s, y + 10.8*s, x + 8.4*s, y + 13.5*s, x + 5.0*s, y + 10.6*s] },
+                { op: 'h', c: [] }
+            ], 'F');
+        } catch(e) {
+            // Fallback caso a versão do jsPDF não suporte path.
+            doc.ellipse(x + 9.5*s, y + 8.5*s, 5.3*s, 2.55*s, 'F');
+        }
+
+        doc.setDrawColor(...GREEN_900);
+        doc.setLineWidth(0.62*s);
+        doc.line(x + 5.8*s, y + 10.0*s, x + 14.0*s, y + 5.1*s);
+    }
+
+    /*
+      Logo do relatório com a mesma lógica visual da capa do site:
+      ícone + SOLVER + tagline, sem "AGRO".
+      Tudo vetorial no jsPDF.
+    */
+    window.addSolverLogoPdf = addSolverLogoPdf = function(doc, x = 14, y = 8, escala = 1) {
+        resetPdfV3(doc);
+
+        const s = escala;
+        const icon = 18 * s;
+        drawSolverLeafIconV3(doc, x, y, icon);
+
+        const tx = x + icon + 5.2*s;
+        const titleY = y + 8.2*s;
+
+        setFontV3(doc, 'bold', 17.2*s);
+        doc.setTextColor(...GREEN_950);
+        doc.text('SOLVER', tx, titleY);
+
+        setFontV3(doc, 'bold', 4.45*s);
+        doc.setTextColor(14, 70, 45);
+        doc.text('INTELLIGENCE FOR FIELD TRIALS', tx, y + 14.9*s);
+    };
+
+    window.addCabecalhoPdf = addCabecalhoPdf = function(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
+        resetPdfV3(doc);
+        const pageW = doc.internal.pageSize.getWidth();
+
+        doc.setFillColor(255,255,255);
+        doc.rect(0, 0, pageW, 30, 'F');
+
+        addSolverLogoPdf(doc, 14, 6.2, 0.66);
+
+        doc.setDrawColor(...GREEN_100);
+        doc.setLineWidth(0.35);
+        doc.line(69, 8, 69, 22);
+
+        setFontV3(doc, 'bold', 7.5);
+        doc.setTextColor(...GREEN_600);
+        doc.text('RELATÓRIO TÉCNICO DE ESTATÍSTICA', 74, 13.2);
+
+        setFontV3(doc, 'normal', 7.1);
+        doc.setTextColor(...SLATE_500);
+        doc.text(pdfCleanV3(subtitulo), 74, 19.2);
+
+        doc.setDrawColor(214, 237, 220);
+        doc.setLineWidth(0.35);
+        doc.line(14, 30, pageW - 14, 30);
+    };
+
+    window.novaPaginaPdf = novaPaginaPdf = function(doc) {
+        doc.addPage();
+        addCabecalhoPdf(doc);
+        return 40;
+    };
+
+    /*
+      Capa reformatada:
+      - sem caixa enorme na parte superior;
+      - logo igual ao padrão do site, com peso visual correto;
+      - Relatório Técnico ao lado, separado por barra;
+      - caixas inferiores centralizadas e mais equilibradas.
+    */
+    window.addCapaRelatorioPdf = addCapaRelatorioPdf = function(doc, modulo, pacote) {
+        resetPdfV3(doc);
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const del = moduloNomeV3(modulo, pacote);
+
+        doc.setFillColor(247, 251, 248);
+        doc.rect(0, 0, pageW, pageH, 'F');
+
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(10, 10, pageW - 20, pageH - 20, 8, 8, 'F');
+
+        doc.setFillColor(238, 247, 240);
+        doc.circle(pageW - 20, 18, 31, 'F');
+
+        doc.setFillColor(...EARTH_50);
+        doc.circle(11, pageH - 12, 27, 'F');
+
+        doc.setFillColor(...GREEN_900);
+        doc.roundedRect(10, 10, 4.2, pageH - 20, 2, 2, 'F');
+
+        // Bloco de marca sem moldura exagerada
+        const logoX = 30;
+        const logoY = 40;
+        addSolverLogoPdf(doc, logoX, logoY, 1.0);
+
+        const dividerX = 102;
+        doc.setDrawColor(...GREEN_600);
+        doc.setLineWidth(0.7);
+        doc.line(dividerX, logoY - 1, dividerX, logoY + 22);
+
+        setFontV3(doc, 'bold', 11.3);
+        doc.setTextColor(...GREEN_600);
+        doc.text('RELATÓRIO TÉCNICO DE ESTATÍSTICA', dividerX + 9, logoY + 8.5);
+
+        setFontV3(doc, 'bold', 9.2);
+        doc.setTextColor(...SLATE_700);
+        doc.text(`Delineamento: ${pdfCleanV3(del)}`, dividerX + 9, logoY + 21);
+
+        doc.setDrawColor(203, 229, 208);
+        doc.setLineWidth(0.38);
+        doc.line(24, 88, pageW - 24, 88);
+
+        // Resumo com maior respiro
+        setFontV3(doc, 'normal', 10.2);
+        doc.setTextColor(54, 70, 97);
+        const resumo = doc.splitTextToSize(
+            'Relatório gerado para apresentar os resultados estatísticos com clareza, consistência visual e interpretação técnica, apoiando decisões em exercícios acadêmicos, TCCs, pesquisas e experimentos agrícolas.',
+            pageW - 54
+        );
+        doc.text(resumo, 27, 114);
+
+        // Caixa centralizada de metadados
+        const boxX = 25;
+        const boxY = 154;
+        const boxW = pageW - 50;
+        const boxH = 66;
+
+        doc.setFillColor(255,255,255);
+        doc.setDrawColor(203, 229, 208);
+        doc.setLineWidth(0.68);
+        doc.roundedRect(boxX, boxY, boxW, boxH, 5, 5, 'FD');
+
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(0.28);
+        doc.line(pageW/2, boxY + 14, pageW/2, boxY + boxH - 14);
+
+        const leftCenterX = boxX + boxW * 0.25;
+        const rightCenterX = boxX + boxW * 0.75;
+
+        setFontV3(doc, 'bold', 7.7);
+        doc.setTextColor(...GREEN_600);
+        doc.text('MÓDULO', leftCenterX, boxY + 22, { align: 'center' });
+
+        setFontV3(doc, 'bold', 14);
+        doc.setTextColor(...GREEN_950);
+        doc.text(pdfCleanV3(del), leftCenterX, boxY + 40, { align: 'center' });
+
+        setFontV3(doc, 'bold', 7.7);
+        doc.setTextColor(136, 92, 60);
+        doc.text('DATA DE EMISSÃO', rightCenterX, boxY + 22, { align: 'center' });
+
+        setFontV3(doc, 'bold', 10.8);
+        doc.setTextColor(37, 47, 63);
+        doc.text(new Date().toLocaleString('pt-BR'), rightCenterX, boxY + 40, { align: 'center' });
+
+        // Nota centralizada
+        doc.setFillColor(...GREEN_50);
+        doc.roundedRect(25, 246, pageW - 50, 29, 4, 4, 'F');
+
+        setFontV3(doc, 'bold', 8.8);
+        doc.setTextColor(...GREEN_900);
+        doc.text('Nota de interpretação', pageW/2, 257, { align: 'center' });
+
+        setFontV3(doc, 'normal', 7.65);
+        doc.setTextColor(...SLATE_500);
+        const nota = doc.splitTextToSize(
+            'As conclusões devem ser interpretadas juntamente com o planejamento experimental, a qualidade dos dados, a significância estatística e a coerência agronômica dos resultados.',
+            pageW - 72
+        );
+        doc.text(nota, pageW/2, 266.5, { align: 'center' });
+    };
+
+    window.aplicarRodapePdf = aplicarRodapePdf = function(doc) {
+        const total = doc.internal.getNumberOfPages();
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+
+        for (let i = 1; i <= total; i++) {
+            doc.setPage(i);
+            resetPdfV3(doc);
+
+            doc.setDrawColor(226, 232, 240);
+            doc.setLineWidth(0.25);
+            doc.line(14, pageH - 14, pageW - 14, pageH - 14);
+
+            setFontV3(doc, 'normal', 7.3);
+            doc.setTextColor(...SLATE_500);
+            doc.text('Solver • Relatório técnico experimental', 14, pageH - 8);
+            doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
+        }
+    };
+})();
+</script>
+
 </body>
 </html>
