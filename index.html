@@ -3140,6 +3140,320 @@
 
         instalarBotaoRelatarProblema();
 
+
+
+        /* =========================
+           PATCH V18 — Capa premium, landing humanizada e relatório refinado
+           ========================= */
+        (function solverV18VisualUpgrade(){
+            const style = document.createElement('style');
+            style.textContent = `
+                #landing-page.solver-v18-landing { background:
+                    radial-gradient(circle at 82% 8%, rgba(220,241,225,.92) 0, rgba(220,241,225,.56) 18%, transparent 35%),
+                    radial-gradient(circle at 9% 92%, rgba(244,236,225,.70) 0, transparent 32%),
+                    linear-gradient(135deg, #fdfdfb 0%, #f8fbf7 47%, #f4faf2 100%) !important;
+                }
+                .solver-v18-glass { background: rgba(255,255,255,.72); border: 1px solid rgba(187,225,198,.58); box-shadow: 0 26px 70px rgba(27,60,40,.10); backdrop-filter: blur(18px); }
+                .solver-v18-card { background: rgba(255,255,255,.82); border: 1px solid rgba(226,232,240,.82); border-radius: 24px; padding: 22px; box-shadow: 0 14px 42px rgba(15,23,42,.055); transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+                .solver-v18-card:hover { transform: translateY(-3px); border-color: rgba(93,171,117,.42); box-shadow: 0 24px 58px rgba(27,60,40,.105); }
+                .solver-v18-icon { width: 48px; height: 48px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f0f9f1, #ffffff); color: #2d7244; border: 1px solid #dcf1e1; box-shadow: inset 0 1px 0 rgba(255,255,255,.85); }
+                .solver-v18-audience { display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:20px; background: rgba(248,250,252,.72); border:1px solid rgba(226,232,240,.9); }
+                .solver-v18-audience i { color:#2d7244; font-size:18px; margin-top:2px; }
+                .solver-v18-softline { height:1px; background: linear-gradient(90deg, transparent, rgba(93,171,117,.34), transparent); }
+                @media (max-width: 768px) { .solver-v18-title { font-size: 3rem !important; } }
+            `;
+            document.head.appendChild(style);
+
+            function aplicarLandingV18(){
+                const landing = document.getElementById('landing-page');
+                if (!landing || landing.dataset.v18Applied === '1') return;
+                landing.dataset.v18Applied = '1';
+                landing.classList.add('solver-v18-landing');
+
+                const navLogo = landing.querySelector('nav .fa-leaf');
+                if (navLogo) navLogo.className = 'fa-solid fa-seedling text-xl';
+
+                const container = landing.querySelector('main .container');
+                if (!container) return;
+                container.classList.remove('text-center');
+                container.innerHTML = `
+                    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.08fr_.92fr] gap-12 items-center">
+                        <section>
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-agro-100 text-agro-800 font-extrabold text-xs tracking-wide mb-7 shadow-soft">
+                                <i class="fa-solid fa-shield-halved text-agro-600"></i>
+                                Estatística experimental para rotina acadêmica e agrícola
+                            </div>
+                            <h2 class="solver-v18-title text-5xl md:text-7xl font-black text-agro-950 tracking-[-0.06em] leading-[0.96] mb-7">
+                                Analise seus dados com clareza, rigor e apresentação profissional.
+                            </h2>
+                            <p class="text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed font-medium mb-9">
+                                O Solver Agro ajuda a transformar planilhas, exercícios e ensaios de campo em resultados interpretados: ANOVA, teste F, comparação de médias, regressão, dose ótima e relatório técnico em PDF.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 mb-9">
+                                <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary px-8 py-4 text-base">
+                                    <i class="fa-solid fa-chart-simple mr-2"></i> Iniciar análise estatística
+                                </button>
+                                <button onclick="abrirManual()" class="agro-btn agro-btn-outline px-8 py-4 text-base bg-white/80 backdrop-blur-sm">
+                                    <i class="fa-regular fa-circle-question mr-2"></i> Ver formatos dos dados
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl">
+                                <div class="solver-v18-glass rounded-2xl px-4 py-3"><div class="font-black text-agro-900">ANOVA</div><div class="text-xs text-slate-500 font-semibold">Teste F</div></div>
+                                <div class="solver-v18-glass rounded-2xl px-4 py-3"><div class="font-black text-agro-900">Tukey</div><div class="text-xs text-slate-500 font-semibold">Duncan/Dunnett</div></div>
+                                <div class="solver-v18-glass rounded-2xl px-4 py-3"><div class="font-black text-agro-900">Regressão</div><div class="text-xs text-slate-500 font-semibold">Dose ótima</div></div>
+                                <div class="solver-v18-glass rounded-2xl px-4 py-3"><div class="font-black text-agro-900">PDF</div><div class="text-xs text-slate-500 font-semibold">Laudo técnico</div></div>
+                            </div>
+                        </section>
+
+                        <aside class="solver-v18-glass rounded-[32px] p-7 md:p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="solver-v18-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+                                <div>
+                                    <h3 class="font-black text-2xl text-agro-950 tracking-tight">Feito para quem precisa decidir com dados</h3>
+                                    <p class="text-sm text-slate-500 font-medium">Da sala de aula ao experimento de campo.</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="solver-v18-audience">
+                                    <i class="fa-solid fa-wheat-awn"></i>
+                                    <div><h4 class="font-extrabold text-agro-950">Você do agro</h4><p class="text-sm text-slate-600 leading-relaxed">Organize ensaios, compare tratamentos e interprete respostas de produtividade com linguagem técnica pronta para relatório.</p></div>
+                                </div>
+                                <div class="solver-v18-audience">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                    <div><h4 class="font-extrabold text-agro-950">Você estudante de graduação</h4><p class="text-sm text-slate-600 leading-relaxed">Confira exercícios de estatística experimental, visualize a ANOVA e entenda quando aplicar testes de médias ou regressão.</p></div>
+                                </div>
+                                <div class="solver-v18-audience">
+                                    <i class="fa-solid fa-book-open-reader"></i>
+                                    <div><h4 class="font-extrabold text-agro-950">Você no TCC ou pesquisa</h4><p class="text-sm text-slate-600 leading-relaxed">Gere análises mais apresentáveis, com gráficos, conclusão técnica e recomendação do modelo de regressão mais adequado.</p></div>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <div class="solver-v18-softline my-16"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                        <div class="solver-v18-card">
+                            <div class="solver-v18-icon mb-5"><i class="fa-solid fa-table-list"></i></div>
+                            <h3 class="font-black text-xl text-agro-950 mb-2">Delineamentos experimentais</h3>
+                            <p class="text-slate-600 leading-relaxed text-sm">DIC, DBC, DQL, fatorial duplo e parcelas subdivididas com entrada por CSV ou matriz manual.</p>
+                        </div>
+                        <div class="solver-v18-card">
+                            <div class="solver-v18-icon mb-5"><i class="fa-solid fa-chart-line"></i></div>
+                            <h3 class="font-black text-xl text-agro-950 mb-2">Regressões e dose ótima</h3>
+                            <p class="text-slate-600 leading-relaxed text-sm">Modelos linear, quadrático, cúbico, exponencial e logarítmico, com ranking automático por aderência.</p>
+                        </div>
+                        <div class="solver-v18-card">
+                            <div class="solver-v18-icon mb-5"><i class="fa-solid fa-file-circle-check"></i></div>
+                            <h3 class="font-black text-xl text-agro-950 mb-2">Relatório apresentável</h3>
+                            <p class="text-slate-600 leading-relaxed text-sm">PDF com interpretação do teste F, comparação de médias, regressão, gráficos e conclusão técnica.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', aplicarLandingV18);
+            else aplicarLandingV18();
+        })();
+
+        // Wordmark do relatório: sem ícone ao lado, coerente com a marca do site.
+        addSolverLogoPdf = function(doc, x = 14, y = 10, escala = 1) {
+            solverResetText(doc);
+            const s = escala;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14.8 * s);
+            doc.setTextColor(7, 31, 24);
+            doc.text('SOLVER', x, y + 7.6 * s);
+            const solverW = doc.getTextWidth('SOLVER');
+            doc.setTextColor(45, 142, 86);
+            doc.text('AGRO', x + solverW + 3.6 * s, y + 7.6 * s);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(4.8 * s);
+            doc.setTextColor(14, 70, 45);
+            doc.text('INTELLIGENCE FOR FIELD TRIALS', x, y + 13.2 * s);
+        };
+
+        addCabecalhoPdf = function(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
+            solverResetText(doc);
+            const pageW = doc.internal.pageSize.getWidth();
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, 0, pageW, 25, 'F');
+            addSolverLogoPdf(doc, 14, 7, 0.72);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.0);
+            doc.setTextColor(71, 85, 105);
+            doc.text(limparTextoPdf(subtitulo), pageW - 14, 14, { align: 'right' });
+            doc.setDrawColor(214, 237, 220);
+            doc.setLineWidth(0.28);
+            doc.line(14, 25, pageW - 14, 25);
+        };
+
+        novaPaginaPdf = function(doc) {
+            doc.addPage();
+            addCabecalhoPdf(doc);
+            return 34;
+        };
+
+        addCapaRelatorioPdf = function(doc, modulo, pacote) {
+            solverResetText(doc);
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, 0, pageW, pageH, 'F');
+
+            // Composição editorial discreta: capa limpa, marca textual e detalhe agro.
+            doc.setFillColor(245, 251, 246);
+            doc.rect(0, 0, pageW, pageH, 'F');
+            doc.setFillColor(255, 255, 255);
+            doc.roundedRect(12, 12, pageW - 24, pageH - 24, 7, 7, 'F');
+            doc.setFillColor(240, 249, 241);
+            doc.circle(pageW - 20, 22, 31, 'F');
+            doc.setFillColor(244, 236, 225);
+            doc.circle(6, pageH - 10, 24, 'F');
+            doc.setDrawColor(187, 225, 198);
+            doc.setLineWidth(0.42);
+            doc.line(24, 56, pageW - 24, 56);
+
+            addSolverLogoPdf(doc, 24, 26, 1.28);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(7, 31, 24);
+            doc.setFontSize(26);
+            doc.text('Relatório técnico', 24, 88);
+            doc.setFontSize(14.5);
+            doc.setTextColor(37, 47, 63);
+            doc.text('Análise estatística experimental', 24, 101);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.2);
+            doc.setTextColor(82, 98, 116);
+            const desc = doc.splitTextToSize('Documento gerado para apoiar a interpretação de experimentos agrícolas, exercícios acadêmicos e trabalhos de conclusão com resultados estatísticos organizados e apresentáveis.', pageW - 54);
+            doc.text(desc, 24, 113);
+
+            const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta para dose ótima' };
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(214, 237, 220);
+            doc.setLineWidth(0.55);
+            doc.roundedRect(24, 148, pageW - 48, 54, 5, 5, 'FD');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.2);
+            doc.setTextColor(45, 142, 86);
+            doc.text('MÓDULO DA ANÁLISE', 34, 163);
+            doc.setFontSize(12.2);
+            doc.setTextColor(7, 31, 24);
+            doc.text(limparTextoPdf(nomesModulos[modulo] || modulo), 34, 173);
+
+            doc.setFontSize(8.2);
+            doc.setTextColor(45, 142, 86);
+            doc.text('DATA DE EMISSÃO', 34, 188);
+            doc.setFontSize(10.5);
+            doc.setTextColor(37, 47, 63);
+            doc.text(new Date().toLocaleString('pt-BR'), 34, 197);
+
+            doc.setFillColor(240, 249, 241);
+            doc.roundedRect(24, 224, pageW - 48, 28, 5, 5, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9.8);
+            doc.setTextColor(27, 76, 48);
+            doc.text('Observação técnica', 34, 237);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.2);
+            doc.setTextColor(71, 85, 105);
+            const obs = doc.splitTextToSize('A interpretação estatística deve ser considerada em conjunto com o planejamento experimental, a qualidade dos dados e o conhecimento agronômico.', pageW - 68);
+            doc.text(obs, 34, 246);
+        };
+
+        addTituloSecaoPdf = function(doc, titulo, y) {
+            solverResetText(doc);
+            const pageW = doc.internal.pageSize.getWidth();
+            if (y > 264) y = novaPaginaPdf(doc);
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(214, 237, 220);
+            doc.setLineWidth(0.36);
+            doc.roundedRect(14, y - 6.2, pageW - 28, 12.0, 2.2, 2.2, 'S');
+            doc.setFillColor(45, 142, 86);
+            doc.roundedRect(14, y - 6.2, 3.2, 12.0, 1.4, 1.4, 'F');
+            doc.setTextColor(7, 31, 24);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11.0);
+            doc.text(limparTextoPdf(titulo), 20, y + 1.6);
+            return y + 13.2;
+        };
+
+        addTextoQuebradoPdf = function(doc, texto, x, y, largura = 174, linha = 5.0, opts = {}) {
+            solverResetText(doc);
+            const textoLimpo = limparTextoPdf(texto);
+            const partes = doc.splitTextToSize(textoLimpo, largura);
+            const pageH = doc.internal.pageSize.getHeight();
+            partes.forEach(p => {
+                if (y > pageH - 22) y = novaPaginaPdf(doc);
+                solverResetText(doc);
+                doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+                doc.setFontSize(opts.size || 9.4);
+                doc.setTextColor(...(opts.color || [30, 41, 59]));
+                doc.text(p, x, y);
+                y += linha;
+            });
+            return y;
+        };
+
+        addTabelaBonitaPdf = function(doc, titulo, linhas, y) {
+            if (!linhas || !linhas.length) return y;
+            y = addTituloSecaoPdf(doc, titulo, y);
+            const pageH = doc.internal.pageSize.getHeight();
+            const cols = Object.keys(linhas[0]);
+            let widths = colunasTabelaPdf(cols);
+            const maxW = 174;
+            const soma = widths.reduce((a, b) => a + b, 0);
+            widths = widths.map(w => w * maxW / soma);
+            const x0 = 18;
+            const tableX = 16;
+            const tableW = 178;
+            const rowH = 7.1;
+            if (y > pageH - 32) y = novaPaginaPdf(doc);
+            solverResetText(doc);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(6.6);
+            doc.setFillColor(27, 76, 48);
+            doc.setTextColor(255, 255, 255);
+            doc.roundedRect(tableX, y - 5.2, tableW, 8.2, 1.7, 1.7, 'F');
+            let x = x0;
+            cols.forEach((c, i) => {
+                doc.text(textoFitPdf(doc, c, widths[i] - 2), x, y);
+                x += widths[i];
+            });
+            y += 7.1;
+            let bodyStart = y - 7.1;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(6.65);
+            linhas.forEach((l, idx) => {
+                if (y > pageH - 22) {
+                    doc.setDrawColor(226, 232, 240);
+                    doc.rect(tableX, bodyStart - 5.2, tableW, (y - bodyStart) + 1.2, 'S');
+                    y = novaPaginaPdf(doc);
+                    bodyStart = y;
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.6); doc.setFillColor(27, 76, 48); doc.setTextColor(255,255,255);
+                    doc.roundedRect(tableX, y - 5.2, tableW, 8.2, 1.7, 1.7, 'F');
+                    let hx = x0; cols.forEach((c, i) => { doc.text(textoFitPdf(doc, c, widths[i] - 2), hx, y); hx += widths[i]; });
+                    y += 7.1; doc.setFont('helvetica', 'normal'); doc.setFontSize(6.65);
+                }
+                if (idx % 2 === 0) { doc.setFillColor(248, 250, 252); doc.rect(tableX, y - 5.1, tableW, rowH, 'F'); }
+                doc.setTextColor(30, 41, 59);
+                let cx = x0;
+                cols.forEach((c, i) => {
+                    const raw = l[c] ?? '-';
+                    const val = textoFitPdf(doc, raw, widths[i] - 2.4);
+                    doc.text(val, cx, y);
+                    cx += widths[i];
+                });
+                y += rowH;
+            });
+            doc.setDrawColor(226, 232, 240);
+            doc.rect(tableX, bodyStart - 5.2, tableW, (y - bodyStart) + 1.3, 'S');
+            return y + 7;
+        };
+
 </script>
 </body>
 </html>
