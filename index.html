@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Solver Agro: Inteligência estatística para experimentação agrícola de alta precisão.">
+    <meta name="description" content="Solver: Inteligência estatística para experimentação agrícola de alta precisão.">
     <meta name="theme-color" content="#1b4332">
-    <title>Solver Agro | Inteligência Experimental de Campo</title>
+    <title>Solver | Inteligência Experimental de Campo</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -507,13 +507,13 @@
             <div class="loading-logo-row">
                 <div class="loading-logo-icon"><i class="fa-solid fa-leaf"></i></div>
                 <div class="text-left">
-                    <div class="text-agro-950 font-black tracking-tight leading-none">SOLVER <span class="text-agro-500">AGRO</span></div>
+                    <div class="text-agro-950 font-black tracking-tight leading-none">SOLVER</div>
                     <div class="text-[10px] text-agro-700 font-bold tracking-[0.22em] uppercase mt-1">Processamento</div>
                 </div>
             </div>
             <div class="loading-spinner"></div>
             <h3 id="loading-title" class="text-2xl font-black text-agro-900 mb-2">Processando análise</h3>
-            <p id="loading-message" class="text-slate-500 font-medium leading-relaxed">Aguarde enquanto o Solver Agro calcula os resultados estatísticos.</p>
+            <p id="loading-message" class="text-slate-500 font-medium leading-relaxed">Aguarde enquanto o Solver calcula os resultados estatísticos.</p>
             <div class="loading-progress-wrap"><div id="loading-progress-bar" class="loading-progress-bar"></div></div>
             <div id="loading-percent" class="mt-2 text-xs font-black text-agro-700">0%</div>
             <div id="loading-steps" class="loading-steps">
@@ -587,7 +587,7 @@
                     <i class="fa-solid fa-leaf text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-black text-2xl text-agro-950 leading-none tracking-tight">SOLVER <span class="text-agro-500">AGRO</span></h1>
+                    <h1 class="font-black text-2xl text-agro-950 leading-none tracking-tight">SOLVER</h1>
                     <p class="text-[10px] text-agro-700 font-bold tracking-[0.2em] uppercase mt-1">Intelligence for Field Trials</p>
                 </div>
             </div>
@@ -646,7 +646,7 @@
         
         <footer class="py-12 border-t border-agro-100 bg-white">
             <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="text-slate-400 text-sm font-medium">© 2026 Solver Agro - Estatística Experimental de Precisão</div>
+                <div class="text-slate-400 text-sm font-medium">© 2026 Solver - Estatística Experimental de Precisão</div>
                 <div class="flex gap-8">
                     <a href="#" class="text-slate-400 hover:text-agro-600 transition-colors text-sm font-bold">Termos</a>
                     <a href="#" class="text-slate-400 hover:text-agro-600 transition-colors text-sm font-bold">Privacidade</a>
@@ -665,7 +665,7 @@
                     <div class="w-10 h-10 rounded-xl bg-agro-500 flex items-center justify-center text-white shadow-lg">
                         <i class="fa-solid fa-leaf"></i>
                     </div>
-                    <span class="text-white font-black text-xl tracking-tight">SOLVER <span class="text-agro-400">AGRO</span></span>
+                    <span class="text-white font-black text-xl tracking-tight">SOLVER</span>
                 </div>
             </div>
             
@@ -1141,7 +1141,7 @@
             atualizarEtapasCarregamento(loadingProgress);
         }
 
-        function mostrarCarregamento(titulo = 'Processando análise', mensagem = 'Aguarde enquanto o Solver Agro calcula os resultados estatísticos.') {
+        function mostrarCarregamento(titulo = 'Processando análise', mensagem = 'Aguarde enquanto o Solver calcula os resultados estatísticos.') {
             const overlay = document.getElementById('loading-overlay');
             const title = document.getElementById('loading-title');
             const msg = document.getElementById('loading-message');
@@ -1913,7 +1913,7 @@
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10.6);
             doc.setTextColor(27, 76, 48);
-            doc.text('Documento técnico gerado pelo Solver Agro', 34, 198);
+            doc.text('Documento técnico gerado pelo Solver', 34, 198);
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8.8);
             doc.setTextColor(71, 85, 105);
@@ -1933,7 +1933,7 @@
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(7.5);
                 doc.setTextColor(100, 116, 139);
-                doc.text('Solver Agro • Relatório técnico experimental', 14, pageH - 8);
+                doc.text('Solver • Relatório técnico experimental', 14, pageH - 8);
                 doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
             }
         }
@@ -2045,7 +2045,7 @@
             if (!pacote || !pacote.anova) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast('Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
-            mostrarCarregamento('Gerando relatório PDF', 'Estamos montando a capa, interpretações, tabelas e gráficos no padrão Solver Agro.');
+            mostrarCarregamento('Gerando relatório PDF', 'Estamos montando a capa, interpretações, tabelas e gráficos no padrão Solver.');
 
             try {
                 const { jsPDF } = window.jspdf;
@@ -2487,7 +2487,7 @@
             if (!pacote || (!pacote.anova && modulo !== 'regressaodireta')) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast(modulo === 'regressaodireta' ? 'Calcule primeiro a regressão direta.' : 'Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
-            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver Agro v14.');
+            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver.');
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
@@ -2693,7 +2693,7 @@
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10.6);
             doc.setTextColor(27, 76, 48);
-            doc.text('Documento técnico gerado pelo Solver Agro', 34, 198);
+            doc.text('Documento técnico gerado pelo Solver', 34, 198);
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8.8);
             doc.setTextColor(71, 85, 105);
@@ -2715,7 +2715,7 @@
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(7.2);
                 doc.setTextColor(100, 116, 139);
-                doc.text(`Solver Agro ${SOLVER_REPORT_VERSION} • Relatório técnico experimental`, 14, pageH - 8);
+                doc.text(`Solver ${SOLVER_REPORT_VERSION} • Relatório técnico experimental`, 14, pageH - 8);
                 doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
             }
         }
@@ -2911,7 +2911,7 @@
             if (!pacote || (!pacote.anova && modulo !== 'regressaodireta')) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast(modulo === 'regressaodireta' ? 'Calcule primeiro a regressão direta.' : 'Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
-            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver Agro v17.');
+            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver.');
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
@@ -3099,10 +3099,10 @@
 
         function abrirRelatoProblema() {
             const modulo = document.getElementById('module-title')?.textContent || 'Não identificado';
-            const texto = `Relato de problema - Solver Agro\n\nData: ${new Date().toLocaleString('pt-BR')}\nMódulo aberto: ${modulo}\nPágina: ${location.href}\nNavegador: ${navigator.userAgent}\n\nDescreva aqui o problema encontrado:\n`;
+            const texto = `Relato de problema - Solver\n\nData: ${new Date().toLocaleString('pt-BR')}\nMódulo aberto: ${modulo}\nPágina: ${location.href}\nNavegador: ${navigator.userAgent}\n\nDescreva aqui o problema encontrado:\n`;
             const modal = document.createElement('div');
             modal.className = 'solver-report-modal';
-            modal.innerHTML = `<div class="solver-report-card"><button class="solver-report-close" aria-label="Fechar" onclick="this.closest('.solver-report-modal').remove()"><i class="fa-solid fa-xmark"></i></button><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-agro-900 text-white flex items-center justify-center"><i class="fa-solid fa-bug"></i></div><div><h3 class="font-black text-agro-950 text-xl">Relatar problema</h3><p class="text-sm text-slate-500">Copie ou baixe este resumo e envie para o responsável pelo Solver Agro.</p></div></div><textarea class="agro-input min-h-[210px] font-mono text-xs" id="solver-report-text">${texto}</textarea><div class="flex flex-col sm:flex-row gap-3 mt-4"><button class="agro-btn agro-btn-primary flex-1" onclick="navigator.clipboard?.writeText(document.getElementById('solver-report-text').value); showToast('Relato copiado para a área de transferência.', 'success')"><i class="fa-solid fa-copy"></i> Copiar relato</button><button class="agro-btn agro-btn-outline flex-1" onclick="baixarRelatoProblema()"><i class="fa-solid fa-download"></i> Baixar .txt</button></div></div>`;
+            modal.innerHTML = `<div class="solver-report-card"><button class="solver-report-close" aria-label="Fechar" onclick="this.closest('.solver-report-modal').remove()"><i class="fa-solid fa-xmark"></i></button><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-agro-900 text-white flex items-center justify-center"><i class="fa-solid fa-bug"></i></div><div><h3 class="font-black text-agro-950 text-xl">Relatar problema</h3><p class="text-sm text-slate-500">Copie ou baixe este resumo e envie para o responsável pelo Solver.</p></div></div><textarea class="agro-input min-h-[210px] font-mono text-xs" id="solver-report-text">${texto}</textarea><div class="flex flex-col sm:flex-row gap-3 mt-4"><button class="agro-btn agro-btn-primary flex-1" onclick="navigator.clipboard?.writeText(document.getElementById('solver-report-text').value); showToast('Relato copiado para a área de transferência.', 'success')"><i class="fa-solid fa-copy"></i> Copiar relato</button><button class="agro-btn agro-btn-outline flex-1" onclick="baixarRelatoProblema()"><i class="fa-solid fa-download"></i> Baixar .txt</button></div></div>`;
             document.body.appendChild(modal);
         }
 
@@ -3187,7 +3187,7 @@
                                 Analise seus dados com clareza, rigor e apresentação profissional.
                             </h2>
                             <p class="text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed font-medium mb-9">
-                                O Solver Agro ajuda a transformar planilhas, exercícios e ensaios de campo em resultados interpretados: ANOVA, teste F, comparação de médias, regressão, dose ótima e relatório técnico em PDF.
+                                O Solver ajuda a transformar planilhas, exercícios e ensaios de campo em resultados interpretados: ANOVA, teste F, comparação de médias, regressão, dose ótima e relatório técnico em PDF.
                             </p>
                             <div class="flex flex-col sm:flex-row gap-4 mb-9">
                                 <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary px-8 py-4 text-base">
@@ -3817,7 +3817,7 @@
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(11.2);
         doc.setTextColor(71, 85, 105);
-        const resumo = doc.splitTextToSize('Documento gerado pelo Solver Agro para apresentar os resultados do experimento de forma clara, elegante e tecnicamente interpretável.', pageW - 74);
+        const resumo = doc.splitTextToSize('Documento gerado pelo Solver para apresentar os resultados do experimento de forma clara, elegante e tecnicamente interpretável.', pageW - 74);
         doc.text(resumo, 24, 126);
 
         const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A × B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta para dose ótima' };
@@ -4790,7 +4790,7 @@
 
             pdfSetFont(doc, 'normal', 7.4);
             doc.setTextColor(...PDF_SLATE_500);
-            doc.text('Solver Agro • Relatório técnico experimental', 14, pageH - 8);
+            doc.text('Solver • Relatório técnico experimental', 14, pageH - 8);
             doc.text(`Página ${i} de ${total}`, pageW - 14, pageH - 8, { align: 'right' });
         }
     };
@@ -4919,7 +4919,7 @@
 
     function textoAnovaPremium(modulo, anova) {
         if (typeof textoAnovaRelatorio === 'function') return textoAnovaRelatorio(modulo, anova);
-        return ['A análise de variância foi processada pelo Solver Agro. A interpretação do teste F deve considerar a relação entre F calculado e F tabelado, o nível de probabilidade e a significância indicada na tabela.'];
+        return ['A análise de variância foi processada pelo Solver. A interpretação do teste F deve considerar a relação entre F calculado e F tabelado, o nível de probabilidade e a significância indicada na tabela.'];
     }
 
     function textoPostHocPremium(ph) {
