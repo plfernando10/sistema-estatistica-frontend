@@ -5775,5 +5775,233 @@ a
 })();
 </script>
 
+<script id="solver-v26-dashboard-landing">
+(function(){
+    function injectDashStyles(){
+        if(document.getElementById('solver-v26-dashboard-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'solver-v26-dashboard-styles';
+        style.textContent = `
+            #landing-page.solver-v26-dashboard{
+                background:
+                    radial-gradient(circle at 9% 12%, rgba(61,142,86,.34), transparent 30%),
+                    radial-gradient(circle at 88% 10%, rgba(177,131,86,.28), transparent 30%),
+                    radial-gradient(circle at 73% 76%, rgba(45,114,68,.18), transparent 28%),
+                    radial-gradient(circle at 38% 108%, rgba(220,241,225,1), transparent 40%),
+                    linear-gradient(135deg,#fcfcfa 0%,#e9f6ed 48%,#f4ecdf 100%) !important;
+                overflow-y:auto;
+                color:#071f18;
+            }
+            #landing-page.solver-v26-dashboard::before,
+            #landing-page.solver-v26-dashboard::after{display:none!important;}
+            .solver-v26-grid-bg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(45,142,86,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(45,142,86,.07) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.70),transparent 86%)}
+            .solver-v26-orb{position:absolute;border-radius:999px;filter:blur(10px);opacity:.78;pointer-events:none;animation:solverV26Float 8s ease-in-out infinite alternate;}
+            .solver-v26-orb.one{width:220px;height:220px;background:rgba(61,142,86,.18);right:11%;top:14%;}
+            .solver-v26-orb.two{width:160px;height:160px;background:rgba(177,131,86,.18);left:6%;bottom:12%;animation-delay:-3s;}
+            @keyframes solverV26Float{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(18px,-16px,0) scale(1.08)}}
+            .solver-v26-nav{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;padding:2rem 0 1.2rem;}
+            .solver-v26-brand{display:flex;align-items:center;gap:1rem;}
+            .solver-v26-brand-icon{width:3.45rem;height:3.45rem;border-radius:1.1rem;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3d8e56,#0e2116);color:#fff;box-shadow:0 18px 38px rgba(14,33,22,.24),inset 0 1px 0 rgba(255,255,255,.2)}
+            .solver-v26-brand-icon i{font-size:1.35rem;}
+            .solver-v26-logo-title{font-size:2rem;line-height:.92;font-weight:950;letter-spacing:-.055em;color:#061b14;}
+            .solver-v26-logo-sub{font-size:.62rem;letter-spacing:.32em;font-weight:900;color:#0e462d;margin-top:.44rem;}
+            .solver-v26-nav-actions{display:flex;align-items:center;gap:.8rem;}
+            .solver-v26-pill{display:inline-flex;align-items:center;gap:.55rem;padding:.62rem .98rem;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(187,225,198,.95);color:#1f6d3c;font-size:.72rem;font-weight:900;letter-spacing:.06em;box-shadow:0 14px 34px rgba(15,23,42,.045);}
+            .solver-v26-title{font-size:clamp(2.2rem,4.1vw,4.25rem);line-height:1.01;letter-spacing:-.06em;font-weight:950;color:#061b14;max-width:880px;}
+            .solver-v26-title span{background:linear-gradient(135deg,#2d8e56 5%,#0e6b42 54%,#b18356 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+            .solver-v26-lead{font-size:clamp(1rem,1.35vw,1.18rem);line-height:1.72;color:#52627a;max-width:760px;font-weight:560;}
+            .solver-v26-hero{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(430px,.98fr);gap:2rem;align-items:center;padding:1.6rem 0 2.4rem;}
+            .solver-v26-cta-row{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2rem;}
+            .solver-v26-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin-top:1.8rem;max-width:790px;}
+            .solver-v26-quick{padding:1rem;border-radius:1.15rem;background:rgba(255,255,255,.76);border:1px solid rgba(187,225,198,.9);box-shadow:0 18px 42px rgba(15,23,42,.045);backdrop-filter:blur(12px);}
+            .solver-v26-quick strong{display:block;font-size:1rem;font-weight:950;color:#08221a;}
+            .solver-v26-quick span{display:block;margin-top:.22rem;font-size:.72rem;color:#64748b;font-weight:800;}
+            .solver-v26-dashboard-card{position:relative;border:1px solid rgba(203,213,225,.76);background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(248,252,249,.78));backdrop-filter:blur(18px);box-shadow:0 34px 90px rgba(15,23,42,.12),inset 0 1px 0 rgba(255,255,255,.8);border-radius:2.05rem;padding:1.15rem;overflow:hidden;}
+            .solver-v26-dashboard-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 8%,rgba(61,142,86,.15),transparent 34%),radial-gradient(circle at 12% 88%,rgba(177,131,86,.13),transparent 30%);pointer-events:none;}
+            .solver-v26-dash-inner{position:relative;z-index:2;border-radius:1.55rem;background:rgba(255,255,255,.78);border:1px solid rgba(226,232,240,.9);padding:1rem;}
+            .solver-v26-dash-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.95rem;}
+            .solver-v26-window-dots{display:flex;gap:.38rem;}
+            .solver-v26-window-dots span{width:.68rem;height:.68rem;border-radius:999px;background:#cbd5e1;}
+            .solver-v26-window-dots span:nth-child(1){background:#3d8e56}.solver-v26-window-dots span:nth-child(2){background:#b18356}.solver-v26-window-dots span:nth-child(3){background:#94a3b8}
+            .solver-v26-live{display:inline-flex;align-items:center;gap:.4rem;padding:.42rem .62rem;border-radius:999px;background:#f0f9f1;border:1px solid #bbe1c6;color:#1b3c28;font-size:.68rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em;}
+            .solver-v26-live i{font-size:.45rem;animation:solverV26Pulse 1.2s ease-in-out infinite;}
+            @keyframes solverV26Pulse{0%,100%{opacity:.45}50%{opacity:1}}
+            .solver-v26-kpis{display:grid;grid-template-columns:1.1fr .95fr .95fr;gap:.75rem;margin-bottom:.85rem;}
+            .solver-v26-kpi{position:relative;padding:.95rem;border-radius:1.15rem;border:1px solid rgba(226,232,240,.95);background:rgba(248,250,252,.72);overflow:hidden;}
+            .solver-v26-kpi span{display:block;font-size:.62rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:#64748b;}
+            .solver-v26-kpi strong{display:block;margin-top:.35rem;font-size:1.42rem;line-height:1;font-weight:950;color:#08221a;}
+            .solver-v26-kpi small{display:block;margin-top:.35rem;font-size:.68rem;font-weight:800;color:#2d7244;}
+            .solver-v26-ring{display:flex;align-items:center;gap:.72rem;}
+            .solver-v26-ring-svg{width:54px;height:54px;flex:none;}
+            .solver-v26-chart-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:.75rem;}
+            .solver-v26-chart,.solver-v26-table-card{border:1px solid rgba(226,232,240,.95);background:rgba(255,255,255,.82);border-radius:1.25rem;padding:.9rem;box-shadow:0 16px 36px rgba(15,23,42,.045);}
+            .solver-v26-card-label{font-size:.66rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase;color:#64748b;margin-bottom:.55rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem;}
+            .solver-v26-chart svg{width:100%;height:auto;display:block;}
+            .solver-v26-mini-table{width:100%;border-collapse:separate;border-spacing:0 .42rem;}
+            .solver-v26-mini-table th{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#64748b;text-align:left;font-weight:950;padding:0;background:transparent;border:0;}
+            .solver-v26-mini-table td{font-size:.72rem;font-weight:800;color:#334155;padding:.45rem .4rem;background:#f8fafc;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;}
+            .solver-v26-mini-table td:first-child{border-left:1px solid #e2e8f0;border-radius:.65rem 0 0 .65rem;color:#08221a;}
+            .solver-v26-mini-table td:last-child{border-right:1px solid #e2e8f0;border-radius:0 .65rem .65rem 0;}
+            .solver-v26-badge{display:inline-flex;align-items:center;border-radius:999px;padding:.16rem .42rem;font-size:.62rem;font-weight:950;}
+            .solver-v26-badge.ok{background:#dcf1e1;color:#1b3c28}.solver-v26-badge.ns{background:#f1f5f9;color:#94a3b8}
+            .solver-v26-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin-top:.85rem;}
+            .solver-v26-step{padding:.82rem;border-radius:1rem;border:1px solid rgba(187,225,198,.75);background:rgba(240,249,241,.72);}
+            .solver-v26-step i{color:#2d8e56;margin-bottom:.42rem;display:block;}
+            .solver-v26-step strong{display:block;font-size:.76rem;font-weight:950;color:#08221a;}.solver-v26-step span{display:block;margin-top:.2rem;font-size:.62rem;font-weight:800;color:#64748b;}
+            .solver-v26-section{position:relative;z-index:3;margin-top:1.7rem;}
+            .solver-v26-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1rem;}
+            .solver-v26-section-head h2{font-size:clamp(1.5rem,2.4vw,2.25rem);font-weight:950;letter-spacing:-.04em;color:#061b14;}.solver-v26-section-head p{color:#64748b;font-weight:700;max-width:680px;}
+            .solver-v26-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;}
+            .solver-v26-tool{position:relative;overflow:hidden;border:1px solid rgba(203,213,225,.72);border-radius:1.55rem;padding:1.25rem;background:rgba(255,255,255,.82);box-shadow:0 22px 58px rgba(15,23,42,.06);transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;}
+            .solver-v26-tool::after{content:"";position:absolute;right:-34px;top:-34px;width:96px;height:96px;border-radius:999px;background:rgba(61,142,86,.10);}
+            .solver-v26-tool:hover{transform:translateY(-4px);box-shadow:0 28px 72px rgba(15,23,42,.09);border-color:#bbe1c6;}
+            .solver-v26-tool-icon{width:3.05rem;height:3.05rem;border-radius:1rem;display:flex;align-items:center;justify-content:center;background:#f0f9f1;border:1px solid #cfeeda;color:#2d8e56;font-size:1.05rem;margin-bottom:1rem;}
+            .solver-v26-tool h3{font-size:1.08rem;font-weight:950;color:#08221a;margin-bottom:.45rem;}.solver-v26-tool p{font-size:.88rem;line-height:1.56;color:#64748b;font-weight:600;}
+            .solver-v26-audience-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem;}
+            .solver-v26-audience{display:grid;grid-template-columns:auto 1fr;gap:.85rem;align-items:flex-start;border:1px solid rgba(187,225,198,.82);border-radius:1.3rem;padding:1rem;background:rgba(255,255,255,.75);}
+            .solver-v26-audience .solver-v26-tool-icon{width:2.55rem;height:2.55rem;margin:0;border-radius:.9rem;}.solver-v26-audience h3{font-size:1rem;font-weight:950;color:#08221a;}.solver-v26-audience p{font-size:.82rem;line-height:1.5;color:#64748b;font-weight:650;margin-top:.2rem;}
+            .solver-v26-footer{position:relative;z-index:3;padding:2.4rem 0 2.7rem;text-align:center;color:#64748b;font-weight:800;}
+            @media(max-width:1180px){.solver-v26-hero{grid-template-columns:1fr}.solver-v26-dashboard-card{max-width:850px}.solver-v26-tools{grid-template-columns:repeat(2,minmax(0,1fr));}.solver-v26-audience-panel{grid-template-columns:1fr}}
+            @media(max-width:760px){.solver-v26-nav{padding:1.2rem 0}.solver-v26-logo-title{font-size:1.6rem}.solver-v26-logo-sub{font-size:.5rem;letter-spacing:.22em}.solver-v26-nav-actions .solver-v26-pill{display:none}.solver-v26-title{font-size:clamp(2rem,12vw,3.15rem)}.solver-v26-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.solver-v26-kpis,.solver-v26-chart-wrap,.solver-v26-flow,.solver-v26-tools{grid-template-columns:1fr}.solver-v26-dashboard-card{padding:.75rem;border-radius:1.45rem}.solver-v26-dash-inner{padding:.72rem}.solver-v26-hero{gap:1rem;padding-top:.6rem}.solver-v26-section-head{display:block}.solver-v26-nav-actions button{display:none!important}}
+        `;
+        document.head.appendChild(style);
+    }
+
+    function dashboardSvg(){
+        return `
+            <svg viewBox="0 0 520 260" role="img" aria-label="Dashboard de regressão e produtividade">
+                <defs>
+                    <linearGradient id="solverV26Line" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#3d8e56"/><stop offset="1" stop-color="#b18356"/></linearGradient>
+                    <linearGradient id="solverV26Area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3d8e56" stop-opacity=".22"/><stop offset="1" stop-color="#3d8e56" stop-opacity="0"/></linearGradient>
+                </defs>
+                <rect width="520" height="260" rx="22" fill="#fbfdfb"/>
+                <g stroke="#e2e8f0" stroke-width="1">
+                    <line x1="42" y1="50" x2="490" y2="50"/><line x1="42" y1="96" x2="490" y2="96"/><line x1="42" y1="142" x2="490" y2="142"/><line x1="42" y1="188" x2="490" y2="188"/><line x1="42" y1="234" x2="490" y2="234"/>
+                </g>
+                <path d="M42 213 C82 202,104 172,138 164 C178 154,194 114,232 112 C272 108,293 69,332 76 C376 84,392 124,430 115 C460 108,472 89,490 82 L490 234 L42 234 Z" fill="url(#solverV26Area)"/>
+                <path d="M42 213 C82 202,104 172,138 164 C178 154,194 114,232 112 C272 108,293 69,332 76 C376 84,392 124,430 115 C460 108,472 89,490 82" fill="none" stroke="url(#solverV26Line)" stroke-width="6" stroke-linecap="round"/>
+                <g fill="#0f172a" stroke="#fff" stroke-width="4"><circle cx="42" cy="213" r="7"/><circle cx="138" cy="164" r="7"/><circle cx="232" cy="112" r="7"/><circle cx="332" cy="76" r="7"/><circle cx="430" cy="115" r="7"/><circle cx="490" cy="82" r="7"/></g>
+                <line x1="332" y1="46" x2="332" y2="234" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 7"/>
+                <rect x="278" y="22" width="130" height="42" rx="14" fill="#fff" stroke="#bbe1c6"/><text x="293" y="40" font-size="12" font-weight="900" fill="#2d7244">Dose ótima</text><text x="293" y="55" font-size="13" font-weight="950" fill="#0e2116">124,8 kg/ha</text>
+                <text x="42" y="250" font-size="12" font-weight="800" fill="#64748b">Dose</text><text x="430" y="250" font-size="12" font-weight="800" fill="#64748b">Resposta</text>
+            </svg>`;
+    }
+
+    function landingHtml(){
+        return `
+            <div class="solver-v26-grid-bg"></div>
+            <div class="solver-v26-orb one"></div>
+            <div class="solver-v26-orb two"></div>
+            <div class="container mx-auto px-6 relative">
+                <nav class="solver-v26-nav">
+                    <div class="solver-v26-brand">
+                        <div class="solver-v26-brand-icon"><i class="fa-solid fa-leaf"></i></div>
+                        <div><div class="solver-v26-logo-title">SOLVER</div><div class="solver-v26-logo-sub">INTELLIGENCE FOR FIELD TRIALS</div></div>
+                    </div>
+                    <div class="solver-v26-nav-actions">
+                        <div class="solver-v26-pill"><i class="fa-solid fa-circle-check"></i> Dashboard estatístico</div>
+                        <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary"><i class="fa-solid fa-flask-vial"></i> Iniciar análise</button>
+                    </div>
+                </nav>
+
+                <main class="solver-v26-hero">
+                    <section>
+                        <div class="solver-v26-pill mb-7"><i class="fa-solid fa-chart-pie"></i> Estatística experimental com visual profissional</div>
+                        <h1 class="solver-v26-title mb-7">Analise seus dados com clareza, rigor e <span>dashboards modernos</span>.</h1>
+                        <p class="solver-v26-lead">O Solver transforma planilhas, exercícios e ensaios de campo em uma experiência mais visual: ANOVA, teste F, comparações de médias, regressão, dose ótima, gráficos e relatório técnico em PDF.</p>
+                        <div class="solver-v26-cta-row">
+                            <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary px-8 py-4 text-base"><i class="fa-solid fa-chart-simple"></i> Iniciar análise estatística</button>
+                            <button onclick="abrirManual()" class="agro-btn agro-btn-outline px-8 py-4 text-base bg-white/75"><i class="fa-regular fa-circle-question"></i> Ver formatos dos dados</button>
+                        </div>
+                        <div class="solver-v26-quick-grid">
+                            <div class="solver-v26-quick"><strong>ANOVA</strong><span>Teste F interpretado</span></div>
+                            <div class="solver-v26-quick"><strong>Tukey</strong><span>Duncan e Dunnett</span></div>
+                            <div class="solver-v26-quick"><strong>Regressão</strong><span>Dose ótima visual</span></div>
+                            <div class="solver-v26-quick"><strong>PDF</strong><span>Laudo técnico</span></div>
+                        </div>
+                    </section>
+
+                    <aside class="solver-v26-dashboard-card" aria-label="Exemplo visual de dashboard estatístico">
+                        <div class="solver-v26-dash-inner">
+                            <div class="solver-v26-dash-top">
+                                <div class="solver-v26-window-dots"><span></span><span></span><span></span></div>
+                                <div class="solver-v26-live"><i class="fa-solid fa-circle"></i> Preview do relatório</div>
+                            </div>
+                            <div class="solver-v26-kpis">
+                                <div class="solver-v26-kpi solver-v26-ring">
+                                    <svg class="solver-v26-ring-svg" viewBox="0 0 64 64" aria-hidden="true">
+                                        <circle cx="32" cy="32" r="25" fill="none" stroke="#dcf1e1" stroke-width="8"/>
+                                        <circle cx="32" cy="32" r="25" fill="none" stroke="#3d8e56" stroke-width="8" stroke-linecap="round" stroke-dasharray="118 157" transform="rotate(-90 32 32)"/>
+                                        <text x="32" y="36" text-anchor="middle" font-size="13" font-weight="950" fill="#0e2116">8,4</text>
+                                    </svg>
+                                    <div><span>CV experimental</span><strong>Ótimo</strong><small>Precisão alta</small></div>
+                                </div>
+                                <div class="solver-v26-kpi"><span>F calculado</span><strong>18,73</strong><small>Significativo 1%</small></div>
+                                <div class="solver-v26-kpi"><span>R² regressão</span><strong>0,94</strong><small>Excelente ajuste</small></div>
+                            </div>
+                            <div class="solver-v26-chart-wrap">
+                                <div class="solver-v26-chart"><div class="solver-v26-card-label"><span>Curva ajustada e dose ótima</span><i class="fa-solid fa-arrow-trend-up text-agro-600"></i></div>${dashboardSvg()}</div>
+                                <div class="solver-v26-table-card">
+                                    <div class="solver-v26-card-label"><span>Resumo ANOVA</span><i class="fa-solid fa-table text-agro-600"></i></div>
+                                    <table class="solver-v26-mini-table">
+                                        <thead><tr><th>FV</th><th>F</th><th>Sig</th></tr></thead>
+                                        <tbody>
+                                            <tr><td>Tratamentos</td><td>18,73</td><td><span class="solver-v26-badge ok">1%</span></td></tr>
+                                            <tr><td>Blocos</td><td>2,41</td><td><span class="solver-v26-badge ns">ns</span></td></tr>
+                                            <tr><td>Resíduo</td><td>—</td><td><span class="solver-v26-badge ns">—</span></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="solver-v26-flow">
+                                        <div class="solver-v26-step"><i class="fa-solid fa-upload"></i><strong>Dados</strong><span>CSV ou matriz</span></div>
+                                        <div class="solver-v26-step"><i class="fa-solid fa-square-root-variable"></i><strong>ANOVA</strong><span>Teste F</span></div>
+                                        <div class="solver-v26-step"><i class="fa-solid fa-layer-group"></i><strong>Pós-teste</strong><span>Médias ou curva</span></div>
+                                        <div class="solver-v26-step"><i class="fa-solid fa-file-pdf"></i><strong>PDF</strong><span>Laudo final</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </main>
+
+                <section class="solver-v26-section">
+                    <div class="solver-v26-section-head">
+                        <div><div class="solver-v26-pill mb-3"><i class="fa-solid fa-wand-magic-sparkles"></i> Ferramentas visuais</div><h2>Mais do que tabelas: leitura rápida para decisão</h2></div>
+                        <p>Os cards deixam o site mais moderno e ajudam o usuário a entender rapidamente precisão, significância, tendência da regressão e próxima etapa da análise.</p>
+                    </div>
+                    <div class="solver-v26-tools">
+                        <div class="solver-v26-tool"><div class="solver-v26-tool-icon"><i class="fa-solid fa-gauge-high"></i></div><h3>KPIs estatísticos</h3><p>CV, F calculado, significância e R² aparecem em cards de leitura imediata.</p></div>
+                        <div class="solver-v26-tool"><div class="solver-v26-tool-icon"><i class="fa-solid fa-chart-line"></i></div><h3>Gráfico de regressão</h3><p>Visual com curva ajustada, pontos observados e destaque para dose ótima.</p></div>
+                        <div class="solver-v26-tool"><div class="solver-v26-tool-icon"><i class="fa-solid fa-table-cells-large"></i></div><h3>Resumo da ANOVA</h3><p>Tabela compacta com badges de significância para orientar o pós-teste.</p></div>
+                        <div class="solver-v26-tool"><div class="solver-v26-tool-icon"><i class="fa-solid fa-route"></i></div><h3>Fluxo guiado</h3><p>O usuário entende a sequência: dados, ANOVA, comparação/regressão e PDF.</p></div>
+                    </div>
+                    <div class="solver-v26-audience-panel">
+                        <div class="solver-v26-audience"><div class="solver-v26-tool-icon"><i class="fa-solid fa-seedling"></i></div><div><h3>Agronegócio</h3><p>Decisões de campo com comparação de tratamentos e relatórios claros.</p></div></div>
+                        <div class="solver-v26-audience"><div class="solver-v26-tool-icon"><i class="fa-solid fa-user-graduate"></i></div><div><h3>Acadêmico</h3><p>Validação de exercícios, TCCs, aulas práticas e interpretação de ANOVA.</p></div></div>
+                        <div class="solver-v26-audience"><div class="solver-v26-tool-icon"><i class="fa-solid fa-microscope"></i></div><div><h3>P&amp;D e pesquisa</h3><p>Padronização de análises e apresentação profissional dos resultados.</p></div></div>
+                    </div>
+                </section>
+
+                <footer class="solver-v26-footer">© 2026 Solver — Estatística Experimental de Precisão</footer>
+            </div>`;
+    }
+
+    function applyDashboardLanding(){
+        injectDashStyles();
+        const landing = document.getElementById('landing-page');
+        if(!landing) return;
+        landing.dataset.v24Corrected = '1';
+        landing.dataset.v26Dashboard = '1';
+        landing.className = 'page flex flex-col fixed inset-0 z-50 overflow-y-auto w-full h-full solver-v26-dashboard';
+        landing.innerHTML = landingHtml();
+    }
+
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyDashboardLanding);
+    else applyDashboardLanding();
+    setTimeout(applyDashboardLanding, 80);
+    setTimeout(applyDashboardLanding, 360);
+})();
+</script>
+
+
 </body>
 </html>
