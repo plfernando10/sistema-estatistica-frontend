@@ -1809,30 +1809,32 @@
         function addSolverLogoPdf(doc, x = 14, y = 10, escala = 1) {
             solverResetText(doc);
             const s = escala;
-            const icon = 13.5 * s;
-            const gap = 4.2 * s;
+            const icon = 14.2 * s;
+            const gap = 4.8 * s;
+
+            // Ícone baseado no logo do site: quadrado verde, cantos arredondados e folha branca.
             doc.setFillColor(27, 76, 48);
-            doc.roundedRect(x, y, icon, icon, 3.6 * s, 3.6 * s, 'F');
+            doc.roundedRect(x, y, icon, icon, 3.8 * s, 3.8 * s, 'F');
             doc.setFillColor(255, 255, 255);
-            doc.ellipse(x + 7.1 * s, y + 6.5 * s, 4.1 * s, 2.35 * s, 'F');
+            doc.ellipse(x + 7.25 * s, y + 7.25 * s, 4.35 * s, 2.35 * s, 'F');
             doc.setDrawColor(27, 76, 48);
-            doc.setLineWidth(0.5 * s);
-            doc.line(x + 5.1 * s, y + 8.2 * s, x + 9.4 * s, y + 4.8 * s);
+            doc.setLineWidth(0.48 * s);
+            doc.line(x + 4.75 * s, y + 9.10 * s, x + 10.15 * s, y + 5.15 * s);
 
             const tx = x + icon + gap;
-            const ty = y + 6.9 * s;
+            const ty = y + 6.25 * s;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12.4 * s);
-            doc.setTextColor(10, 33, 25);
-            doc.text('Solver', tx, ty);
-            const solverW = doc.getTextWidth('Solver');
+            doc.setFontSize(12.8 * s);
+            doc.setTextColor(8, 34, 26);
+            doc.text('SOLVER', tx, ty);
+            const solverW = doc.getTextWidth('SOLVER');
             doc.setTextColor(45, 142, 86);
-            doc.text('Agro', tx + solverW + (2.2 * s), ty);
+            doc.text('AGRO', tx + solverW + (3.2 * s), ty);
 
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(4.4 * s);
-            doc.setTextColor(71, 85, 105);
-            doc.text('Inteligência estatística para experimentação agrícola', tx, y + 11.4 * s);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(4.55 * s);
+            doc.setTextColor(14, 70, 45);
+            doc.text('INTELLIGENCE FOR FIELD TRIALS', tx, y + 11.25 * s);
         }
 
         function addCabecalhoPdf(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
@@ -2562,7 +2564,7 @@
         /* =========================
            PATCH V16 — Relatório, CSV e UX
            ========================= */
-        const SOLVER_REPORT_VERSION = 'v16';
+        const SOLVER_REPORT_VERSION = 'v17';
 
         function solverResetText(doc) {
             try { if (doc.setCharSpace) doc.setCharSpace(0); } catch (_) {}
@@ -2587,30 +2589,32 @@
         function addSolverLogoPdf(doc, x = 14, y = 10, escala = 1) {
             solverResetText(doc);
             const s = escala;
-            const icon = 13.5 * s;
-            const gap = 4.2 * s;
+            const icon = 14.2 * s;
+            const gap = 4.8 * s;
+
+            // Ícone baseado no logo do site: quadrado verde, cantos arredondados e folha branca.
             doc.setFillColor(27, 76, 48);
-            doc.roundedRect(x, y, icon, icon, 3.6 * s, 3.6 * s, 'F');
+            doc.roundedRect(x, y, icon, icon, 3.8 * s, 3.8 * s, 'F');
             doc.setFillColor(255, 255, 255);
-            doc.ellipse(x + 7.1 * s, y + 6.5 * s, 4.1 * s, 2.35 * s, 'F');
+            doc.ellipse(x + 7.25 * s, y + 7.25 * s, 4.35 * s, 2.35 * s, 'F');
             doc.setDrawColor(27, 76, 48);
-            doc.setLineWidth(0.5 * s);
-            doc.line(x + 5.1 * s, y + 8.2 * s, x + 9.4 * s, y + 4.8 * s);
+            doc.setLineWidth(0.48 * s);
+            doc.line(x + 4.75 * s, y + 9.10 * s, x + 10.15 * s, y + 5.15 * s);
 
             const tx = x + icon + gap;
-            const ty = y + 6.9 * s;
+            const ty = y + 6.25 * s;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12.4 * s);
-            doc.setTextColor(10, 33, 25);
-            doc.text('Solver', tx, ty);
-            const solverW = doc.getTextWidth('Solver');
+            doc.setFontSize(12.8 * s);
+            doc.setTextColor(8, 34, 26);
+            doc.text('SOLVER', tx, ty);
+            const solverW = doc.getTextWidth('SOLVER');
             doc.setTextColor(45, 142, 86);
-            doc.text('Agro', tx + solverW + (2.2 * s), ty);
+            doc.text('AGRO', tx + solverW + (3.2 * s), ty);
 
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(4.4 * s);
-            doc.setTextColor(71, 85, 105);
-            doc.text('Inteligência estatística para experimentação agrícola', tx, y + 11.4 * s);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(4.55 * s);
+            doc.setTextColor(14, 70, 45);
+            doc.text('INTELLIGENCE FOR FIELD TRIALS', tx, y + 11.25 * s);
         }
 
         function addCabecalhoPdf(doc, subtitulo = 'Relatório técnico de análise estatística experimental') {
@@ -2907,7 +2911,7 @@
             if (!pacote || (!pacote.anova && modulo !== 'regressaodireta')) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast(modulo === 'regressaodireta' ? 'Calcule primeiro a regressão direta.' : 'Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
-            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver Agro v16.');
+            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver Agro v17.');
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
