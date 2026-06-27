@@ -230,6 +230,28 @@
         }
 
 
+        /* Tela interativa de carregamento */
+        #loading-overlay {
+            position: fixed; inset: 0; z-index: 9998;
+            display: none; align-items: center; justify-content: center;
+            background: rgba(248, 250, 252, 0.82);
+            backdrop-filter: blur(8px);
+        }
+        #loading-overlay.active { display: flex; }
+        .loading-card {
+            width: min(420px, calc(100vw - 2rem));
+            background: white; border: 1px solid #dcf1e1; border-radius: 28px;
+            box-shadow: 0 24px 70px rgba(14, 33, 22, 0.16);
+            padding: 2.25rem; text-align: center;
+        }
+        .loading-spinner {
+            width: 64px; height: 64px; border-radius: 9999px;
+            border: 6px solid #dcf1e1; border-top-color: #3d8e56;
+            margin: 0 auto 1.25rem; animation: solverSpin 0.85s linear infinite;
+        }
+        @keyframes solverSpin { to { transform: rotate(360deg); } }
+
+
         /* Ajustes mobile: mantém o layout desktop e transforma a lateral em menu recolhível no celular */
         #mobile-menu-btn, #sidebar-overlay { display: none; }
         @media (max-width: 767px) {
@@ -268,6 +290,15 @@
 <body class="h-screen w-screen overflow-hidden selection:bg-agro-500 selection:text-white relative">
 
     <div id="toast-container"></div>
+
+
+    <div id="loading-overlay" aria-live="polite" aria-busy="true">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <h3 id="loading-title" class="text-2xl font-black text-agro-900 mb-2">Processando análise</h3>
+            <p id="loading-message" class="text-slate-500 font-medium leading-relaxed">Aguarde enquanto o Solver Agro calcula os resultados estatísticos.</p>
+        </div>
+    </div>
 
     <!-- Guia Rápido Melhorado -->
     <div id="manual-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
@@ -842,6 +873,21 @@
         // Implementação das funções de cálculo e matrizes adaptadas para a nova UI
         // (Nota: Mantive a lógica original do usuário para garantir funcionalidade)
 
+
+        function mostrarCarregamento(titulo = 'Processando análise', mensagem = 'Aguarde enquanto o Solver Agro calcula os resultados estatísticos.') {
+            const overlay = document.getElementById('loading-overlay');
+            const title = document.getElementById('loading-title');
+            const msg = document.getElementById('loading-message');
+            if (title) title.textContent = titulo;
+            if (msg) msg.textContent = mensagem;
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function ocultarCarregamento() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
         function mostrarArquivoSelecionado(modulo) {
             const input = document.getElementById(`file-${modulo === 'regressaodireta' ? 'direto' : modulo}`);
             const nome = document.getElementById(`file-name-${modulo === 'regressaodireta' ? 'direto' : modulo}`);
@@ -889,6 +935,7 @@
             const originalHtml = btnElement.innerHTML;
             btnElement.disabled = true;
             btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            mostrarCarregamento('Processando ANOVA', 'Estamos lendo o arquivo e calculando o teste F. Isso pode levar alguns segundos.');
             try {
                 const form = new FormData();
                 form.append('file', file);
@@ -921,6 +968,7 @@
             } catch (err) {
                 showToast(err.message, 'erro', 7000);
             } finally {
+                ocultarCarregamento();
                 btnElement.disabled = false;
                 btnElement.innerHTML = originalHtml;
             }
@@ -943,6 +991,7 @@
             const originalHtml = btnElement.innerHTML;
             btnElement.disabled = true;
             btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            mostrarCarregamento('Processando ANOVA', 'Estamos lendo os dados do delineamento simples e calculando a tabela de análise de variância.');
             try {
                 const form = new FormData();
                 form.append('file', file);
@@ -963,6 +1012,7 @@
             } catch (err) {
                 showToast(err.message, 'erro', 7000);
             } finally {
+                ocultarCarregamento();
                 btnElement.disabled = false;
                 btnElement.innerHTML = originalHtml;
             }
@@ -1098,6 +1148,7 @@
             btnElement.disabled = true;
             const originalHtml = btnElement.innerHTML;
             btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculando...';
+            mostrarCarregamento('Calculando regressão', 'Ajustando a curva, estimando R² e preparando o gráfico.');
             showToast('Calculando regressão direta...', 'info');
             try {
                 let data;
@@ -1119,6 +1170,7 @@
             } catch (err) {
                 showToast(err.message, 'erro', 6000);
             } finally {
+                ocultarCarregamento();
                 btnElement.disabled = false;
                 btnElement.innerHTML = originalHtml;
             }
@@ -1317,6 +1369,7 @@
             const originalHtml = btnElement.innerHTML;
             btnElement.disabled = true;
             btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Executando...';
+            mostrarCarregamento('Executando análise posterior', 'Aguarde enquanto o teste de comparação ou regressão é processado.');
             try {
                 const form = new FormData();
                 form.append('file', file);
@@ -1341,6 +1394,7 @@
             } catch (err) {
                 showToast(err.message, 'erro', 7000);
             } finally {
+                ocultarCarregamento();
                 btnElement.disabled = false;
                 btnElement.innerHTML = originalHtml;
             }
@@ -1429,9 +1483,9 @@
                 const fcalc = row['F Calc'] ?? '-';
                 const ftab = row['F Tab'] ?? '-';
                 if (ehSignificativo(row)) {
-                    return `Para ${fv}, observou-se F calculado (${fcalc}) > F tabelado (${ftab}). Assim, rejeita-se a hipótese H₀ e aceita-se a hipótese Hₐ. Conclui-se que houve diferença estatística significativa entre pelo menos duas médias ou níveis avaliados, no nível de probabilidade de ${nivel}. Portanto, recomenda-se realizar uma análise posterior, por comparação de médias ou regressão, conforme a natureza quantitativa ou qualitativa do fator.`;
+                    return `Para ${fv}, observou-se F calculado (${fcalc}) > F tabelado (${ftab}). Assim, rejeita-se a hipótese H0 e aceita-se a hipótese Ha. Conclui-se que houve diferença estatística significativa entre pelo menos duas médias ou níveis avaliados, no nível de probabilidade de ${nivel}. Portanto, recomenda-se realizar uma análise posterior, por comparação de médias ou regressão, conforme a natureza quantitativa ou qualitativa do fator.`;
                 }
-                return `Para ${fv}, observou-se F calculado (${fcalc}) ≤ F tabelado (${ftab}) ou ausência de significância estatística. Assim, não se rejeita a hipótese H₀. Conclui-se que não houve evidência estatística suficiente para afirmar diferença entre as médias ou níveis avaliados no nível de probabilidade considerado. Nesse caso, a realização de teste posterior não é recomendada para essa fonte de variação.`;
+                return `Para ${fv}, observou-se F calculado (${fcalc}) ≤ F tabelado (${ftab}) ou ausência de significância estatística. Assim, não se rejeita a hipótese H0. Conclui-se que não houve evidência estatística suficiente para afirmar diferença entre as médias ou níveis avaliados no nível de probabilidade considerado. Nesse caso, a realização de teste posterior não é recomendada para essa fonte de variação.`;
             });
         }
 
@@ -1475,32 +1529,56 @@
             return textos;
         }
 
-        function addTextoQuebradoPdf(doc, texto, x, y, largura=182, linha=5) {
-            const partes = doc.splitTextToSize(texto, largura);
+        function limparTextoPdf(texto) {
+            return String(texto ?? '')
+                .replace(/[\u0000-\u001F\u007F]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .replace(/≤/g, '<=')
+                .replace(/≥/g, '>=')
+                .replace(/₀/g, '0')
+                .replace(/ₐ/g, 'a')
+                .trim();
+        }
+
+        function addTextoQuebradoPdf(doc, texto, x, y, largura=182, linha=5.2) {
+            const textoLimpo = limparTextoPdf(texto);
+            const partes = doc.splitTextToSize(textoLimpo, largura);
             const pageH = doc.internal.pageSize.getHeight();
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            if (doc.setCharSpace) doc.setCharSpace(0);
             partes.forEach(p => {
-                if (y > pageH - 18) { doc.addPage(); y = 18; }
-                doc.text(p, x, y); y += linha;
+                if (y > pageH - 20) { doc.addPage(); y = 20; }
+                doc.text(p, x, y);
+                y += linha;
             });
             return y;
         }
 
         function addTituloSecaoPdf(doc, titulo, y) {
             const pageW = doc.internal.pageSize.getWidth();
-            if (y > 265) { doc.addPage(); y = 18; }
+            if (y > 265) { doc.addPage(); y = 20; }
             doc.setFillColor(240, 249, 241);
             doc.setDrawColor(187, 225, 198);
-            doc.roundedRect(12, y - 5, pageW - 24, 11, 2, 2, 'FD');
-            doc.setTextColor(27, 60, 40);
+            doc.roundedRect(14, y - 6, pageW - 28, 12, 2.5, 2.5, 'FD');
+            doc.setTextColor(14, 33, 22);
             doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-            doc.text(titulo, 16, y + 2);
-            doc.setTextColor(45, 55, 72);
-            return y + 12;
+            if (doc.setCharSpace) doc.setCharSpace(0);
+            doc.text(limparTextoPdf(titulo), 18, y + 2);
+            doc.setTextColor(30, 41, 59);
+            return y + 13;
         }
 
         function addParagrafosPdf(doc, paragrafos, y) {
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-            (paragrafos || []).forEach(txt => { y = addTextoQuebradoPdf(doc, txt, 14, y, 182, 5); y += 3; });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            if (doc.setCharSpace) doc.setCharSpace(0);
+            (paragrafos || []).forEach(txt => {
+                y = addTextoQuebradoPdf(doc, txt, 18, y, 174, 5.3);
+                y += 3.5;
+            });
             return y;
         }
 
@@ -1547,23 +1625,26 @@
             if (!pacote || !pacote.anova) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
             if (!pacote.posthoc) { showToast('Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
             if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
+            mostrarCarregamento('Gerando relatório PDF', 'Estamos formatando o laudo técnico com textos, tabelas e gráficos.');
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
             const pageW = doc.internal.pageSize.getWidth();
 
+            if (doc.setCharSpace) doc.setCharSpace(0);
+            doc.setFont('helvetica', 'normal');
             doc.setFillColor(27, 60, 40);
-            doc.rect(0, 0, pageW, 34, 'F');
+            doc.rect(0, 0, pageW, 36, 'F');
             doc.setFillColor(61, 142, 86);
-            doc.circle(pageW - 18, 17, 20, 'F');
+            doc.roundedRect(pageW - 48, 0, 48, 36, 0, 0, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(19);
             doc.text('Solver Agro', 14, 15);
             doc.setFontSize(12);
-            doc.text('Relatório técnico de análise estatística experimental', 14, 24);
+            doc.text('Relatório técnico de análise estatística experimental', 14, 25);
 
-            let y = 44;
-            doc.setTextColor(45, 55, 72);
+            let y = 46;
+            doc.setTextColor(30, 41, 59);
             doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
             const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta' };
             doc.text(`Módulo: ${nomesModulos[modulo] || modulo}`, 14, y); y += 6;
@@ -1612,6 +1693,7 @@
             doc.setFontSize(8); doc.setTextColor(113, 128, 150);
             doc.text('Relatório gerado automaticamente pelo Solver Agro.', 14, 287);
             doc.save(`laudo_solver_agro_${modulo}.pdf`);
+            ocultarCarregamento();
         }
 
         function renderResultadoDireto(data, result, placeholder) {
