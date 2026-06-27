@@ -291,6 +291,209 @@
             #toast-container { left: 1rem; right: 1rem; bottom: 1rem; }
             .toast { max-width: none; }
         }
+        /* ====================== Solver Agro v14 Premium UI ====================== */
+        :root {
+            --solver-green-950: #0e2116;
+            --solver-green-900: #13321f;
+            --solver-green-700: #265b39;
+            --solver-green-500: #3d8e56;
+            --solver-earth-500: #b18356;
+            --solver-paper: #fdfdfb;
+        }
+        body {
+            background:
+                radial-gradient(circle at 7% 8%, rgba(61,142,86,.11), transparent 34%),
+                radial-gradient(circle at 92% 8%, rgba(177,131,86,.12), transparent 30%),
+                linear-gradient(135deg, #fdfdfb 0%, #f6fbf7 42%, #fbf8f4 100%);
+        }
+        #landing-page {
+            background:
+                radial-gradient(circle at 10% 16%, rgba(61, 142, 86, .18), transparent 31%),
+                radial-gradient(circle at 88% 20%, rgba(177, 131, 86, .14), transparent 29%),
+                radial-gradient(circle at 50% 100%, rgba(220, 241, 225, .72), transparent 38%),
+                linear-gradient(135deg, #fdfdfb 0%, #f3fbf5 52%, #fbf8f4 100%) !important;
+        }
+        #landing-page::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(61,142,86,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(61,142,86,.045) 1px, transparent 1px);
+            background-size: 46px 46px;
+            mask-image: radial-gradient(circle at center, black 0%, transparent 72%);
+            pointer-events: none;
+        }
+        .agro-card {
+            border: 1px solid rgba(220, 241, 225, .82);
+            box-shadow: 0 24px 80px -42px rgba(14, 33, 22, .35), 0 8px 22px -18px rgba(14,33,22,.22);
+        }
+        .agro-card:hover { box-shadow: 0 28px 88px -42px rgba(14, 33, 22, .42); }
+        .agro-btn-primary {
+            background: linear-gradient(135deg, #3d8e56 0%, #2d7244 44%, #0e2116 100%);
+            box-shadow: 0 18px 34px -20px rgba(14,33,22,.68), inset 0 1px 0 rgba(255,255,255,.18);
+        }
+        .agro-btn-outline { box-shadow: 0 10px 28px -24px rgba(15,23,42,.45); }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(61,142,86,1), rgba(38,91,57,1));
+            box-shadow: 0 16px 36px -24px rgba(61,142,86,.78), inset 0 1px 0 rgba(255,255,255,.15);
+        }
+        #analysis-page main {
+            background:
+                radial-gradient(circle at 88% 4%, rgba(61,142,86,.08), transparent 28%),
+                radial-gradient(circle at 12% 96%, rgba(177,131,86,.08), transparent 25%),
+                linear-gradient(180deg, #f8fafc, #fbfdfb);
+        }
+        .solver-result-hero {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1.4rem;
+            border: 1px solid rgba(220, 241, 225, .95);
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at right top, rgba(220,241,225,.75), transparent 38%),
+                linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.9));
+        }
+        .solver-metric, .solver-kpi {
+            min-width: 172px;
+            padding: 1rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(187,225,198,.9);
+            background: rgba(240,249,241,.84);
+            color: #1b3c28;
+        }
+        .solver-metric span, .solver-kpi span {
+            display: block;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: #2d7244;
+            margin-bottom: .35rem;
+        }
+        .solver-metric strong, .solver-kpi strong {
+            display: block;
+            font-size: 1.35rem;
+            font-weight: 950;
+            letter-spacing: -.03em;
+        }
+        .solver-kpi.amber {
+            background: rgba(251,248,244,.96);
+            border-color: rgba(232,216,195,.95);
+            color: #5a3f2d;
+        }
+        .solver-kpi.amber span { color: #885c3c; }
+        .solver-equation {
+            padding: 1.25rem 1.35rem;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border: 1px solid #edf2f7;
+            margin-bottom: 1.25rem;
+        }
+        .solver-equation span {
+            display: block;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            margin-bottom: .55rem;
+        }
+        .solver-equation code { color: #0e2116; font-weight: 800; }
+        .solver-recommendation {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(187, 225, 198, .92);
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at 88% 0%, rgba(177,131,86,.16), transparent 30%),
+                linear-gradient(135deg, rgba(240,249,241,.96), rgba(255,255,255,.94));
+            padding: 1.25rem;
+        }
+        .solver-recommendation-icon {
+            flex: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: linear-gradient(135deg, #3d8e56, #0e2116);
+            box-shadow: 0 18px 28px -22px rgba(14,33,22,.7);
+        }
+        .solver-posthoc-card, .solver-output-card {
+            border: 1px solid rgba(187, 225, 198, .85);
+            border-radius: 28px;
+            background:
+                linear-gradient(135deg, rgba(240,249,241,.72), rgba(255,255,255,.92));
+            padding: 1.4rem;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+        }
+        .solver-output-card { border-top: 5px solid #3d8e56; background: white; }
+        .solver-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: #94a3b8;
+            margin-bottom: .55rem;
+        }
+        .solver-table { border-radius: 22px; border: 1px solid #e2e8f0; box-shadow: 0 18px 45px -38px rgba(15,23,42,.4); }
+        .solver-table th {
+            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+            color: #334155;
+            padding: 1rem .9rem;
+        }
+        .solver-table td { padding: .95rem .9rem; }
+        .solver-table tbody tr:hover td { background-color: #f0f9f1; }
+        .solver-matrix {
+            padding: .85rem;
+            border-radius: 22px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+        }
+        .solver-matrix-head, .solver-matrix-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .65rem;
+            align-items: center;
+        }
+        .solver-matrix-head-3, .solver-matrix-row-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .solver-matrix-head {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            padding: .75rem .3rem;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            background: rgba(248,250,252,.96);
+            backdrop-filter: blur(8px);
+        }
+        .solver-matrix-row {
+            padding: .35rem .25rem;
+            border-bottom: 1px dashed #edf2f7;
+        }
+        .solver-matrix-row:last-child { border-bottom: 0; }
+        #loading-overlay { background: rgba(14, 33, 22, .16); backdrop-filter: blur(12px) saturate(1.1); }
+        .loading-card {
+            border-radius: 32px;
+            background:
+                radial-gradient(circle at right top, rgba(220,241,225,.7), transparent 34%),
+                rgba(255,255,255,.94);
+            box-shadow: 0 34px 110px -42px rgba(14,33,22,.55);
+        }
+        .loading-spinner { border-top-color: #2d7244; box-shadow: 0 0 0 8px rgba(220,241,225,.45); }
+        @media (max-width: 768px) {
+            .solver-result-hero { flex-direction: column; }
+            .solver-metric, .solver-kpi { min-width: 0; width: 100%; }
+            .solver-matrix-head, .solver-matrix-row { grid-template-columns: 1fr 1fr; }
+            .solver-matrix-head span:nth-child(3), .solver-matrix-head span:nth-child(4) { display: none; }
+        }
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -1914,6 +2117,407 @@
                 ${botoesDownloadImagem(data, 'regressao_direta_dose_otima')}
                 ${tabelaHtml(data.pontos)}
             `;
+        }
+
+        /* ====================== Solver Agro v14 Premium overrides ====================== */
+        if (typeof analises !== 'undefined') {
+            analises.regressaodireta = analises.regressaodireta || {};
+        }
+
+        function etiquetaRecomendacaoModelo(rec) {
+            if (!rec || !rec.mensagem) return '';
+            const ranking = Array.isArray(rec.ranking) ? rec.ranking.filter(r => r.r2 !== undefined).slice(0, 5) : [];
+            const linhas = ranking.map(r => `
+                <div class="flex items-center justify-between gap-3 py-2 border-b border-white/60 last:border-0">
+                    <span class="font-bold text-slate-700">${r.modelo}</span>
+                    <span class="font-mono text-xs text-slate-500">R² ${r.r2}</span>
+                </div>`).join('');
+            return `<div class="solver-recommendation mt-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="solver-recommendation-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="flex-1">
+                        <span class="text-[10px] font-black uppercase tracking-[0.22em] text-agro-700 block mb-1">Recomendação automática</span>
+                        <h4 class="text-lg font-black text-agro-950 mb-2">Melhor escolha de regressão</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">${rec.mensagem}</p>
+                        ${linhas ? `<div class="mt-4 rounded-2xl bg-white/70 border border-white/80 px-4">${linhas}</div>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function resultadoHeaderPremium(titulo, subtitulo, badgeHtml='') {
+            return `<div class="solver-result-hero mb-8">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.25em] text-agro-600 block mb-2">Resultado estatístico</span>
+                    <h3 class="text-2xl font-black text-agro-950 tracking-tight">${titulo}</h3>
+                    <p class="text-sm text-slate-500 font-medium mt-1">${subtitulo || ''}</p>
+                </div>
+                ${badgeHtml}
+            </div>`;
+        }
+
+        function tabelaHtml(linhas) {
+            if (!linhas || !linhas.length) return '';
+            const cols = Object.keys(linhas[0]);
+            const cell = (c, v) => {
+                const txt = String(v ?? '-');
+                if (/^sig$/i.test(c) || /sig/i.test(c)) {
+                    const low = txt.toLowerCase();
+                    const cls = low.includes('ns') || txt === '-' ? 'sig-inactive' : 'sig-active';
+                    return `<td><span class="sig-badge ${cls}">${txt}</span></td>`;
+                }
+                return `<td class="data-mono">${txt}</td>`;
+            };
+            return `<div class="table-wrapper solver-table"><table><thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${linhas.map(l => `<tr>${cols.map(c => cell(c, l[c])).join('')}</tr>`).join('')}</tbody></table></div>`;
+        }
+
+        function postHocControlesHtml(modulo) {
+            const fatorExtra = (modulo === 'fatorial' || modulo === 'parcelas') ? `
+                <div class="flex-1 min-w-[160px]">
+                    <label class="solver-label">Fator avaliado</label>
+                    <select id="fator-${modulo}" class="agro-input">
+                        <option value="a">Fator A</option>
+                        <option value="b">Fator B</option>
+                    </select>
+                </div>` : '';
+            const regr = (modulo === 'simples') ? 'regr' : 'regr_a';
+            return `
+                <div class="solver-posthoc-card mt-8">
+                    <div class="flex items-start justify-between gap-4 mb-5">
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-[0.22em] text-agro-600 block mb-1">Etapa posterior</span>
+                            <h4 class="font-black text-agro-950 text-lg flex items-center gap-2"><i class="fa-solid fa-chart-line text-agro-600"></i> Comparação de médias ou regressão</h4>
+                            <p class="text-xs text-slate-500 mt-1">Escolha o teste posterior somente para fontes significativas no teste F.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4 items-end">
+                        ${fatorExtra}
+                        <div class="flex-1 min-w-[220px]">
+                            <label class="solver-label">Método</label>
+                            <select id="metodo-${modulo}" class="agro-input" onchange="toggleRegrFields('${modulo}')">
+                                <option value="tukey">Teste de Tukey (HSD)</option>
+                                <option value="duncan">Teste de Duncan</option>
+                                <option value="dunnett">Teste de Dunnett (vs Testemunha)</option>
+                                <option value="${regr}">Regressão</option>
+                            </select>
+                        </div>
+                        <div id="regr-fields-${modulo}" class="hidden flex-1 min-w-[220px]">
+                            <label class="solver-label">Modelo da regressão</label>
+                            <select id="eq-${modulo}" class="agro-input">
+                                <option value="1">Linear</option>
+                                <option value="2" selected>Quadrática</option>
+                                <option value="3">Cúbica</option>
+                                <option value="exponencial">Exponencial</option>
+                                <option value="logaritmica">Logarítmica</option>
+                            </select>
+                        </div>
+                        <div id="dunnett-fields-${modulo}" class="hidden flex-1 min-w-[220px]">
+                            <label class="solver-label">Testemunha</label>
+                            <input type="text" id="testemunha-${modulo}" placeholder="Ex.: T1 ou 0" class="agro-input">
+                        </div>
+                        <button onclick="rodarPostHoc('${modulo}', this)" class="agro-btn agro-btn-primary h-[50px]"><i class="fa-solid fa-bolt"></i> Executar Teste</button>
+                    </div>
+                </div>`;
+        }
+
+        async function processarModuloComArquivo(modulo, file, btnElement) {
+            const result = document.getElementById(`result-${modulo}`);
+            const placeholder = document.getElementById(`placeholder-${modulo}`);
+            const originalHtml = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            mostrarCarregamento('Processando ANOVA', 'Validando os dados, calculando somas de quadrados e preparando a interpretação do teste F.');
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                form.append('tipo_teste', 'anova');
+                form.append('modelo_regr', 'quadratica');
+                const resp = await fetch(`${API_BASE}/${modulo}`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
+                placeholder.classList.add('hidden');
+                result.classList.remove('hidden');
+                analises[modulo] = { anova: data, posthoc: null };
+                const cvBadge = modulo === 'parcelas'
+                    ? `<div class="solver-metric"><span>CV Erro A</span><strong>${data.cv_a || '-'}</strong></div><div class="solver-metric"><span>CV Erro B</span><strong>${data.cv_b || '-'}</strong></div>`
+                    : `<div class="solver-metric"><span>Coeficiente de variação</span><strong>${data.cv || '-'}</strong></div>`;
+                result.innerHTML = `
+                    ${resultadoHeaderPremium('Análise de Variância (ANOVA)', modulo === 'fatorial' ? 'Fatorial duplo A x B' : 'Parcelas subdivididas', `<div class="flex flex-wrap gap-3">${cvBadge}</div>`)}
+                    ${tabelaHtml(data.anova || [])}
+                    ${postHocControlesHtml(modulo)}
+                    <div id="posthoc-${modulo}-output" class="hidden mt-8 solver-output-card"></div>
+                    <div class="flex flex-wrap justify-center gap-3 pt-8">
+                        <button onclick="baixarLaudoCompleto('${modulo}')" class="agro-btn agro-btn-outline bg-white px-8 py-4 border-2 border-agro-200 text-agro-700 hover:bg-agro-50">
+                            <i class="fa-solid fa-file-pdf text-lg"></i> Gerar relatório técnico PDF
+                        </button>
+                        <button onclick="novaAnaliseModulo('${modulo}')" class="agro-btn agro-btn-outline px-8 py-4"><i class="fa-solid fa-rotate-left"></i> Nova análise</button>
+                    </div>`;
+                showToast('Cálculo concluído com sucesso!', 'success');
+            } catch (err) {
+                showToast(err.message, 'erro', 7000);
+            } finally {
+                ocultarCarregamento();
+                btnElement.disabled = false;
+                btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        async function processarSimples(modoManual, btnElement) {
+            const result = document.getElementById('result-simples');
+            const placeholder = document.getElementById('placeholder-simples');
+            const delineamento = document.querySelector('input[name="delinSimples"]:checked').value;
+            let file;
+            try {
+                file = modoManual ? gerarCsvSimplesManual(delineamento) : document.getElementById('file-simples').files[0];
+                if (!file) throw new Error('Selecione um arquivo CSV antes de iniciar o cálculo.');
+            } catch (err) { showToast(err.message, 'erro', 6000); return; }
+            arquivosData.simples = file;
+            const originalHtml = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+            mostrarCarregamento('Processando ANOVA', 'Validando o delineamento simples e calculando teste F, CV e tabela de análise de variância.');
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                form.append('tipo_delineamento', delineamento);
+                form.append('tipo_teste', 'anova');
+                form.append('modelo_regr', 'quadratica');
+                const resp = await fetch(`${API_BASE}/simples`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha ao processar a análise.');
+                analises.simples = { anova: data, posthoc: null };
+                placeholder.classList.add('hidden');
+                result.classList.remove('hidden');
+                document.getElementById('cv-simples-badge').innerHTML = `<div class="solver-metric"><span>Coeficiente de variação</span><strong>${data.cv || '-'}</strong></div>`;
+                document.getElementById('anova-simples-table').innerHTML = tabelaHtml(data.anova || []);
+                const out = document.getElementById('posthoc-simples-output');
+                if (out) { out.classList.add('hidden'); out.innerHTML = ''; }
+                const reportWrap = result.querySelector('.flex.justify-center.pt-8');
+                showToast('Cálculo concluído com sucesso!', 'success');
+            } catch (err) { showToast(err.message, 'erro', 7000); }
+            finally { ocultarCarregamento(); btnElement.disabled = false; btnElement.innerHTML = originalHtml; }
+        }
+
+        function gerarMatrizCruzada(modulo) {
+            const a = parseInt(document.getElementById(`inp-a-${modulo}`).value || '0', 10);
+            const b = parseInt(document.getElementById(`inp-b-${modulo}`).value || '0', 10);
+            const r = parseInt(document.getElementById(`inp-r-${modulo}`).value || '0', 10);
+            if (a < 2 || b < 2 || r < 2) { showToast('Informe pelo menos 2 níveis para A, 2 níveis para B e 2 blocos.', 'erro'); return; }
+            const container = document.getElementById(`matriz-${modulo}`);
+            let html = '<div class="solver-matrix"><div class="solver-matrix-head"><span>Fator A</span><span>Fator B</span><span>Bloco</span><span>Valor observado</span></div>';
+            for (let ia = 1; ia <= a; ia++) for (let ib = 1; ib <= b; ib++) for (let ir = 1; ir <= r; ir++) {
+                html += `<div class="solver-matrix-row matriz-row">
+                    <input class="agro-input text-xs" data-campo="a" value="${ia}" placeholder="A">
+                    <input class="agro-input text-xs" data-campo="b" value="${ib}" placeholder="B">
+                    <input class="agro-input text-xs" data-campo="bloco" value="${ir}" placeholder="Bloco">
+                    <input class="agro-input text-xs" data-campo="valor" placeholder="Valor" inputmode="decimal">
+                </div>`;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById(`btn-calc-matriz-${modulo}`).classList.remove('hidden');
+            showToast('Matriz premium gerada. Preencha a coluna Valor e processe.', 'success');
+        }
+
+        function gerarMatrizSimples() {
+            const t = parseInt(document.getElementById('inp-t-simples').value || '0', 10);
+            const r = parseInt(document.getElementById('inp-r-simples').value || '0', 10);
+            const delineamento = document.querySelector('input[name="delinSimples"]:checked').value;
+            const container = document.getElementById('matriz-simples');
+            if (t < 2 || r < 2) { showToast('Informe pelo menos 2 tratamentos e 2 repetições.', 'erro'); return; }
+            let html = '<div class="solver-matrix">';
+            if (delineamento === 'dql') {
+                html += '<div class="solver-matrix-head"><span>Tratamento</span><span>Linha</span><span>Coluna</span><span>Valor observado</span></div>';
+                for (let i = 1; i <= t; i++) for (let j = 1; j <= t; j++) {
+                    html += `<div class="solver-matrix-row matriz-row"><input class="agro-input text-xs" data-campo="trat" value="${((i+j-2)%t)+1}" placeholder="Trat"><input class="agro-input text-xs" data-campo="linha" value="${i}" placeholder="Linha"><input class="agro-input text-xs" data-campo="coluna" value="${j}" placeholder="Coluna"><input class="agro-input text-xs" data-campo="valor" placeholder="Valor" inputmode="decimal"></div>`;
+                }
+            } else {
+                html += '<div class="solver-matrix-head solver-matrix-head-3"><span>Tratamento</span><span>Bloco/Repetição</span><span>Valor observado</span></div>';
+                for (let trat = 1; trat <= t; trat++) for (let rep = 1; rep <= r; rep++) {
+                    html += `<div class="solver-matrix-row solver-matrix-row-3 matriz-row"><input class="agro-input text-xs" data-campo="trat" value="${trat}" placeholder="Trat"><input class="agro-input text-xs" data-campo="bloco" value="${rep}" placeholder="Bloco"><input class="agro-input text-xs" data-campo="valor" placeholder="Valor" inputmode="decimal"></div>`;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById('btn-calc-matriz-simples').classList.remove('hidden');
+            showToast('Grade gerada. Preencha os valores observados e processe.', 'success');
+        }
+
+        async function calcularRegressaoDireta(btnElement) {
+            const result = document.getElementById('result-direto');
+            const placeholder = document.getElementById('placeholder-direto');
+            const form = new FormData();
+            const file = document.getElementById('file-direto').files[0];
+            if (file) form.append('file', file);
+            form.append('doses', document.getElementById('doses-direto').value);
+            form.append('produtividades', document.getElementById('prod-direto').value);
+            form.append('modelo_regr', document.getElementById('modelo-direto').value);
+            btnElement.disabled = true;
+            const originalHtml = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculando...';
+            mostrarCarregamento('Calculando regressão direta', 'Ajustando a curva, avaliando modelos alternativos, estimando dose ótima e preparando o relatório.');
+            try {
+                const resp = await fetch(`${API_BASE}/regressao-direta`, { method: 'POST', body: form });
+                const data = await resp.json();
+                if (!resp.ok || data.status === 'erro') throw new Error(data.mensagem || data.detail || 'Falha no cálculo.');
+                analises.regressaodireta = { anova: { cv: 'Não se aplica', anova: [] }, posthoc: data };
+                renderResultadoDireto(data, result, placeholder);
+                showToast('Regressão direta concluída!', 'success');
+            } catch (err) { showToast(err.message, 'erro', 7000); }
+            finally { ocultarCarregamento(); btnElement.disabled = false; btnElement.innerHTML = originalHtml; }
+        }
+
+        function renderPostHoc(data, modulo) {
+            if (data.tipo === 'regressao') {
+                const img = data.img_svg ? `<img class="w-full rounded-3xl border border-slate-100 shadow-soft my-6 bg-white" src="data:image/svg+xml;base64,${data.img_svg}" alt="Gráfico da regressão">` : (data.img_png ? `<img class="w-full rounded-3xl border border-slate-100 shadow-soft my-6 bg-white" src="data:image/png;base64,${data.img_png}" alt="Gráfico da regressão">` : '');
+                return `${resultadoHeaderPremium('Regressão ajustada', `${data.modelo || ''} • R² = ${data.r2 || '-'}`)}
+                    <div class="solver-equation"><span>Equação ajustada</span><code>${data.equacao || '-'}</code></div>
+                    ${data.dose_otima ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5"><div class="solver-kpi green"><span>Dose ótima</span><strong>${data.dose_otima}</strong></div><div class="solver-kpi amber"><span>Produtividade ótima</span><strong>${data.resposta_otima || data.produtividade_otima}</strong></div></div>` : ''}
+                    ${etiquetaRecomendacaoModelo(data.recomendacao_modelo)}
+                    ${img}${botoesDownloadImagem(data, `regressao_${modulo}`)}${tabelaHtml(data.anova_reg || [])}`;
+            }
+            if (data.tipo === 'dunnett') return `${resultadoHeaderPremium('Teste de Dunnett', `Testemunha: ${data.testemunha || '-'} • DMS: ${data.dms || '-'} • Alfa: ${data.alpha_txt || '-'}`)}${tabelaHtml(data.resultados || [])}`;
+            const tabela = data.tabela || data.resultados || [];
+            return `${resultadoHeaderPremium(`Teste de ${data.nome_teste || data.tipo}`, `DMS: ${data.dms || '-'} • Alfa: ${data.alpha_txt || '-'}`)}${tabelaHtml(tabela)}`;
+        }
+
+        function renderResultadoDireto(data, result, placeholder) {
+            placeholder.classList.add('hidden');
+            result.classList.remove('hidden');
+            const grafico = data.img_svg
+                ? `<img alt="Gráfico vetorial da regressão" class="w-full rounded-3xl border border-slate-100 shadow-soft mb-6 bg-white" src="data:image/svg+xml;base64,${data.img_svg}">`
+                : (data.img_png ? `<img alt="Gráfico da regressão" class="w-full rounded-3xl border border-slate-100 shadow-soft mb-6 bg-white" src="data:image/png;base64,${data.img_png}">` : (data.svg || ''));
+            result.innerHTML = `
+                ${resultadoHeaderPremium('Resultado da Regressão Direta', `${data.modelo} • R² = ${data.r2}`, data.dose_otima ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-[320px]"><div class="solver-kpi green"><span>Dose ótima</span><strong>${data.dose_otima}</strong></div><div class="solver-kpi amber"><span>Produtividade ótima</span><strong>${data.produtividade_otima || data.resposta_otima}</strong></div></div>` : '')}
+                <div class="solver-equation"><span>Equação ajustada</span><code>${data.equacao}</code></div>
+                ${etiquetaRecomendacaoModelo(data.recomendacao_modelo)}
+                ${grafico}
+                ${botoesDownloadImagem(data, 'regressao_direta_dose_otima')}
+                ${tabelaHtml(data.pontos)}
+                <div class="flex flex-wrap justify-center gap-3 pt-8">
+                    <button onclick="baixarLaudoCompleto('regressaodireta')" class="agro-btn agro-btn-primary px-8 py-4"><i class="fa-solid fa-file-pdf"></i> Baixar relatório técnico PDF</button>
+                    <button onclick="novaAnaliseModulo('regressaodireta')" class="agro-btn agro-btn-outline px-8 py-4"><i class="fa-solid fa-rotate-left"></i> Nova análise</button>
+                </div>`;
+        }
+
+        function textoPostHocRelatorio(ph) {
+            if (!ph) return ['Nenhuma análise posterior foi executada.'];
+            if (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') return textoRegressaoRelatorio(ph);
+            const nome = ph.nome_teste || (ph.tipo ? ph.tipo.toUpperCase() : 'comparação de médias');
+            const alfa = ph.alpha_txt || '5%';
+            if (ph.tipo === 'dunnett') return [`No teste de Dunnett, cada tratamento foi comparado com a testemunha ${ph.testemunha || ''}. Diferenças marcadas como significativas indicam médias estatisticamente distintas da testemunha no nível de probabilidade de ${alfa}.`];
+            return [`Na comparação de médias, médias seguidas pela mesma letra não diferem estatisticamente entre si pelo teste de ${nome}, no nível de probabilidade de ${alfa}. Médias com letras diferentes indicam diferença significativa entre os tratamentos avaliados.`];
+        }
+
+        function textoRegressaoRelatorio(ph) {
+            const textos = [];
+            const modelo = ph.modelo || 'modelo ajustado';
+            const r2 = numeroRelatorio(ph.r2);
+            const reg = (ph.anova_reg || []).find(r => /regress/i.test(String(r.FV)));
+            const desvio = (ph.anova_reg || []).find(r => /desvio/i.test(String(r.FV)));
+            const nivel = nivelProbabilidade(reg || {}, '5%');
+            if (ph.tipo === 'regressao_direta') {
+                textos.push(`Foi ajustado o modelo ${modelo} diretamente aos pares de dose e produtividade informados. Como essa modalidade não utiliza repetições ou estrutura de delineamento experimental, a interpretação se baseia no formato da curva, no R² e na coerência agronômica do ajuste.`);
+            } else if (reg && ehSignificativo(reg)) {
+                textos.push(`A análise de regressão indicou efeito significativo para o modelo ${modelo}, pois o F calculado da regressão foi superior ao F tabelado. Portanto, a curva ajustada pode ser utilizada para descrever a resposta da variável avaliada em função das doses, no nível de probabilidade de ${nivel}.`);
+            } else {
+                textos.push(`A análise de regressão não indicou ajuste estatisticamente significativo para o modelo ${modelo}. Portanto, essa curva deve ser interpretada com cautela e não é recomendada como base principal para tomada de decisão sem testar outros modelos.`);
+            }
+            if (r2 !== null) {
+                if (r2 >= 0.90) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica excelente capacidade de explicação dos dados pelo modelo ajustado.`);
+                else if (r2 >= 0.75) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica boa representação dos dados pelo modelo ajustado.`);
+                else if (r2 >= 0.60) textos.push(`O coeficiente de determinação R² = ${ph.r2} indica representação moderada dos dados. O modelo pode ser útil, mas recomenda-se comparar com outros ajustes.`);
+                else textos.push(`O coeficiente de determinação R² = ${ph.r2} é baixo, indicando que o modelo escolhido não representa bem a variação observada. Recomenda-se testar modelos alternativos e revisar a distribuição das doses.`);
+            }
+            if (desvio && ehSignificativo(desvio)) textos.push(`O desvio da regressão foi significativo, indicando que ainda existe variação não explicada pelo modelo. Recomenda-se avaliar outro tipo de regressão ou aumentar o número de doses para melhorar o ajuste.`);
+            else if (desvio) textos.push(`O desvio da regressão não foi significativo, indicando que o modelo ajustado descreve adequadamente a tendência média dos dados dentro da precisão experimental.`);
+            if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) textos.push(`A dose ótima estimada foi ${ph.dose_otima || '-'}, com produtividade ótima estimada de ${ph.resposta_otima || ph.produtividade_otima || '-'}. Esses valores devem ser interpretados dentro do intervalo experimental avaliado.`);
+            if (ph.recomendacao_modelo && ph.recomendacao_modelo.mensagem) textos.push(ph.recomendacao_modelo.mensagem);
+            return textos;
+        }
+
+        async function addGraficoRegressaoPdf(doc, ph, y) {
+            if (!ph || !(ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') || !ph.img_png) return y;
+            if (y > 166) y = novaPaginaPdf(doc);
+            y = addTituloSecaoPdf(doc, 'Gráfico da regressão', y);
+            try {
+                doc.setFillColor(255, 255, 255); doc.setDrawColor(226, 232, 240); doc.roundedRect(18, y - 2, 174, 106, 3, 3, 'FD');
+                doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 22, y + 2, 166, 96);
+                y += 110;
+            } catch (e) { y = addTextoQuebradoPdf(doc, 'Não foi possível inserir o gráfico automaticamente no PDF.', 14, y); }
+            return y;
+        }
+
+        async function baixarLaudoCompleto(modulo) {
+            const pacote = analises[modulo];
+            if (!pacote || (!pacote.anova && modulo !== 'regressaodireta')) { showToast('Execute primeiro a ANOVA.', 'erro'); return; }
+            if (!pacote.posthoc) { showToast(modulo === 'regressaodireta' ? 'Calcule primeiro a regressão direta.' : 'Execute primeiro o teste de comparação de médias ou regressão posterior.', 'erro'); return; }
+            if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Biblioteca PDF não carregada. Verifique sua internet e recarregue a página.', 'erro'); return; }
+            mostrarCarregamento('Gerando relatório PDF', 'Montando capa, interpretação técnica, tabelas, recomendação e gráficos no padrão Solver Agro v14.');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+                if (doc.setCharSpace) doc.setCharSpace(0); doc.setFont('helvetica', 'normal');
+                addCapaRelatorioPdf(doc, modulo, pacote); doc.addPage(); addCabecalhoPdf(doc); let y = 36;
+                const nomesModulos = { simples: 'Fator único (DIC/DBC/DQL)', fatorial: 'Fatorial duplo (A x B)', parcelas: 'Parcelas subdivididas', regressaodireta: 'Regressão direta para dose ótima' };
+                doc.setFillColor(255, 255, 255); doc.setDrawColor(220, 241, 225); doc.roundedRect(14, y, 182, 26, 3, 3, 'FD');
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(61, 142, 86); doc.text('IDENTIFICAÇÃO DA ANÁLISE', 20, y + 7);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(30, 41, 59); doc.text(`Módulo: ${nomesModulos[modulo] || modulo}`, 20, y + 16);
+                const cvTxt = pacote.anova?.cv ? `CV: ${pacote.anova.cv}` : (pacote.anova?.cv_a ? `CV A: ${pacote.anova.cv_a || '-'} | CV B: ${pacote.anova.cv_b || '-'}` : 'CV: não se aplica');
+                doc.text(cvTxt, 112, y + 16); y += 36;
+                if (modulo !== 'regressaodireta') {
+                    y = addTituloSecaoPdf(doc, '1. Interpretação do teste F', y); y = addParagrafosPdf(doc, textoAnovaRelatorio(modulo, pacote.anova.anova || []), y);
+                    y = addTabelaBonitaPdf(doc, '2. Tabela da análise de variância (ANOVA)', pacote.anova.anova || [], y);
+                }
+                const ph = pacote.posthoc;
+                y = addTituloSecaoPdf(doc, modulo === 'regressaodireta' ? '1. Interpretação da regressão direta' : (ph.tipo === 'regressao' ? '3. Interpretação da regressão' : '3. Interpretação do teste de comparação de médias'), y);
+                y = addParagrafosPdf(doc, textoPostHocRelatorio(ph), y);
+                if (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') {
+                    if (y > 238) y = novaPaginaPdf(doc);
+                    doc.setFillColor(248, 250, 252); doc.setDrawColor(226, 232, 240); doc.roundedRect(14, y, 182, 22, 3, 3, 'FD');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(61, 142, 86); doc.text('MODELO AJUSTADO', 20, y + 7);
+                    doc.setTextColor(30, 41, 59); doc.text(`Modelo: ${limparTextoPdf(ph.modelo || '-')}`, 20, y + 15); doc.text(`R²: ${limparTextoPdf(ph.r2 || '-')}`, 82, y + 15); y += 30;
+                    y = addTextoQuebradoPdf(doc, `Equação ajustada: ${ph.equacao || '-'}`, 18, y, 174, 5.2); y += 5;
+                    if (ph.dose_otima || ph.resposta_otima || ph.produtividade_otima) {
+                        if (y > 252) y = novaPaginaPdf(doc); doc.setFillColor(240, 249, 241); doc.setDrawColor(187, 225, 198); doc.roundedRect(14, y, 86, 18, 3, 3, 'FD');
+                        doc.setFillColor(251, 248, 244); doc.setDrawColor(232, 216, 195); doc.roundedRect(108, y, 88, 18, 3, 3, 'FD');
+                        doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(45, 114, 68); doc.text('DOSE ÓTIMA', 19, y + 6); doc.setFontSize(14); doc.text(String(ph.dose_otima || '-'), 19, y + 14);
+                        doc.setTextColor(136, 92, 60); doc.setFontSize(8); doc.text('PRODUTIVIDADE ÓTIMA', 113, y + 6); doc.setFontSize(14); doc.text(String(ph.resposta_otima || ph.produtividade_otima || '-'), 113, y + 14); y += 26;
+                    }
+                    if (ph.anova_reg && ph.anova_reg.length) y = addTabelaBonitaPdf(doc, modulo === 'regressaodireta' ? '2. Dados ajustados' : '4. ANOVA da regressão', ph.anova_reg || [], y);
+                    else y = addTabelaBonitaPdf(doc, '2. Dados observados e estimados', ph.pontos || [], y);
+                    y = await addGraficoRegressaoPdf(doc, ph, y);
+                } else if (ph.tipo === 'dunnett') y = addTabelaBonitaPdf(doc, '4. Resultado do teste de Dunnett', ph.resultados || [], y);
+                else y = addTabelaBonitaPdf(doc, `4. Resultado do teste de ${ph.nome_teste || ph.tipo}`, ph.tabela || [], y);
+                if (y > 254) y = novaPaginaPdf(doc);
+                y = addTituloSecaoPdf(doc, modulo === 'regressaodireta' ? '3. Recomendação final' : '5. Conclusão técnica', y);
+                const conclusao = (ph.tipo === 'regressao' || ph.tipo === 'regressao_direta')
+                    ? (ph.recomendacao_modelo?.mensagem || 'A recomendação técnica deve considerar a significância do teste F da regressão, o valor de R², o comportamento biológico da curva e a dose ótima estimada dentro do intervalo experimental avaliado.')
+                    : 'A interpretação final deve considerar a significância do teste F e o agrupamento das médias pelo teste posterior. Tratamentos com letras diferentes apresentam desempenho estatisticamente distinto.';
+                y = addParagrafosPdf(doc, [conclusao], y);
+                aplicarRodapePdf(doc); doc.save(`laudo_solver_agro_${modulo}.pdf`); showToast('Relatório PDF gerado com sucesso.', 'success');
+            } catch (err) { showToast(`Erro ao gerar PDF: ${err.message}`, 'erro', 7000); }
+            finally { ocultarCarregamento(); }
+        }
+
+        function novaAnaliseModulo(modulo) {
+            if (modulo === 'regressaodireta') {
+                document.getElementById('result-direto')?.classList.add('hidden');
+                document.getElementById('placeholder-direto')?.classList.remove('hidden');
+                document.getElementById('doses-direto').value = '';
+                document.getElementById('prod-direto').value = '';
+                const f = document.getElementById('file-direto'); if (f) f.value = '';
+                const n = document.getElementById('file-name-direto'); if (n) n.textContent = 'Nenhum arquivo selecionado';
+                analises.regressaodireta = {};
+                return;
+            }
+            const result = document.getElementById(`result-${modulo}`); const placeholder = document.getElementById(`placeholder-${modulo}`);
+            if (result) { result.classList.add('hidden'); result.innerHTML = ''; }
+            if (placeholder) placeholder.classList.remove('hidden');
+            const file = document.getElementById(`file-${modulo}`); if (file) file.value = '';
+            const name = document.getElementById(`file-name-${modulo}`); if (name) name.textContent = 'Nenhum arquivo selecionado';
+            const btn = document.getElementById(`btn-proc-${modulo}`); if (btn) btn.classList.add('hidden');
+            arquivosData[modulo] = null; analises[modulo] = {};
         }
 
 
