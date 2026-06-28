@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 a
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -2240,10 +2241,149 @@ a
             </div>`;
         }
 
+        /* ====================== Gráfico de regressão com Chart.js (visual premium) ====================== */
+        const SOLVER_CHART_REG = {};
+
+        function solverContainerGraficoHtml(idCanvas, classeExtra) {
+            return `<div class="solver-chart-wrap ${classeExtra || ''}" style="position:relative;width:100%;background:#ffffff;border:1px solid #e6ece8;border-radius:18px;padding:22px 24px 16px;margin:0 0 24px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                    <div>
+                        <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#5a8a6e;">Ajuste de regressão</div>
+                        <div class="solver-chart-modelo" style="font-size:17px;font-weight:800;color:#0e2116;margin-top:2px;">—</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px;font-weight:700;color:#94a3b8;">R²</div>
+                        <div class="solver-chart-r2" style="font-size:17px;font-weight:800;color:#3d8e56;">—</div>
+                    </div>
+                </div>
+                <div style="position:relative;width:100%;height:340px;">
+                    <canvas id="${idCanvas}" role="img" aria-label="Gráfico de regressão com curva ajustada, dados observados e ponto ótimo"></canvas>
+                </div>
+                <div class="solver-chart-legenda" style="display:flex;flex-wrap:wrap;gap:18px;margin-top:10px;padding-top:13px;border-top:1px solid #eef3f0;">
+                    <span style="display:flex;align-items:center;gap:7px;font-size:12px;color:#52514e;font-weight:600;"><span style="width:18px;height:3px;border-radius:2px;background:#3d8e56;"></span>Curva ajustada</span>
+                    <span style="display:flex;align-items:center;gap:7px;font-size:12px;color:#52514e;font-weight:600;"><span style="width:9px;height:9px;border-radius:50%;background:#0e2116;"></span>Dados observados</span>
+                    <span class="solver-chart-leg-otimo" style="display:flex;align-items:center;gap:7px;font-size:12px;color:#52514e;font-weight:600;"><span style="width:9px;height:9px;border-radius:50%;background:#b18356;"></span>Ponto ótimo</span>
+                </div>
+            </div>`;
+        }
+
+        function desenharGraficoRegressao(idCanvas, data) {
+            const dg = data && data.dados_grafico;
+            const canvas = document.getElementById(idCanvas);
+            if (!canvas) return false;
+            if (!dg || !Array.isArray(dg.curva) || !dg.curva.length || typeof Chart === 'undefined') {
+                // Fallback: se não há dados estruturados ou Chart.js não carregou, usa a imagem do backend.
+                const wrap = canvas.closest('.solver-chart-wrap');
+                if (wrap && (data.img_svg || data.img_png)) {
+                    const src = data.img_svg ? `data:image/svg+xml;base64,${data.img_svg}` : `data:image/png;base64,${data.img_png}`;
+                    wrap.innerHTML = `<img class="w-full rounded-2xl" src="${src}" alt="Gráfico da regressão">`;
+                }
+                return false;
+            }
+
+            // Preenche cabeçalho (modelo, R²) e legenda
+            const wrap = canvas.closest('.solver-chart-wrap');
+            if (wrap) {
+                const elModelo = wrap.querySelector('.solver-chart-modelo');
+                const elR2 = wrap.querySelector('.solver-chart-r2');
+                const elLegOtimo = wrap.querySelector('.solver-chart-leg-otimo');
+                if (elModelo) elModelo.textContent = data.modelo || dg.titulo || 'Regressão';
+                if (elR2) elR2.textContent = data.r2 ? String(data.r2).replace('.', ',') : '—';
+                if (elLegOtimo) elLegOtimo.style.display = dg.otimo ? '' : 'none';
+            }
+
+            if (SOLVER_CHART_REG[idCanvas]) { try { SOLVER_CHART_REG[idCanvas].destroy(); } catch(e){} }
+
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createLinearGradient(0, 0, 0, 330);
+            grad.addColorStop(0, 'rgba(61,142,86,0.18)');
+            grad.addColorStop(1, 'rgba(61,142,86,0.01)');
+
+            const datasets = [
+                {
+                    label: 'Curva ajustada',
+                    data: dg.curva.map(p => ({ x: p.x, y: p.y })),
+                    type: 'line', showLine: true, fill: true,
+                    backgroundColor: grad, borderColor: '#3d8e56', borderWidth: 3,
+                    pointRadius: 0, tension: 0.35, order: 3
+                },
+                {
+                    label: 'Dados observados',
+                    data: (dg.observados || []).map(p => ({ x: p.x, y: p.y })),
+                    type: 'scatter', backgroundColor: '#0e2116', borderColor: '#ffffff',
+                    borderWidth: 2, pointRadius: 5, pointHoverRadius: 7, order: 1
+                }
+            ];
+            if (dg.otimo) {
+                datasets.push({
+                    label: 'Ponto ótimo',
+                    data: [{ x: dg.otimo.x, y: dg.otimo.y }],
+                    type: 'scatter', backgroundColor: '#b18356', borderColor: '#ffffff',
+                    borderWidth: 2.5, pointRadius: 7, pointHoverRadius: 9, order: 0
+                });
+            }
+
+            const fonte = "'Plus Jakarta Sans', sans-serif";
+            const linhaOtimo = {
+                id: 'linhaOtimo',
+                beforeDatasetsDraw(chart) {
+                    if (!dg.otimo) return;
+                    const { ctx, chartArea, scales } = chart;
+                    const xPix = scales.x.getPixelForValue(dg.otimo.x);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(xPix, chartArea.top);
+                    ctx.lineTo(xPix, chartArea.bottom);
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = '#b8cabf';
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            };
+
+            SOLVER_CHART_REG[idCanvas] = new Chart(ctx, {
+                data: { datasets },
+                plugins: [linhaOtimo],
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', intersect: true },
+                    layout: { padding: { top: 10, right: 12, bottom: 4, left: 4 } },
+                    scales: {
+                        x: {
+                            type: 'linear', title: { display: true, text: dg.eixo_x || 'Dose', font: { family: fonte, size: 12, weight: '600' }, color: '#5a6b62' },
+                            grid: { color: '#eef3f0', drawTicks: false }, border: { color: '#c8d6cd' },
+                            ticks: { font: { family: fonte, size: 11 }, color: '#94a3b8', padding: 8 }
+                        },
+                        y: {
+                            title: { display: true, text: dg.eixo_y || 'Produtividade', font: { family: fonte, size: 12, weight: '600' }, color: '#5a6b62' },
+                            grid: { color: '#eef3f0', drawTicks: false }, border: { color: '#c8d6cd' },
+                            ticks: { font: { family: fonte, size: 11 }, color: '#94a3b8', padding: 8 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0e2116', titleFont: { family: fonte, size: 12, weight: '700' },
+                            bodyFont: { family: fonte, size: 12 }, padding: 10, cornerRadius: 8, displayColors: false,
+                            callbacks: {
+                                title: (items) => {
+                                    const p = items[0];
+                                    if (p.dataset.label === 'Ponto ótimo') return 'Ponto ótimo';
+                                    return `${dg.eixo_x || 'Dose'}: ${Number(p.parsed.x).toLocaleString('pt-BR', {maximumFractionDigits:2})}`;
+                                },
+                                label: (item) => `${dg.eixo_y || 'Produtividade'}: ${Number(item.parsed.y).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}`
+                            }
+                        }
+                    }
+                }
+            });
+            return true;
+        }
+
         function formatarNumeroBr(valor) {
             if (valor === null || valor === undefined || valor === '-' || valor === '') return '-';
-            const n = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
-            if (Number.isNaN(n)) return String(valor);
+            const n = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));            if (Number.isNaN(n)) return String(valor);
             if (Number.isInteger(n)) return n.toLocaleString('pt-BR');
             return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
@@ -2471,14 +2611,15 @@ a
             finally { ocultarCarregamento(); btnElement.disabled = false; btnElement.innerHTML = originalHtml; }
         }
 
-        function renderPostHoc(data, modulo) {
+        function renderPostHoc(data, modulo, idCanvas) {
             if (data.tipo === 'regressao') {
-                const img = data.img_svg ? `<img class="w-full rounded-3xl border border-slate-100 shadow-soft my-6 bg-white" src="data:image/svg+xml;base64,${data.img_svg}" alt="Gráfico da regressão">` : (data.img_png ? `<img class="w-full rounded-3xl border border-slate-100 shadow-soft my-6 bg-white" src="data:image/png;base64,${data.img_png}" alt="Gráfico da regressão">` : '');
+                idCanvas = idCanvas || `solver-chart-${modulo}-${Math.random().toString(36).slice(2,8)}`;
+                const grafico = (data.dados_grafico || data.img_png || data.img_svg) ? solverContainerGraficoHtml(idCanvas, 'mt-6') : '';
                 return `${resultadoHeaderPremium('Regressão ajustada', `${data.modelo || ''} • R² = ${data.r2 || '-'}`)}
                     <div class="solver-equation"><span>Equação ajustada</span><code>${data.equacao || '-'}</code></div>
                     ${data.dose_otima ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5"><div class="solver-kpi green"><span>Dose ótima</span><strong>${data.dose_otima}</strong></div><div class="solver-kpi amber"><span>Produtividade ótima</span><strong>${data.resposta_otima || data.produtividade_otima}</strong></div></div>` : ''}
                     ${etiquetaRecomendacaoModelo(data.recomendacao_modelo)}
-                    ${img}${botoesDownloadImagem(data, `regressao_${modulo}`)}${tabelaHtml(data.anova_reg || [])}`;
+                    ${grafico}${botoesDownloadImagem(data, `regressao_${modulo}`)}${tabelaHtml(data.anova_reg || [])}`;
             }
             if (data.tipo === 'dunnett') return `${resultadoHeaderPremium('Teste de Dunnett', `Testemunha: ${data.testemunha || '-'} • DMS: ${data.dms || '-'} • Alfa: ${data.alpha_txt || '-'}`)}${tabelaHtml(data.resultados || [])}`;
             const tabela = data.tabela || data.resultados || [];
@@ -2488,9 +2629,8 @@ a
         function renderResultadoDireto(data, result, placeholder) {
             placeholder.classList.add('hidden');
             result.classList.remove('hidden');
-            const grafico = data.img_svg
-                ? `<img alt="Gráfico vetorial da regressão" class="w-full rounded-3xl border border-slate-100 shadow-soft mb-6 bg-white" src="data:image/svg+xml;base64,${data.img_svg}">`
-                : (data.img_png ? `<img alt="Gráfico da regressão" class="w-full rounded-3xl border border-slate-100 shadow-soft mb-6 bg-white" src="data:image/png;base64,${data.img_png}">` : (data.svg || ''));
+            const idCanvas = 'solver-chart-direto';
+            const grafico = (data.dados_grafico || data.img_png || data.img_svg) ? solverContainerGraficoHtml(idCanvas, 'mb-6') : '';
             result.innerHTML = `
                 ${resultadoHeaderPremium('Resultado da Regressão Direta', `${data.modelo} • R² = ${data.r2}`, data.dose_otima ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-[320px]"><div class="solver-kpi green"><span>Dose ótima</span><strong>${data.dose_otima}</strong></div><div class="solver-kpi amber"><span>Produtividade ótima</span><strong>${data.produtividade_otima || data.resposta_otima}</strong></div></div>` : '')}
                 <div class="solver-equation"><span>Equação ajustada</span><code>${data.equacao}</code></div>
@@ -2502,6 +2642,7 @@ a
                     <button onclick="baixarLaudoCompleto('regressaodireta')" class="agro-btn agro-btn-primary px-8 py-4"><i class="fa-solid fa-file-pdf"></i> Baixar relatório técnico PDF</button>
                     <button onclick="novaAnaliseModulo('regressaodireta')" class="agro-btn agro-btn-outline px-8 py-4"><i class="fa-solid fa-rotate-left"></i> Nova análise</button>
                 </div>`;
+            requestAnimationFrame(() => desenharGraficoRegressao(idCanvas, data));
         }
 
         function textoPostHocRelatorio(ph) {
@@ -2925,16 +3066,85 @@ a
             return y + 7;
         }
 
+        function gerarImagemGraficoChart(ph) {
+            // Desenha o gráfico Chart.js num canvas off-screen e devolve um PNG (dataURL).
+            // Usado para embutir o gráfico premium no PDF com o mesmo visual do site.
+            return new Promise((resolve) => {
+                if (!ph || !ph.dados_grafico || typeof Chart === 'undefined') { resolve(null); return; }
+                const canvas = document.createElement('canvas');
+                canvas.width = 1100; canvas.height = 560;
+                canvas.style.position = 'fixed';
+                canvas.style.left = '-9999px';
+                canvas.style.top = '0';
+                document.body.appendChild(canvas);
+                const ctx = canvas.getContext('2d');
+                const dg = ph.dados_grafico;
+                const grad = ctx.createLinearGradient(0, 0, 0, 540);
+                grad.addColorStop(0, 'rgba(61,142,86,0.18)');
+                grad.addColorStop(1, 'rgba(61,142,86,0.01)');
+                const fonte = "'Plus Jakarta Sans', sans-serif";
+                const datasets = [
+                    { label: 'Curva ajustada', data: dg.curva.map(p => ({x:p.x,y:p.y})), type:'line', showLine:true, fill:true, backgroundColor:grad, borderColor:'#3d8e56', borderWidth:3.5, pointRadius:0, tension:0.35, order:3 },
+                    { label: 'Dados observados', data: (dg.observados||[]).map(p=>({x:p.x,y:p.y})), type:'scatter', backgroundColor:'#0e2116', borderColor:'#ffffff', borderWidth:2.5, pointRadius:7, order:1 }
+                ];
+                if (dg.otimo) datasets.push({ label:'Ponto ótimo', data:[{x:dg.otimo.x,y:dg.otimo.y}], type:'scatter', backgroundColor:'#b18356', borderColor:'#ffffff', borderWidth:3, pointRadius:10, order:0 });
+                const linhaOtimo = {
+                    id:'linhaOtimoPdf',
+                    beforeDatasetsDraw(chart){
+                        if(!dg.otimo) return;
+                        const {ctx, chartArea, scales} = chart;
+                        const xPix = scales.x.getPixelForValue(dg.otimo.x);
+                        ctx.save(); ctx.beginPath(); ctx.setLineDash([6,6]);
+                        ctx.moveTo(xPix, chartArea.top); ctx.lineTo(xPix, chartArea.bottom);
+                        ctx.lineWidth=2; ctx.strokeStyle='#b8cabf'; ctx.stroke(); ctx.restore();
+                    }
+                };
+                let finalizado = false;
+                const finalizar = (chart) => {
+                    if (finalizado) return; finalizado = true;
+                    try {
+                        const url = canvas.toDataURL('image/png', 1.0);
+                        chart.destroy();
+                        document.body.removeChild(canvas);
+                        resolve(url);
+                    } catch(e) { try{ document.body.removeChild(canvas);}catch(_){} resolve(null); }
+                };
+                const chart = new Chart(ctx, {
+                    data: { datasets },
+                    plugins: [linhaOtimo],
+                    options: {
+                        responsive:false, animation:{ onComplete: () => finalizar(chart) },
+                        devicePixelRatio:2,
+                        layout:{ padding:{ top:18, right:24, bottom:12, left:12 } },
+                        scales:{
+                            x:{ type:'linear', title:{display:true,text:dg.eixo_x||'Dose',font:{family:fonte,size:18,weight:'600'},color:'#5a6b62'}, grid:{color:'#eef3f0',drawTicks:false}, border:{color:'#c8d6cd'}, ticks:{font:{family:fonte,size:15},color:'#94a3b8',padding:8} },
+                            y:{ title:{display:true,text:dg.eixo_y||'Produtividade',font:{family:fonte,size:18,weight:'600'},color:'#5a6b62'}, grid:{color:'#eef3f0',drawTicks:false}, border:{color:'#c8d6cd'}, ticks:{font:{family:fonte,size:15},color:'#94a3b8',padding:8} }
+                        },
+                        plugins:{ legend:{display:false}, tooltip:{enabled:false} }
+                    }
+                });
+                // Fallback de segurança caso o evento de animação não dispare
+                setTimeout(() => finalizar(chart), 1200);
+            });
+        }
+
         async function addGraficoRegressaoPdf(doc, ph, y) {
-            if (!ph || !(ph.tipo === 'regressao' || ph.tipo === 'regressao_direta') || !ph.img_png) return y;
-            if (y > 165) y = novaPaginaPdf(doc);
+            if (!ph || !(ph.tipo === 'regressao' || ph.tipo === 'regressao_direta')) return y;
+            if (!ph.dados_grafico && !ph.img_png) return y;
+            if (y > 150) y = novaPaginaPdf(doc);
             y = addTituloSecaoPdf(doc, 'Gráfico da regressão', y);
             try {
                 doc.setFillColor(255, 255, 255);
                 doc.setDrawColor(226, 232, 240);
-                doc.roundedRect(18, y - 2, 174, 104, 3, 3, 'FD');
-                doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 22, y + 2, 166, 94);
-                y += 108;
+                doc.roundedRect(18, y - 2, 174, 96, 4, 4, 'FD');
+                let imagem = null;
+                try { imagem = await gerarImagemGraficoChart(ph); } catch(e) { imagem = null; }
+                if (imagem) {
+                    doc.addImage(imagem, 'PNG', 23, y + 3, 164, 84);
+                } else if (ph.img_png) {
+                    doc.addImage(`data:image/png;base64,${ph.img_png}`, 'PNG', 23, y + 3, 164, 84);
+                }
+                y += 100;
             } catch (e) {
                 y = addTextoQuebradoPdf(doc, 'Não foi possível inserir o gráfico automaticamente no PDF.', 18, y);
             }
@@ -3780,6 +3990,7 @@ a
         const lista = obterListaPosthocs(modulo);
         if (!lista.length) { out.classList.add('hidden'); out.innerHTML = ''; return; }
         out.classList.remove('hidden');
+        const ids = lista.map((item, idx) => `solver-chart-stack-${modulo}-${idx}`);
         out.innerHTML = lista.map((item, idx) => `
             <section class="rounded-3xl border border-slate-200 bg-white shadow-soft p-6 ${idx ? 'mt-6' : ''}">
                 <div class="flex items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
@@ -3789,9 +4000,14 @@ a
                     </div>
                     <span class="text-xs text-slate-400 font-semibold">Os resultados anteriores foram preservados.</span>
                 </div>
-                ${renderPostHoc(item, modulo)}
+                ${renderPostHoc(item, modulo, ids[idx])}
             </section>
         `).join('');
+        requestAnimationFrame(() => {
+            lista.forEach((item, idx) => {
+                if (item && item.tipo === 'regressao') desenharGraficoRegressao(ids[idx], item);
+            });
+        });
     };
 
     window.rodarPostHoc = async function(modulo, btnElement) {
