@@ -312,7 +312,7 @@ a
         body {
             background:
                 radial-gradient(circle at 7% 8%, rgba(61,142,86,.11), transparent 34%),
-                radial-gradient(circle at 92% 8%, rgba(177,131,86,.12), transparent 30%),
+                radial-gradient(circle at 92% 8%, rgba(61,142,86,7.20), transparent 30%),
                 linear-gradient(135deg, #fdfdfb 0%, #f6fbf7 42%, #fbf8f4 100%);
         }
         #landing-page {
@@ -348,7 +348,7 @@ a
         #analysis-page main {
             background:
                 radial-gradient(circle at 88% 4%, rgba(61,142,86,.08), transparent 28%),
-                radial-gradient(circle at 12% 96%, rgba(177,131,86,.08), transparent 25%),
+                radial-gradient(circle at 12% 96%, rgba(61,142,86,4.80), transparent 25%),
                 linear-gradient(180deg, #f8fafc, #fbfdfb);
         }
         .solver-result-hero {
@@ -415,7 +415,7 @@ a
             border: 1px solid rgba(187, 225, 198, .92);
             border-radius: 26px;
             background:
-                radial-gradient(circle at 88% 0%, rgba(177,131,86,.16), transparent 30%),
+                radial-gradient(circle at 88% 0%, rgba(61,142,86,9.60), transparent 30%),
                 linear-gradient(135deg, rgba(240,249,241,.96), rgba(255,255,255,.94));
             padding: 1.25rem;
         }
@@ -2383,7 +2383,16 @@ a
 
         function formatarNumeroBr(valor) {
             if (valor === null || valor === undefined || valor === '-' || valor === '') return '-';
-            const n = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));            if (Number.isNaN(n)) return String(valor);
+            const n = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
+            if (Number.isNaN(n)) return String(valor);
+            if (!isFinite(n)) return n > 0 ? '\u221e' : '-\u221e';
+            if (n === 0) return '0';
+            const abs = Math.abs(n);
+            if (abs >= 1e6 || (abs > 0 && abs <= 1e-5)) {
+                const exp = Math.floor(Math.log10(abs));
+                const mantissa = n / Math.pow(10, exp);
+                return mantissa.toFixed(2).replace('.', ',') + '\u00d710^' + exp;
+            }
             if (Number.isInteger(n)) return n.toLocaleString('pt-BR');
             return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
@@ -4692,7 +4701,7 @@ a
                     <div class="solver-v24-brand-icon">${window.solverMarkSVG ? window.solverMarkSVG(36) : ''}</div>
                     <div>
                         <div class="solver-v24-brand-title">SOLVER</div>
-                        <div class="solver-v24-brand-sub">INTELLIGENCE FOR FIELD TRIALS</div>
+                        <div class="solver-v24-brand-sub">ANÁLISE EXPERIMENTAL</div>
                     </div>
                 </div>
                 <button onclick="showPage('analysis-page')" class="agro-btn agro-btn-primary hidden sm:inline-flex">
@@ -6080,7 +6089,7 @@ a
             #landing-page.solver-v26-dashboard{
                 background:
                     radial-gradient(circle at 9% 12%, rgba(61,142,86,.34), transparent 30%),
-                    radial-gradient(circle at 88% 10%, rgba(177,131,86,.28), transparent 30%),
+                    radial-gradient(circle at 88% 10%, rgba(61,142,86,16.80), transparent 30%),
                     radial-gradient(circle at 73% 76%, rgba(45,114,68,.18), transparent 28%),
                     radial-gradient(circle at 38% 108%, rgba(220,241,225,1), transparent 40%),
                     linear-gradient(135deg,#fcfcfa 0%,#e9f6ed 48%,#f4ecdf 100%) !important;
@@ -6092,7 +6101,7 @@ a
             .solver-v26-grid-bg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(45,142,86,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(45,142,86,.07) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.70),transparent 86%)}
             .solver-v26-orb{position:absolute;border-radius:999px;filter:blur(10px);opacity:.78;pointer-events:none;animation:solverV26Float 8s ease-in-out infinite alternate;}
             .solver-v26-orb.one{width:220px;height:220px;background:rgba(61,142,86,.18);right:11%;top:14%;}
-            .solver-v26-orb.two{width:160px;height:160px;background:rgba(177,131,86,.18);left:6%;bottom:12%;animation-delay:-3s;}
+            .solver-v26-orb.two{width:160px;height:160px;background:rgba(61,142,86,.12);left:6%;bottom:12%;animation-delay:-3s;}
             @keyframes solverV26Float{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(18px,-16px,0) scale(1.08)}}
             .solver-v26-nav{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;padding:2rem 0 1.2rem;}
             .solver-v26-brand{display:flex;align-items:center;gap:1rem;}
@@ -6112,7 +6121,7 @@ a
             .solver-v26-quick strong{display:block;font-size:1rem;font-weight:950;color:#08221a;}
             .solver-v26-quick span{display:block;margin-top:.22rem;font-size:.72rem;color:#64748b;font-weight:800;}
             .solver-v26-dashboard-card{position:relative;border:1px solid rgba(203,213,225,.76);background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(248,252,249,.78));backdrop-filter:blur(18px);box-shadow:0 34px 90px rgba(15,23,42,.12),inset 0 1px 0 rgba(255,255,255,.8);border-radius:2.05rem;padding:1.15rem;overflow:hidden;}
-            .solver-v26-dashboard-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 8%,rgba(61,142,86,.15),transparent 34%),radial-gradient(circle at 12% 88%,rgba(177,131,86,.13),transparent 30%);pointer-events:none;}
+            .solver-v26-dashboard-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 8%,rgba(61,142,86,.15),transparent 34%),radial-gradient(circle at 12% 88%,rgba(61,142,86,7.80),transparent 30%);pointer-events:none;}
             .solver-v26-dash-inner{position:relative;z-index:2;border-radius:1.55rem;background:rgba(255,255,255,.78);border:1px solid rgba(226,232,240,.9);padding:1rem;}
             .solver-v26-dash-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.95rem;}
             .solver-v26-window-dots{display:flex;gap:.38rem;}
@@ -6199,7 +6208,7 @@ a
                 <nav class="solver-v26-nav">
                     <div class="solver-v26-brand">
                         <div class="solver-v26-brand-icon">${window.solverMarkSVG ? window.solverMarkSVG(36) : ''}</div>
-                        <div><div class="solver-v26-logo-title">SOLVER</div><div class="solver-v26-logo-sub">INTELLIGENCE FOR FIELD TRIALS</div></div>
+                        <div><div class="solver-v26-logo-title">SOLVER</div><div class="solver-v26-logo-sub">ANÁLISE EXPERIMENTAL</div></div>
                     </div>
                     <div class="solver-v26-nav-actions">
                         <div class="solver-v26-pill"><i class="fa-solid fa-circle-check"></i> Dashboard estatístico</div>
@@ -6284,7 +6293,10 @@ a
                     </div>
                 </section>
 
-                <footer class="solver-v26-footer">© 2026 Solver — Estatística Experimental de Precisão</footer>
+                <footer class="solver-v26-footer" style="display:flex;align-items:center;justify-content:center;gap:16px;">
+                    <span>© 2026 Solver — Estatística Experimental de Precisão</span>
+                    <a href="https://github.com/plfernando10" target="_blank" rel="noopener" style="color:#64748b;transition:color 200ms;" aria-label="GitHub do desenvolvedor"><i class="fa-brands fa-github" style="font-size:1.3rem;"></i></a>
+                </footer>
             </div>`;
     }
 
@@ -6318,7 +6330,7 @@ a
             #analysis-page{
                 background:
                     radial-gradient(circle at 9% 8%, rgba(61,142,86,.20), transparent 30%),
-                    radial-gradient(circle at 92% 12%, rgba(177,131,86,.18), transparent 28%),
+                    radial-gradient(circle at 92% 12%, rgba(61,142,86,10.80), transparent 28%),
                     radial-gradient(circle at 50% 110%, rgba(220,241,225,.72), transparent 38%),
                     linear-gradient(135deg,#fcfcfa 0%,#ecf8f0 48%,#f7efe5 100%) !important;
                 color:#071f18;
@@ -6342,7 +6354,7 @@ a
                 z-index:1;
                 background:
                     radial-gradient(circle at 86% 2%, rgba(61,142,86,.12), transparent 30%),
-                    radial-gradient(circle at 10% 96%, rgba(177,131,86,.10), transparent 30%),
+                    radial-gradient(circle at 10% 96%, rgba(61,142,86,6.00), transparent 30%),
                     linear-gradient(180deg, rgba(255,255,255,.36), rgba(255,255,255,.18)) !important;
             }
 
@@ -6351,7 +6363,7 @@ a
                 overflow:hidden;
                 background:
                     radial-gradient(circle at 20% 4%, rgba(94,171,117,.32), transparent 32%),
-                    radial-gradient(circle at 88% 74%, rgba(177,131,86,.18), transparent 30%),
+                    radial-gradient(circle at 88% 74%, rgba(61,142,86,10.80), transparent 30%),
                     linear-gradient(180deg,#0e2116 0%,#12331f 48%,#071f18 100%) !important;
                 border-right:1px solid rgba(187,225,198,.18);
                 box-shadow:24px 0 70px rgba(14,33,22,.20);
@@ -6704,7 +6716,7 @@ a
             #analysis-page{
                 background:
                     radial-gradient(circle at 8% 8%, rgba(61,142,86,.18), transparent 28%),
-                    radial-gradient(circle at 92% 12%, rgba(177,131,86,.14), transparent 26%),
+                    radial-gradient(circle at 92% 12%, rgba(61,142,86,8.40), transparent 26%),
                     linear-gradient(135deg,#fbfdfb 0%,#eef8f1 50%,#f7f1e8 100%) !important;
                 color:#071f18;
             }
@@ -6741,7 +6753,7 @@ a
                 pointer-events:none;
                 background:
                     radial-gradient(circle at 18% 8%, rgba(61,142,86,.36), transparent 26%),
-                    radial-gradient(circle at 95% 86%, rgba(177,131,86,.18), transparent 28%);
+                    radial-gradient(circle at 95% 86%, rgba(61,142,86,10.80), transparent 28%);
                 opacity:.95;
             }
             #analysis-sidebar > *{position:relative;z-index:1;}
@@ -7220,7 +7232,8 @@ a
         doc.text(lmp(m.n+' \u2014 '+m.d), 18, 140);
 
         const cy = 158;
-        doc.setFillColor(...COR.leafGlow); doc.roundedRect(18,cy,W-36,38,4,4,'F');
+        doc.setFillColor(24, 68, 45); doc.setDrawColor(...COR.gold); doc.setLineWidth(0.5);
+        doc.roundedRect(18,cy,W-36,38,4,4,'FD');
         doc.setDrawColor(...COR.gold); doc.setLineWidth(1.4); doc.line(18,cy+8,18,cy+30);
         ft(doc,'bold',8); doc.setTextColor(...COR.gold);
         doc.text('RESUMO DA AN\u00c1LISE', 26, cy+12, {charSpace:0.8});
@@ -7242,8 +7255,8 @@ a
         doc.setDrawColor(...COR.leafGlow); doc.setLineWidth(0.4); doc.line(18,H-20,W-18,H-20);
         ft(doc,'bold',7.5); doc.setTextColor(...COR.greenSoft);
         const dh = new Date().toLocaleString('pt-BR');
-        doc.text('EMITIDO EM '+dh.toUpperCase(), 18, H-12, {charSpace:1.0});
-        doc.text('DOCUMENTO COMPLETO', W-18, H-12, {align:'right', charSpace:1.0});
+        doc.text('EMITIDO EM '+dh.toUpperCase(), 18, H-12, {charSpace:0.5});
+        doc.text('DOCUMENTO COMPLETO', W-18, H-12, {align:'right', charSpace:0.5});
     }
 
     function cabecalho(doc, mod, pac) {
@@ -7252,7 +7265,7 @@ a
         doc.setFillColor(...COR.white); doc.rect(0,0,W,24,'F');
         logoSolver(doc, 14, 7, 0.88, 'claro');
         ft(doc,'bold',7.5); doc.setTextColor(...COR.textMute);
-        doc.text('RELAT\u00d3RIO T\u00c9CNICO \u2014 '+m.c, W-14, 14, {align:'right', charSpace:1.0});
+        doc.text('RELAT\u00d3RIO T\u00c9CNICO \u2014 '+m.c, W-14, 14, {align:'right', charSpace:0.4});
         doc.setDrawColor(...COR.ruleSoft); doc.setLineWidth(0.25); doc.line(14,25,W-14,25);
     }
 
@@ -7746,6 +7759,70 @@ a
 .solver-dark .solver-chart-wrap > div:first-child > div:last-child > div:last-child { color: #a8eebd !important; }
 .solver-dark .solver-chart-legenda { border-top-color: #1f4036 !important; }
 .solver-dark .solver-chart-legenda span { color: #d5e2da !important; }
+
+/* Refinamento visual da seção inferior da landing */
+.solver-v26-tool {
+    border-radius: 1.1rem !important;
+    border: 1px solid rgba(61,142,86,.18) !important;
+    background: rgba(255,255,255,.92) !important;
+    box-shadow: 0 2px 12px rgba(14,33,22,.04) !important;
+    padding: 1.4rem 1.25rem !important;
+}
+.solver-v26-tool::after {
+    display: none !important;
+}
+.solver-v26-tool:hover {
+    border-color: #3d8e56 !important;
+    box-shadow: 0 4px 20px rgba(61,142,86,.10) !important;
+    transform: translateY(-2px) !important;
+}
+.solver-v26-tool-icon {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+    border-radius: 0.65rem !important;
+    background: #0e2116 !important;
+    border: none !important;
+    color: #a8eebd !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 0.85rem !important;
+}
+.solver-v26-tool h3 {
+    font-size: 0.98rem !important;
+    letter-spacing: -0.01em !important;
+}
+.solver-v26-tool p {
+    font-size: 0.84rem !important;
+    line-height: 1.55 !important;
+    color: #5a6b62 !important;
+}
+.solver-v26-audience {
+    border: 1px solid rgba(61,142,86,.14) !important;
+    border-radius: 0.9rem !important;
+    background: rgba(255,255,255,.88) !important;
+}
+.solver-v26-audience .solver-v26-tool-icon {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+}
+.solver-v26-section-head h2 {
+    font-size: clamp(1.3rem, 2vw, 1.85rem) !important;
+}
+/* Dark mode para seção inferior */
+.solver-dark .solver-v26-tool {
+    background: rgba(18,40,32,.92) !important;
+    border-color: rgba(61,142,86,.22) !important;
+}
+.solver-dark .solver-v26-tool:hover {
+    border-color: #3d8e56 !important;
+}
+.solver-dark .solver-v26-tool h3 { color: #d5e2da !important; }
+.solver-dark .solver-v26-tool p { color: #92a89c !important; }
+.solver-dark .solver-v26-audience {
+    background: rgba(18,40,32,.88) !important;
+    border-color: rgba(61,142,86,.18) !important;
+}
+.solver-dark .solver-v26-audience h3 { color: #d5e2da !important; }
+.solver-dark .solver-v26-audience p { color: #92a89c !important; }
 .solver-dark table th { background-color: #15302a !important; color: #a8eebd !important; }
 .solver-dark table td { color: #d5e2da !important; border-color: #1f4036 !important; }
 .solver-dark .shadow-soft { box-shadow: 0 4px 16px rgba(0,0,0,0.35) !important; }
