@@ -7112,781 +7112,832 @@ a
 
 <script id="solver-pdf-executivo-v32">
 (function(){
-    /* =====================================================================
-       SOLVER PDF v32 — Relatório executivo
-       Paleta verde profundo + dourado, capa rica, sumário,
-       seções numeradas, gráfico vetorizado, fonte Plus Jakarta Sans.
-       Este bloco sobrescreve as versões anteriores (última declaração vence).
-       ===================================================================== */
-
     const COR = {
-        ink:        [14, 33, 22],
-        inkSoft:    [27, 60, 40],
-        inkMedium:  [38, 91, 57],
-        green:      [61, 142, 86],
-        greenSoft:  [168, 238, 189],
-        greenWash:  [245, 250, 246],
-        greenLine:  [220, 232, 225],
-        leafGlow:   [22, 58, 41],
-        gold:       [200, 154, 75],
-        goldDark:   [156, 122, 58],
-        goldWash:   [251, 248, 241],
-        goldLine:   [236, 223, 199],
-        textBody:   [27, 60, 40],
-        textSoft:   [90, 107, 98],
-        textMute:   [148, 163, 184],
-        ruleSoft:   [230, 236, 232],
-        white:      [255, 255, 255]
+        ink:[14,33,22], inkSoft:[27,60,40], green:[61,142,86],
+        greenSoft:[168,238,189], greenWash:[245,250,246], greenLine:[220,232,225],
+        leafGlow:[22,58,41], gold:[200,154,75], goldDark:[156,122,58],
+        goldWash:[251,248,241], goldLine:[236,223,199],
+        textBody:[27,60,40], textSoft:[90,107,98], textMute:[148,163,184],
+        ruleSoft:[230,236,232], white:[255,255,255]
     };
 
-    let solverFonteCache = null;
-    async function carregarFontePdfSolver() {
-        if (solverFonteCache !== null) return solverFonteCache;
+    let _fontCache = null;
+    async function carregarFonte() {
+        if (_fontCache !== null) return _fontCache;
         try {
-            const baixar = async (peso) => {
-                const cssResp = await fetch(`https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@${peso}&display=swap`, { mode:'cors' });
-                if (!cssResp.ok) throw new Error('css failed');
-                const css = await cssResp.text();
+            const get = async (w) => {
+                const r1 = await fetch('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@'+w+'&display=swap',{mode:'cors'});
+                if (!r1.ok) throw 0; const css = await r1.text();
                 const m = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.ttf)\)/);
-                if (!m) throw new Error('ttf url not found');
-                const ttf = await fetch(m[1]);
-                if (!ttf.ok) throw new Error('ttf failed');
-                const buf = await ttf.arrayBuffer();
-                let bin = '';
-                const bytes = new Uint8Array(buf);
-                for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-                return btoa(bin);
+                if (!m) throw 0; const r2 = await fetch(m[1]); if (!r2.ok) throw 0;
+                const buf = await r2.arrayBuffer(); let b=''; const u=new Uint8Array(buf);
+                for(let i=0;i<u.length;i++) b+=String.fromCharCode(u[i]); return btoa(b);
             };
-            const [regular, bold] = await Promise.all([baixar(500), baixar(700)]);
-            solverFonteCache = { regular, bold };
-        } catch(err) {
-            solverFonteCache = false;
-        }
-        return solverFonteCache;
+            const [r,b] = await Promise.all([get(500),get(700)]);
+            _fontCache = {r,b};
+        } catch(_) { _fontCache = false; }
+        return _fontCache;
     }
 
-    function registrarFonteNoPdf(doc, dados) {
-        if (!dados || dados === false) { doc.__solverFont = null; return; }
+    function regFont(doc, d) {
+        if (!d) { doc._sf = null; return; }
         try {
-            doc.addFileToVFS('PlusJakartaSans-Regular.ttf', dados.regular);
-            doc.addFont('PlusJakartaSans-Regular.ttf', 'PlusJakarta', 'normal');
-            doc.addFileToVFS('PlusJakartaSans-Bold.ttf', dados.bold);
-            doc.addFont('PlusJakartaSans-Bold.ttf', 'PlusJakarta', 'bold');
-            doc.__solverFont = 'PlusJakarta';
-        } catch(e) {
-            doc.__solverFont = null;
-        }
+            doc.addFileToVFS('PJR.ttf',d.r); doc.addFont('PJR.ttf','PJK','normal');
+            doc.addFileToVFS('PJB.ttf',d.b); doc.addFont('PJB.ttf','PJK','bold');
+            doc._sf = 'PJK';
+        } catch(_) { doc._sf = null; }
     }
 
-    function fonte(doc) { return doc.__solverFont || 'helvetica'; }
-    function txt(doc, style, size) {
-        try { doc.setFont(fonte(doc), style); }
-        catch(e) { doc.setFont('helvetica', style === 'bold' ? 'bold' : 'normal'); }
-        if (size !== undefined && size !== null) doc.setFontSize(size);
+    function sf(doc) { return doc._sf || 'helvetica'; }
+    function ft(doc, st, sz) {
+        try { doc.setFont(sf(doc), st); } catch(_) { doc.setFont('helvetica', st==='bold'?'bold':'normal'); }
+        if (sz != null) doc.setFontSize(sz);
     }
-    function limparTxt(t) {
-        if (typeof limparTextoPdf === 'function') return limparTextoPdf(t);
-        return String(t ?? '').replace(/[\u0000-\u001F\u007F]/g,' ').replace(/\s+/g,' ').replace(/≤/g,'<=').replace(/≥/g,'>=').trim();
-    }
+    function vpt(v) { if(v==null) return ''; return String(v).replace(/(\d)\.(\d)/g,'$1,$2'); }
+    function lmp(t) { return String(t||'').replace(/[\u0000-\u001F\u007F]/g,' ').replace(/\s+/g,' ').trim(); }
 
-    function moduloLabel(modulo, pacote) {
-        if (modulo === 'simples') {
-            const d = String(pacote?.delineamento || document.querySelector('input[name="delinSimples"]:checked')?.value || 'dbc').toUpperCase();
-            return { codigo: d, nome: 'Fator único', descricao: `Delineamento ${d}` };
-        }
-        if (modulo === 'fatorial') return { codigo:'FAT', nome:'Fatorial duplo', descricao:'Esquema fatorial A×B' };
-        if (modulo === 'parcelas') return { codigo:'SUB', nome:'Parcelas subdivididas', descricao:'Esquema em parcelas/subparcelas' };
-        if (modulo === 'regressaodireta') return { codigo:'REG', nome:'Regressão direta', descricao:'Dose × Produtividade' };
-        return { codigo:'—', nome:String(modulo||'—'), descricao:'' };
+    function modLabel(mod, pac) {
+        if (mod==='simples') { const d=String(pac?.delineamento||document.querySelector('input[name="delinSimples"]:checked')?.value||'dbc').toUpperCase(); return {c:d, n:'Fator \u00fanico', d:'Delineamento '+d}; }
+        if (mod==='fatorial') return {c:'FAT', n:'Fatorial duplo', d:'Esquema fatorial A\u00d7B'};
+        if (mod==='parcelas') return {c:'SUB', n:'Parcelas subdivididas', d:'Parcelas e subparcelas'};
+        if (mod==='regressaodireta') return {c:'REG', n:'Regress\u00e3o direta', d:'Dose \u00d7 Produtividade'};
+        return {c:'\u2014', n:String(mod||''), d:''};
     }
 
-    /* === LOGO SOLVER vetorial (folha-nervura) ===
-       Reproduz a folha do site com primitivas jsPDF: contorno elíptico verde,
-       nervura central reta com ramos saindo, ponto na base. Tipografia
-       acompanha a marca: "SOLVER" + "ANÁLISE EXPERIMENTAL". */
-    function logoSolver(doc, x, y, escala, modo) {
-        const s = escala;
-        const fundoEscuro = modo === 'escuro';
-        const corFundo = fundoEscuro ? [22, 58, 40] : COR.ink;
-        const corBorda = fundoEscuro ? COR.greenSoft : [95, 171, 117];
-        const corVeia = fundoEscuro ? [168, 238, 189] : [168, 238, 189];
-        const corTextoMarca = fundoEscuro ? COR.white : COR.ink;
-        const corTextoSub = fundoEscuro ? [95, 171, 117] : [90, 138, 110];
-
-        doc.setFillColor(...corFundo);
+    function logoSolver(doc, x, y, s, modo) {
+        const esc = modo === 'escuro';
+        doc.setFillColor(...(esc ? [22,58,40] : COR.ink));
         doc.roundedRect(x, y, 11*s, 11*s, 2.8*s, 2.8*s, 'F');
-
-        const cx = x + 5.5*s;
-        const ey = y + 5.5*s;
-        doc.setDrawColor(...corBorda);
-        doc.setLineWidth(0.32*s);
-        doc.ellipse(cx, ey, 2.6*s, 4.0*s, 'S');
-
-        doc.setDrawColor(...corVeia);
-        doc.setLineWidth(0.32*s);
-        doc.line(cx, y + 1.7*s, cx, y + 9.3*s);
-        doc.line(cx, y + 3.5*s, cx - 1.4*s, y + 4.4*s);
-        doc.line(cx, y + 3.5*s, cx + 1.4*s, y + 4.4*s);
-        doc.line(cx, y + 5.5*s, cx - 1.7*s, y + 6.6*s);
-        doc.line(cx, y + 5.5*s, cx + 1.7*s, y + 6.6*s);
-        doc.line(cx, y + 7.5*s, cx - 1.4*s, y + 8.4*s);
-        doc.line(cx, y + 7.5*s, cx + 1.4*s, y + 8.4*s);
-        doc.setFillColor(...corVeia);
-        doc.circle(cx, y + 9.7*s, 0.45*s, 'F');
-
-        txt(doc, 'bold', 9.8*s);
-        doc.setTextColor(...corTextoMarca);
-        doc.text('SOLVER', x + 13*s, y + 5.6*s);
-
-        txt(doc, 'bold', 4.4*s);
-        doc.setTextColor(...corTextoSub);
-        doc.text('ANÁLISE EXPERIMENTAL', x + 13*s, y + 9.5*s);
+        const cx = x + 5.5*s, cy = y + 5.5*s;
+        /* Contorno da folha (elipse pontuda simulada) */
+        doc.setDrawColor(...(esc ? COR.greenSoft : [95,171,117]));
+        doc.setLineWidth(0.35*s);
+        doc.ellipse(cx, cy, 2.5*s, 4.2*s, 'S');
+        /* Nervura central */
+        const cv = [168,238,189];
+        doc.setDrawColor(...cv); doc.setLineWidth(0.3*s);
+        doc.line(cx, y+1.5*s, cx, y+9.5*s);
+        /* Ramos PARA FORA (como no site) */
+        doc.line(cx, y+3.5*s, cx+1.6*s, y+2.8*s);
+        doc.line(cx, y+3.5*s, cx-1.6*s, y+2.8*s);
+        doc.line(cx, y+5.5*s, cx+1.8*s, y+4.8*s);
+        doc.line(cx, y+5.5*s, cx-1.8*s, y+4.8*s);
+        doc.line(cx, y+7.5*s, cx+1.6*s, y+6.8*s);
+        doc.line(cx, y+7.5*s, cx-1.6*s, y+6.8*s);
+        /* Ponto no TOPO (como no site) */
+        doc.setFillColor(...cv);
+        doc.circle(cx, y+1.5*s, 0.45*s, 'F');
+        /* Texto */
+        ft(doc,'bold',9.5*s); doc.setTextColor(...(esc?COR.white:COR.ink));
+        doc.text('SOLVER', x+13*s, y+5.5*s);
+        ft(doc,'bold',4.2*s); doc.setTextColor(...(esc?[95,171,117]:[90,138,110]));
+        doc.text('AN\u00c1LISE EXPERIMENTAL', x+13*s, y+9.2*s);
     }
 
-    /* === Folha decorativa (marca d'água) ===
-       Versão grande, contornada apenas, para o fundo da capa. */
-    function folhaDecorativa(doc, x, y, escala, opacidade) {
-        const s = escala;
-        try { doc.setGState && doc.setGState(new doc.GState({ opacity: opacidade })); } catch(_) {}
-        doc.setDrawColor(...COR.greenSoft);
-        doc.setLineWidth(0.4*s);
-        doc.ellipse(x, y, 12*s, 22*s, 'S');
-        doc.setLineWidth(0.3*s);
-        doc.line(x, y - 18*s, x, y + 18*s);
-        for (let i = -3; i <= 3; i++) {
-            if (i === 0) continue;
-            const yy = y + i*5*s;
-            doc.line(x, yy, x - 7*s, yy + 3*s);
-            doc.line(x, yy, x + 7*s, yy + 3*s);
-        }
-        try { doc.setGState && doc.setGState(new doc.GState({ opacity: 1 })); } catch(_) {}
+    function extrairKpis(mod, pac) {
+        const anova = (pac?.anova?.anova) || [];
+        const lt = anova.find(l => /tratamento|fator a/i.test(String(l.FV))) || {};
+        const cv = pac?.anova?.cv || pac?.anova?.cv_a || '';
+        const cvN = cv ? vpt(cv.split('%')[0].trim())+'%' : '\u2014';
+        const sig = String(lt.Sig||'').includes('1%') ? '1%' : (String(lt.Sig||'').includes('5%') ? '5%' : '\u2014');
+        let nT = '\u2014'; try { if (typeof lt.GL==='number') nT = String(lt.GL+1); } catch(_) {}
+        return [{label:'Tratamentos',valor:nT},{label:'CV experimental',valor:cvN},{label:'Signific\u00e2ncia',valor:sig}];
     }
 
-    /* === CAPA === */
-    function montarCapa(doc, modulo, pacote, sumario) {
-        const pageW = doc.internal.pageSize.getWidth();
-        const pageH = doc.internal.pageSize.getHeight();
-        const meta = moduloLabel(modulo, pacote);
-
-        doc.setFillColor(...COR.ink);
-        doc.rect(0, 0, pageW, pageH, 'F');
-
-        doc.setFillColor(...COR.leafGlow);
-        doc.rect(0, pageH*0.32, pageW, pageH*0.32, 'F');
-
-        folhaDecorativa(doc, pageW - 30, 60, 1.6, 0.06);
-
+    function montarCapa(doc, mod, pac, sumario) {
+        const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
+        const m = modLabel(mod, pac);
+        doc.setFillColor(...COR.ink); doc.rect(0,0,W,H,'F');
+        doc.setFillColor(...COR.leafGlow); doc.rect(0,H*0.33,W,H*0.30,'F');
         logoSolver(doc, 18, 22, 1.55, 'escuro');
+        doc.setDrawColor(...COR.gold); doc.setLineWidth(0.35); doc.line(18,62,W-18,62);
+        ft(doc,'bold',9); doc.setTextColor(...COR.gold);
+        doc.text('RELAT\u00d3RIO T\u00c9CNICO', 18, 90, {charSpace:1.2});
+        ft(doc,'bold',26); doc.setTextColor(...COR.white);
+        doc.text('An\u00e1lise Estat\u00edstica', 18, 112);
+        doc.text('Experimental', 18, 126);
+        ft(doc,'normal',11); doc.setTextColor(168,196,177);
+        doc.text(lmp(m.n+' \u2014 '+m.d), 18, 140);
 
-        doc.setDrawColor(...COR.gold);
-        doc.setLineWidth(0.35);
-        doc.line(18, 60, pageW - 18, 60);
-
-        txt(doc, 'bold', 9);
-        doc.setTextColor(...COR.gold);
-        doc.text('RELATÓRIO TÉCNICO', 18, 82, { charSpace: 1.2 });
-
-        txt(doc, 'bold', 28);
-        doc.setTextColor(...COR.white);
-        doc.text('Análise estatística', 18, 102);
-        doc.text('experimental', 18, 117);
-
-        txt(doc, 'normal', 11);
-        doc.setTextColor(168, 196, 177);
-        doc.text(`${meta.nome} · ${meta.descricao}`, 18, 130);
-
-        const cardY = 145;
-        doc.setFillColor(...COR.leafGlow);
-        doc.roundedRect(18, cardY, pageW - 36, 38, 4, 4, 'F');
-        doc.setDrawColor(...COR.gold);
-        doc.setLineWidth(1.4);
-        doc.line(18, cardY + 8, 18, cardY + 30);
-
-        txt(doc, 'bold', 8);
-        doc.setTextColor(...COR.gold);
-        doc.text('RESUMO DA ANÁLISE', 26, cardY + 12, { charSpace: 0.8 });
-
-        const kpis = extrairKpis(modulo, pacote);
-        const kpiX = [26, pageW/2 - 5, pageW - 80];
-        kpis.slice(0, 3).forEach((k, i) => {
-            txt(doc, 'normal', 8.6);
-            doc.setTextColor(168, 196, 177);
-            doc.text(limparTxt(k.label), kpiX[i], cardY + 22);
-            txt(doc, 'bold', 16);
-            doc.setTextColor(...COR.white);
-            doc.text(limparTxt(k.valor), kpiX[i], cardY + 33);
+        const cy = 158;
+        doc.setFillColor(...COR.leafGlow); doc.roundedRect(18,cy,W-36,38,4,4,'F');
+        doc.setDrawColor(...COR.gold); doc.setLineWidth(1.4); doc.line(18,cy+8,18,cy+30);
+        ft(doc,'bold',8); doc.setTextColor(...COR.gold);
+        doc.text('RESUMO DA AN\u00c1LISE', 26, cy+12, {charSpace:0.8});
+        const kpis = extrairKpis(mod, pac);
+        const kx = [26, W/2-5, W-80];
+        kpis.slice(0,3).forEach((k,i) => {
+            ft(doc,'normal',8.6); doc.setTextColor(168,196,177); doc.text(lmp(k.label), kx[i], cy+22);
+            ft(doc,'bold',15); doc.setTextColor(...COR.white); doc.text(lmp(k.valor), kx[i], cy+32);
         });
-
-        txt(doc, 'bold', 9);
-        doc.setTextColor(...COR.gold);
-        doc.text('CONTEÚDO', 18, 200, { charSpace: 1.4 });
-
-        let sy = 213;
-        sumario.forEach((item, idx) => {
-            txt(doc, 'bold', 10);
-            doc.setTextColor(...COR.gold);
-            doc.text(String(idx + 1).padStart(2, '0'), 18, sy);
-
-            txt(doc, 'bold', 11);
-            doc.setTextColor(...COR.white);
-            doc.text(limparTxt(item.titulo), 30, sy);
-
-            txt(doc, 'bold', 10);
-            doc.setTextColor(...COR.greenSoft);
-            doc.text(`p. ${item.pagina}`, pageW - 18, sy, { align: 'right' });
-
+        ft(doc,'bold',9); doc.setTextColor(...COR.gold);
+        doc.text('CONTE\u00daDO', 18, 214, {charSpace:1.4});
+        let sy = 228;
+        sumario.forEach((it,idx) => {
+            ft(doc,'bold',10); doc.setTextColor(...COR.gold); doc.text(String(idx+1).padStart(2,'0'), 18, sy);
+            ft(doc,'bold',10.5); doc.setTextColor(...COR.white); doc.text(lmp(it.titulo), 30, sy);
+            ft(doc,'bold',10); doc.setTextColor(...COR.greenSoft); doc.text('p. '+it.pagina, W-18, sy, {align:'right'});
             sy += 11;
         });
-
-        doc.setDrawColor(...COR.leafGlow);
-        doc.setLineWidth(0.4);
-        doc.line(18, pageH - 20, pageW - 18, pageH - 20);
-
-        txt(doc, 'bold', 7.5);
-        doc.setTextColor(...COR.greenSoft);
-        const dataHora = new Date().toLocaleString('pt-BR');
-        doc.text(`EMITIDO EM ${dataHora.toUpperCase()}`, 18, pageH - 12, { charSpace: 1.0 });
-        doc.text(`DOCUMENTO ${sumario.length > 0 ? 'COMPLETO' : '1 DE 1'}`, pageW - 18, pageH - 12, { align: 'right', charSpace: 1.0 });
+        doc.setDrawColor(...COR.leafGlow); doc.setLineWidth(0.4); doc.line(18,H-20,W-18,H-20);
+        ft(doc,'bold',7.5); doc.setTextColor(...COR.greenSoft);
+        const dh = new Date().toLocaleString('pt-BR');
+        doc.text('EMITIDO EM '+dh.toUpperCase(), 18, H-12, {charSpace:1.0});
+        doc.text('DOCUMENTO COMPLETO', W-18, H-12, {align:'right', charSpace:1.0});
     }
 
-    function extrairKpis(modulo, pacote) {
-        const anova = (pacote?.anova?.anova) || [];
-        const linhaTrat = anova.find(l => /tratamento|fator a/i.test(String(l.FV))) || {};
-        const cv = pacote?.anova?.cv || pacote?.anova?.cv_a || '';
-        const cvNum = cv ? cv.split('%')[0].trim() : '—';
-        const sig = String(linhaTrat.Sig || '').includes('1%') ? '1%' : (String(linhaTrat.Sig || '').includes('5%') ? '5%' : '—');
-
-        let nTrat = '—';
-        try {
-            const grupos = new Set(anova.filter(l => /tratamento/i.test(String(l.FV))).map(l => l.GL));
-            const gl = linhaTrat.GL;
-            if (typeof gl === 'number') nTrat = String(gl + 1);
-        } catch(_) {}
-
-        return [
-            { label: 'Tratamentos', valor: String(nTrat) },
-            { label: 'CV experimental', valor: cvNum === '—' ? '—' : `${cvNum.replace('.', ',')}%` },
-            { label: 'Significância', valor: sig }
-        ];
+    function cabecalho(doc, mod, pac) {
+        const W = doc.internal.pageSize.getWidth();
+        const m = modLabel(mod, pac);
+        doc.setFillColor(...COR.white); doc.rect(0,0,W,24,'F');
+        logoSolver(doc, 14, 7, 0.88, 'claro');
+        ft(doc,'bold',7.5); doc.setTextColor(...COR.textMute);
+        doc.text('RELAT\u00d3RIO T\u00c9CNICO \u2014 '+m.c, W-14, 14, {align:'right', charSpace:1.0});
+        doc.setDrawColor(...COR.ruleSoft); doc.setLineWidth(0.25); doc.line(14,25,W-14,25);
     }
 
-    /* === CABEÇALHO INTERNO === */
-    function cabecalhoInterno(doc, modulo, pacote) {
-        const pageW = doc.internal.pageSize.getWidth();
-        const meta = moduloLabel(modulo, pacote);
+    function novaP(doc, mod, pac) { doc.addPage(); cabecalho(doc, mod, pac); return 36; }
 
-        doc.setFillColor(...COR.white);
-        doc.rect(0, 0, pageW, 24, 'F');
-
-        logoSolver(doc, 14, 9, 0.95, 'claro');
-
-        txt(doc, 'bold', 7.5);
-        doc.setTextColor(...COR.textMute);
-        doc.text(`RELATÓRIO TÉCNICO · ${meta.codigo}`, pageW - 14, 14, { align: 'right', charSpace: 1.2 });
-
-        doc.setDrawColor(...COR.ruleSoft);
-        doc.setLineWidth(0.25);
-        doc.line(14, 25, pageW - 14, 25);
-    }
-
-    function novaPaginaInterna(doc, modulo, pacote) {
-        doc.addPage();
-        cabecalhoInterno(doc, modulo, pacote);
-        return 36;
-    }
-
-    /* === TÍTULO DE SEÇÃO === */
-    function tituloSecao(doc, numero, titulo, subtitulo, y) {
-        const pageW = doc.internal.pageSize.getWidth();
-        const num = String(numero).padStart(2, '0');
-
-        txt(doc, 'bold', 8.2);
-        doc.setTextColor(...COR.gold);
-        doc.text(`${num} — ${limparTxt(titulo).toUpperCase()}`, 14, y, { charSpace: 1.1 });
-
-        if (subtitulo) {
-            txt(doc, 'bold', 15);
-            doc.setTextColor(...COR.ink);
-            const linhas = doc.splitTextToSize(limparTxt(subtitulo), pageW - 28);
-            doc.text(linhas, 14, y + 11);
-            return y + 11 + linhas.length * 6 + 3;
+    function titSec(doc, num, titulo, sub, y) {
+        const W = doc.internal.pageSize.getWidth();
+        ft(doc,'bold',8); doc.setTextColor(...COR.gold);
+        doc.text(String(num).padStart(2,'0')+' \u2014 '+lmp(titulo).toUpperCase(), 14, y, {charSpace:1.0});
+        if (sub) {
+            ft(doc,'bold',14); doc.setTextColor(...COR.ink);
+            const ls = doc.splitTextToSize(lmp(sub), W-28);
+            doc.text(ls, 14, y+10); return y+10+ls.length*6+3;
         }
-        return y + 8;
+        return y+8;
     }
 
-    /* === CARD DE INFO (com borda lateral colorida) === */
-    function cardInfo(doc, x, y, w, h, titulo, conteudo, cor) {
-        doc.setFillColor(...(cor === 'gold' ? COR.goldWash : COR.greenWash));
-        doc.setDrawColor(...(cor === 'gold' ? COR.goldLine : COR.greenLine));
-        doc.setLineWidth(0.4);
-        doc.roundedRect(x, y, w, h, 2.5, 2.5, 'FD');
-
-        doc.setDrawColor(...(cor === 'gold' ? COR.gold : COR.green));
-        doc.setLineWidth(1.6);
-        doc.line(x, y + 3, x, y + h - 3);
-
-        txt(doc, 'bold', 7.5);
-        doc.setTextColor(...(cor === 'gold' ? COR.goldDark : COR.green));
-        doc.text(limparTxt(titulo).toUpperCase(), x + 5, y + 6, { charSpace: 1.2 });
-
-        txt(doc, 'normal', 9.3);
-        doc.setTextColor(...COR.textBody);
-        const linhas = doc.splitTextToSize(limparTxt(conteudo), w - 10);
-        doc.text(linhas, x + 5, y + 13);
+    function cardInfo(doc, x, y, w, titulo, conteudo, cor) {
+        const wi = w-10;
+        ft(doc,'normal',9);
+        const linhas = doc.splitTextToSize(lmp(conteudo), wi);
+        const h = Math.max(22, 14+linhas.length*4.5);
+        const fundo = cor==='gold' ? COR.goldWash : COR.greenWash;
+        const borda = cor==='gold' ? COR.goldLine : COR.greenLine;
+        const bc = cor==='gold' ? COR.gold : COR.green;
+        doc.setFillColor(...fundo); doc.setDrawColor(...borda); doc.setLineWidth(0.4);
+        doc.roundedRect(x,y,w,h,2.5,2.5,'FD');
+        doc.setDrawColor(...bc); doc.setLineWidth(1.6); doc.line(x,y+3,x,y+h-3);
+        ft(doc,'bold',7.2); doc.setTextColor(...(cor==='gold'?COR.goldDark:COR.green));
+        doc.text(lmp(titulo).toUpperCase(), x+5, y+6, {charSpace:1.0});
+        ft(doc,'normal',8.8); doc.setTextColor(...COR.textBody);
+        doc.text(linhas, x+5, y+13);
+        return y+h+4;
     }
 
-    /* === TABELA premium === */
     function tabelaPremium(doc, linhas, y) {
         if (!linhas || !linhas.length) return y;
-        const pageW = doc.internal.pageSize.getWidth();
-        const x = 14;
-        const w = pageW - 28;
-        const cols = Object.keys(linhas[0]);
-        const colsN = cols.length;
-
+        const W = doc.internal.pageSize.getWidth(), x=14, w=W-28;
+        const cols = Object.keys(linhas[0]), cn = cols.length;
         let pesos;
-        if (colsN === 7) pesos = [0.25, 0.07, 0.13, 0.13, 0.14, 0.10, 0.18];
-        else if (colsN === 6) pesos = [0.28, 0.08, 0.15, 0.15, 0.15, 0.19];
-        else pesos = new Array(colsN).fill(1/colsN);
-
-        const widths = pesos.map(p => w * p);
-        const offsets = [];
-        let acc = 0;
-        widths.forEach(ww => { offsets.push(acc); acc += ww; });
-
-        doc.setFillColor(...COR.greenWash);
-        doc.setDrawColor(...COR.greenLine);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(x, y, w, 9, 2, 2, 'FD');
-
-        txt(doc, 'bold', 7.2);
-        doc.setTextColor(...COR.ink);
-        cols.forEach((c, i) => {
-            const tx = x + offsets[i] + (i === 0 ? 4 : widths[i] / 2);
-            const align = i === 0 ? 'left' : (/^sig$/i.test(c) ? 'right' : 'center');
-            const txAjustado = i === 0 ? tx : (align === 'right' ? x + offsets[i] + widths[i] - 4 : tx);
-            doc.text(limparTxt(c).toUpperCase(), txAjustado, y + 6, { align, charSpace: 0.7 });
+        if(cn===7)pesos=[0.22,0.07,0.13,0.13,0.14,0.10,0.21];
+        else if(cn===6)pesos=[0.25,0.08,0.15,0.15,0.15,0.22];
+        else if(cn===5)pesos=[0.26,0.14,0.20,0.20,0.20];
+        else if(cn===4)pesos=[0.30,0.23,0.24,0.23];
+        else pesos=new Array(cn).fill(1/cn);
+        const widths=pesos.map(p=>w*p);
+        const off=[]; let ac=0; widths.forEach(ww=>{off.push(ac);ac+=ww;});
+        doc.setFillColor(...COR.greenWash); doc.setDrawColor(...COR.greenLine); doc.setLineWidth(0.3);
+        doc.roundedRect(x,y,w,8,2,2,'FD');
+        ft(doc,'bold',6.8); doc.setTextColor(...COR.ink);
+        cols.forEach((c,i)=>{
+            const tx=i===0?x+off[i]+3:x+off[i]+widths[i]/2;
+            doc.text(lmp(c).toUpperCase().slice(0,16), tx, y+5.5, {align:i===0?'left':'center', charSpace:0.4});
         });
-
-        let ry = y + 9;
-        linhas.forEach((linha, idx) => {
-            const altura = 9;
-            if (idx % 2 === 1) {
-                doc.setFillColor(252, 253, 251);
-                doc.rect(x, ry, w, altura, 'F');
-            }
-            doc.setDrawColor(241, 245, 243);
-            doc.setLineWidth(0.2);
-            doc.line(x + 4, ry + altura, x + w - 4, ry + altura);
-
-            cols.forEach((c, i) => {
-                const valBruto = linha[c];
-                let valTxt = '—';
-                let isSig = /sig/i.test(c);
-                let isMetrica = /^(gl|sq|qm|f ?calc|f ?tab)$/i.test(c);
-
-                if (isSig) {
-                    if (typeof formatarSigTexto === 'function') valTxt = formatarSigTexto(valBruto);
-                    else valTxt = String(valBruto ?? '—');
-                } else if (isMetrica) {
-                    if (typeof formatarNumeroBr === 'function') valTxt = formatarNumeroBr(valBruto);
-                    else valTxt = String(valBruto ?? '—');
+        let ry = y+8;
+        linhas.forEach((l,idx)=>{
+            const rh=8;
+            if(idx%2===1){doc.setFillColor(252,253,251);doc.rect(x,ry,w,rh,'F');}
+            doc.setDrawColor(241,245,243);doc.setLineWidth(0.2);doc.line(x+3,ry+rh,x+w-3,ry+rh);
+            cols.forEach((c,i)=>{
+                const vb=l[c]; let vt='\u2014';
+                const isSig=/sig/i.test(c), isMet=/^(gl|sq|qm|f ?calc|f ?tab)$/i.test(c);
+                if(isSig){vt=typeof formatarSigTexto==='function'?formatarSigTexto(vb):String(vb||'\u2014');}
+                else if(isMet){vt=typeof formatarNumeroBr==='function'?formatarNumeroBr(vb):vpt(String(vb||'\u2014'));}
+                else{vt=String(vb||'\u2014');}
+                vt=lmp(vt);
+                const al=i===0?'left':(isSig?'right':'center');
+                const tx=i===0?x+off[i]+3:(al==='right'?x+off[i]+widths[i]-3:x+off[i]+widths[i]/2);
+                if(isSig && /probabilidade/i.test(vt)){
+                    const bw=widths[i]-4, bx=x+off[i]+2;
+                    doc.setFillColor(234,246,238);doc.setDrawColor(191,225,201);doc.setLineWidth(0.2);
+                    doc.roundedRect(bx,ry+1.8,bw,4.4,2.2,2.2,'FD');
+                    ft(doc,'bold',5.6);doc.setTextColor(14,105,54);
+                    doc.text(vt.length>20?vt.slice(0,20):vt, bx+bw/2, ry+4.8, {align:'center'});
+                } else if(isSig) {
+                    ft(doc,'normal',7);doc.setTextColor(...COR.textMute);doc.text(vt,tx,ry+5.3,{align:al});
                 } else {
-                    valTxt = String(valBruto ?? '—');
-                }
-                valTxt = limparTxt(valTxt);
-
-                const align = i === 0 ? 'left' : (isSig ? 'right' : 'center');
-                const tx = i === 0 ? x + offsets[i] + 4 : (align === 'right' ? x + offsets[i] + widths[i] - 4 : x + offsets[i] + widths[i] / 2);
-
-                if (isSig && /probabilidade/i.test(valTxt)) {
-                    const bw = widths[i] - 6;
-                    const bx = x + offsets[i] + 3;
-                    doc.setFillColor(234, 246, 238);
-                    doc.setDrawColor(191, 225, 201);
-                    doc.setLineWidth(0.25);
-                    doc.roundedRect(bx, ry + 2.2, bw, 4.6, 2.3, 2.3, 'FD');
-                    txt(doc, 'bold', 6.4);
-                    doc.setTextColor(14, 105, 54);
-                    doc.text(valTxt, bx + bw/2, ry + 5.5, { align: 'center' });
-                } else if (isSig) {
-                    txt(doc, 'normal', 7.2);
-                    doc.setTextColor(...COR.textMute);
-                    doc.text(valTxt, tx, ry + 5.7, { align });
-                } else {
-                    txt(doc, isMetrica ? 'bold' : 'normal', 8.2);
-                    doc.setTextColor(...(isMetrica ? COR.ink : COR.textBody));
-                    doc.text(valTxt, tx, ry + 5.7, { align });
+                    ft(doc,isMet?'bold':'normal',7.8);doc.setTextColor(...(isMet?COR.ink:COR.textBody));
+                    doc.text(vt.slice(0,20),tx,ry+5.3,{align:al});
                 }
             });
-
-            ry += altura;
+            ry+=rh;
         });
-
-        doc.setDrawColor(...COR.greenLine);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(x, y, w, ry - y, 2, 2, 'D');
-
-        return ry + 3;
+        doc.setDrawColor(...COR.greenLine);doc.setLineWidth(0.3);doc.roundedRect(x,y,w,ry-y,2,2,'D');
+        return ry+3;
     }
 
-    /* === GRÁFICO VETORIZADO (linhas/círculos jsPDF nativos) === */
-    function graficoVetorizado(doc, dadosGrafico, y) {
-        if (!dadosGrafico || !Array.isArray(dadosGrafico.curva) || !dadosGrafico.curva.length) return y;
-        const pageW = doc.internal.pageSize.getWidth();
-        const x = 14;
-        const w = pageW - 28;
-        const h = 78;
-
-        doc.setFillColor(...COR.white);
-        doc.setDrawColor(...COR.greenLine);
-        doc.setLineWidth(0.4);
-        doc.roundedRect(x, y, w, h, 3, 3, 'FD');
-
-        const padL = 16, padR = 14, padT = 10, padB = 18;
-        const px0 = x + padL, py0 = y + padT;
-        const pw = w - padL - padR;
-        const ph = h - padT - padB;
-
-        const obs = dadosGrafico.observados || [];
-        const curva = dadosGrafico.curva || [];
-        const otimo = dadosGrafico.otimo;
-        const todosX = curva.map(p=>p.x).concat(obs.map(p=>p.x));
-        const todosY = curva.map(p=>p.y).concat(obs.map(p=>p.y));
-        const xMin = Math.min(...todosX), xMax = Math.max(...todosX);
-        const yMin = Math.min(...todosY), yMax = Math.max(...todosY);
-        const dx = (xMax - xMin) || 1;
-        const dy = (yMax - yMin) || 1;
-        const yMinPad = yMin - dy * 0.08;
-        const yMaxPad = yMax + dy * 0.12;
-        const dyPad = yMaxPad - yMinPad;
-
-        function mapX(v) { return px0 + ((v - xMin) / dx) * pw; }
-        function mapY(v) { return py0 + ph - ((v - yMinPad) / dyPad) * ph; }
-
-        doc.setDrawColor(...COR.ruleSoft);
-        doc.setLineWidth(0.18);
-        for (let i = 1; i <= 4; i++) {
-            const yy = py0 + (ph / 5) * i;
-            doc.line(px0, yy, px0 + pw, yy);
+    function graficoVet(doc, dg, y) {
+        if (!dg||!Array.isArray(dg.curva)||!dg.curva.length) return y;
+        const W=doc.internal.pageSize.getWidth(), x=14, w=W-28, h=78;
+        doc.setFillColor(...COR.white);doc.setDrawColor(...COR.greenLine);doc.setLineWidth(0.4);
+        doc.roundedRect(x,y,w,h,3,3,'FD');
+        const pL=16,pR=14,pT=10,pB=18, px0=x+pL, py0=y+pT, pw=w-pL-pR, ph=h-pT-pB;
+        const obs=dg.observados||[], cur=dg.curva||[], ot=dg.otimo;
+        const ax=cur.map(p=>p.x).concat(obs.map(p=>p.x));
+        const ay=cur.map(p=>p.y).concat(obs.map(p=>p.y));
+        const xMn=Math.min(...ax),xMx=Math.max(...ax),yMn=Math.min(...ay),yMx=Math.max(...ay);
+        const dx=(xMx-xMn)||1, dy=(yMx-yMn)||1;
+        const yMP=yMn-dy*0.08, yXP=yMx+dy*0.12, dyP=yXP-yMP;
+        const mX=v=>px0+((v-xMn)/dx)*pw;
+        const mY=v=>py0+ph-((v-yMP)/dyP)*ph;
+        const fE=v=>{if(typeof v!=='number'||!isFinite(v))return'\u2014';return Number.isInteger(v)?String(v):v.toLocaleString('pt-BR',{maximumFractionDigits:1});};
+        doc.setDrawColor(...COR.ruleSoft);doc.setLineWidth(0.18);
+        for(let i=1;i<=4;i++){doc.line(px0,py0+(ph/5)*i,px0+pw,py0+(ph/5)*i);}
+        ft(doc,'normal',6);doc.setTextColor(...COR.textMute);
+        for(let i=0;i<=5;i++){const vx=xMn+(dx*i/5);doc.text(fE(vx),mX(vx),py0+ph+4,{align:'center'});}
+        for(let i=0;i<=4;i++){const vy=yMP+(dyP*i/4);doc.text(fE(vy),px0-2,mY(vy)+1,{align:'right'});}
+        doc.setDrawColor(...COR.textMute);doc.setLineWidth(0.3);
+        doc.line(px0,py0,px0,py0+ph);doc.line(px0,py0+ph,px0+pw,py0+ph);
+        doc.setDrawColor(...COR.green);doc.setLineWidth(0.9);
+        const step=Math.max(1,Math.floor(cur.length/80));
+        for(let i=step;i<cur.length;i+=step){doc.line(mX(cur[i-step].x),mY(cur[i-step].y),mX(cur[i].x),mY(cur[i].y));}
+        if(ot&&typeof ot.x==='number'){
+            doc.setDrawColor(...COR.textMute);doc.setLineWidth(0.25);
+            const ox=mX(ot.x);for(let yy=py0;yy<py0+ph;yy+=2){doc.line(ox,yy,ox,yy+1);}
         }
-
-        const numTicks = 5;
-        txt(doc, 'normal', 6.4);
-        doc.setTextColor(...COR.textMute);
-        for (let i = 0; i <= numTicks; i++) {
-            const vx = xMin + (dx * i / numTicks);
-            const xx = mapX(vx);
-            const label = formatarValorEixo(vx);
-            doc.text(label, xx, py0 + ph + 4, { align: 'center' });
+        doc.setFillColor(...COR.ink);obs.forEach(p=>{doc.circle(mX(p.x),mY(p.y),1.2,'F');});
+        if(ot&&typeof ot.x==='number'){
+            doc.setFillColor(...COR.gold);doc.circle(mX(ot.x),mY(ot.y),1.8,'F');
+            doc.setDrawColor(...COR.gold);doc.setLineWidth(0.35);doc.circle(mX(ot.x),mY(ot.y),3.0,'D');
+            const bx=Math.min(mX(ot.x)+4,x+w-34), by=Math.max(py0+2,mY(ot.y)-11);
+            doc.setFillColor(...COR.white);doc.setDrawColor(...COR.goldLine);doc.setLineWidth(0.3);
+            doc.roundedRect(bx,by,30,9,1.5,1.5,'FD');
+            ft(doc,'bold',5.4);doc.setTextColor(...COR.goldDark);
+            doc.text('PONTO \u00d3TIMO',bx+15,by+3,{align:'center',charSpace:0.3});
+            ft(doc,'bold',6.2);doc.setTextColor(...COR.ink);
+            const fBr=v=>typeof formatarNumeroBr==='function'?formatarNumeroBr(v):vpt(String(Number(v).toFixed(2)));
+            doc.text(fBr(ot.x)+' -> '+fBr(ot.y),bx+15,by+7,{align:'center'});
         }
-        for (let i = 0; i <= 4; i++) {
-            const vy = yMinPad + (dyPad * i / 4);
-            const yy = mapY(vy);
-            doc.text(formatarValorEixo(vy), px0 - 2, yy + 1, { align: 'right' });
-        }
+        ft(doc,'normal',7);doc.setTextColor(...COR.textSoft);
+        doc.text(lmp(dg.eixo_x||'Dose'),px0+pw/2,y+h-4,{align:'center'});
+        const lY=y+h-11;
+        doc.setDrawColor(...COR.green);doc.setLineWidth(0.8);doc.line(px0,lY,px0+5,lY);
+        ft(doc,'bold',6.5);doc.setTextColor(...COR.textBody);doc.text('Curva ajustada',px0+7,lY+1);
+        doc.setFillColor(...COR.ink);doc.circle(px0+36,lY-0.4,1.0,'F');doc.text('Observados',px0+39,lY+1);
+        if(ot){doc.setFillColor(...COR.gold);doc.circle(px0+62,lY-0.4,1.0,'F');doc.text('Ponto \u00f3timo',px0+65,lY+1);}
+        return y+h+4;
+    }
 
-        doc.setDrawColor(...COR.textMute);
-        doc.setLineWidth(0.3);
-        doc.line(px0, py0, px0, py0 + ph);
-        doc.line(px0, py0 + ph, px0 + pw, py0 + ph);
-
-        doc.setDrawColor(...COR.green);
-        doc.setLineWidth(1.0);
-        for (let i = 1; i < curva.length; i++) {
-            doc.line(mapX(curva[i-1].x), mapY(curva[i-1].y), mapX(curva[i].x), mapY(curva[i].y));
-        }
-
-        if (otimo && typeof otimo.x === 'number') {
-            doc.setDrawColor(...COR.textMute);
-            doc.setLineWidth(0.3);
-            const xox = mapX(otimo.x);
-            for (let yy = py0; yy < py0 + ph; yy += 2) {
-                doc.line(xox, yy, xox, yy + 1);
-            }
-        }
-
-        doc.setFillColor(...COR.ink);
-        obs.forEach(p => {
-            doc.circle(mapX(p.x), mapY(p.y), 1.2, 'F');
+    function kpisBox(doc, kpis, y) {
+        const W=doc.internal.pageSize.getWidth(), x=14, w=W-28, gap=4;
+        const cw=(w-gap*(kpis.length-1))/kpis.length;
+        kpis.forEach((k,i) => {
+            const kx=x+i*(cw+gap), ig=i===kpis.length-1;
+            doc.setFillColor(...(ig?COR.goldWash:COR.greenWash));
+            doc.setDrawColor(...(ig?COR.goldLine:COR.greenLine));doc.setLineWidth(0.4);
+            doc.roundedRect(kx,y,cw,20,2.5,2.5,'FD');
+            ft(doc,'bold',7);doc.setTextColor(...(ig?COR.goldDark:COR.green));
+            doc.text(lmp(k.label).toUpperCase(),kx+4,y+5,{charSpace:0.8});
+            ft(doc,'bold',13);doc.setTextColor(...COR.ink);doc.text(lmp(k.valor),kx+4,y+15);
         });
-
-        if (otimo && typeof otimo.x === 'number') {
-            doc.setFillColor(...COR.gold);
-            doc.circle(mapX(otimo.x), mapY(otimo.y), 1.8, 'F');
-            doc.setDrawColor(...COR.gold);
-            doc.setLineWidth(0.4);
-            doc.circle(mapX(otimo.x), mapY(otimo.y), 3.0, 'D');
-
-            const bx = Math.min(mapX(otimo.x) + 4, x + w - 32);
-            const by = Math.max(py0 + 2, mapY(otimo.y) - 11);
-            doc.setFillColor(...COR.white);
-            doc.setDrawColor(...COR.goldLine);
-            doc.setLineWidth(0.3);
-            doc.roundedRect(bx, by, 28, 9, 1.5, 1.5, 'FD');
-            txt(doc, 'bold', 5.6);
-            doc.setTextColor(...COR.goldDark);
-            doc.text('PONTO ÓTIMO', bx + 14, by + 3, { align: 'center', charSpace: 0.5 });
-            txt(doc, 'bold', 6.6);
-            doc.setTextColor(...COR.ink);
-            const fmt = (v) => typeof formatarNumeroBr === 'function' ? formatarNumeroBr(v) : (Number(v).toFixed(2).replace('.', ','));
-            doc.text(`${fmt(otimo.x)} → ${fmt(otimo.y)}`, bx + 14, by + 7, { align: 'center' });
-        }
-
-        txt(doc, 'normal', 7);
-        doc.setTextColor(...COR.textSoft);
-        doc.text(limparTxt(dadosGrafico.eixo_x || 'Dose'), px0 + pw / 2, y + h - 4, { align: 'center' });
-
-        doc.saveGraphicsState && doc.saveGraphicsState();
-        const yEixoX = px0 - 12;
-        const yEixoY = py0 + ph / 2;
-        doc.text(limparTxt(dadosGrafico.eixo_y || 'Produtividade'), yEixoX, yEixoY, { angle: 90, align: 'center' });
-        doc.restoreGraphicsState && doc.restoreGraphicsState();
-
-        const legY = y + h - 11;
-        const legX = px0;
-        doc.setDrawColor(...COR.green);
-        doc.setLineWidth(0.8);
-        doc.line(legX, legY, legX + 5, legY);
-        txt(doc, 'bold', 6.8);
-        doc.setTextColor(...COR.textBody);
-        doc.text('Curva ajustada', legX + 7, legY + 1);
-
-        doc.setFillColor(...COR.ink);
-        doc.circle(legX + 36, legY - 0.4, 1.0, 'F');
-        doc.text('Observados', legX + 39, legY + 1);
-
-        if (otimo) {
-            doc.setFillColor(...COR.gold);
-            doc.circle(legX + 62, legY - 0.4, 1.0, 'F');
-            doc.text('Ponto ótimo', legX + 65, legY + 1);
-        }
-
-        return y + h + 4;
+        return y+24;
     }
 
-    function formatarValorEixo(v) {
-        if (typeof v !== 'number' || !isFinite(v)) return '—';
-        const abs = Math.abs(v);
-        if (abs >= 1000) return v.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
-        if (Number.isInteger(v)) return String(v);
-        return v.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
-    }
-
-    /* === KPIs DESTACADOS === */
-    function kpisDestacados(doc, kpis, y) {
-        const pageW = doc.internal.pageSize.getWidth();
-        const x = 14;
-        const w = pageW - 28;
-        const gap = 4;
-        const colW = (w - gap * (kpis.length - 1)) / kpis.length;
-
-        kpis.forEach((k, i) => {
-            const kx = x + i * (colW + gap);
-            const isGold = i === kpis.length - 1;
-            doc.setFillColor(...(isGold ? COR.goldWash : COR.greenWash));
-            doc.setDrawColor(...(isGold ? COR.goldLine : COR.greenLine));
-            doc.setLineWidth(0.4);
-            doc.roundedRect(kx, y, colW, 22, 2.5, 2.5, 'FD');
-
-            txt(doc, 'bold', 7.4);
-            doc.setTextColor(...(isGold ? COR.goldDark : COR.green));
-            doc.text(limparTxt(k.label).toUpperCase(), kx + 5, y + 6, { charSpace: 1.0 });
-
-            txt(doc, 'bold', 15);
-            doc.setTextColor(...COR.ink);
-            doc.text(limparTxt(k.valor), kx + 5, y + 17);
-        });
-
-        return y + 26;
-    }
-
-    /* === RODAPÉ === */
-    function aplicarRodape(doc, modulo, pacote) {
-        const total = doc.internal.getNumberOfPages();
-        const pageW = doc.internal.pageSize.getWidth();
-        const pageH = doc.internal.pageSize.getHeight();
-        const meta = moduloLabel(modulo, pacote);
-
-        for (let i = 2; i <= total; i++) {
+    function rodape(doc, mod, pac) {
+        const total=doc.internal.getNumberOfPages(), W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
+        for(let i=2;i<=total;i++){
             doc.setPage(i);
-            doc.setDrawColor(...COR.ruleSoft);
-            doc.setLineWidth(0.25);
-            doc.line(14, pageH - 14, pageW - 14, pageH - 14);
-
-            txt(doc, 'bold', 7);
-            doc.setTextColor(...COR.textMute);
-            const cv = pacote?.anova?.cv || pacote?.anova?.cv_a || '';
-            const cvTxt = cv ? `CV EXPERIMENTAL · ${cv.toUpperCase()}` : `SOLVER · ${meta.nome.toUpperCase()}`;
-            doc.text(limparTxt(cvTxt), 14, pageH - 8, { charSpace: 0.9 });
-            doc.text(`SOLVER · PÁGINA ${i} DE ${total}`, pageW - 14, pageH - 8, { align: 'right', charSpace: 0.9 });
+            doc.setDrawColor(...COR.ruleSoft);doc.setLineWidth(0.25);doc.line(14,H-14,W-14,H-14);
+            ft(doc,'bold',7);doc.setTextColor(...COR.textMute);
+            const cv=pac?.anova?.cv||pac?.anova?.cv_a||'';
+            const cvT=cv?'CV EXPERIMENTAL \u2014 '+vpt(cv).toUpperCase():'SOLVER';
+            doc.text(lmp(cvT),14,H-8,{charSpace:0.8});
+            doc.text('Solver \u2014 P\u00e1gina '+i+' de '+total, W-14, H-8, {align:'right', charSpace:0.8});
         }
     }
 
-    /* === CAPTAR DADOS DO RESULTADO === */
-    function pegarPosthoc(pacote) {
-        const phs = pacote?.posthocs || (pacote?.posthoc ? [pacote.posthoc] : []);
-        const regr = phs.find(p => p && p.tipo === 'regressao');
-        return { posthocs: phs, regressao: regr };
+    function pegarRegressao(pac) {
+        if (typeof obterListaPosthocs === 'function') {
+            /* Usa a mesma fun\u00e7\u00e3o do site pra garantir consist\u00eancia */
+            try {
+                const modulos = ['simples','fatorial','parcelas','regressaodireta'];
+                for (const m of modulos) {
+                    if (pac === (typeof analises!=='undefined'?analises[m]:null)) {
+                        const lista = obterListaPosthocs(m);
+                        return lista.find(p=>p&&(p.tipo==='regressao'||p.tipo==='regressao_direta'))||null;
+                    }
+                }
+            } catch(_) {}
+        }
+        const phs=pac?.posthocs||(pac?.posthoc?[pac.posthoc]:[]);
+        return phs.find(p=>p&&(p.tipo==='regressao'||p.tipo==='regressao_direta'))||null;
     }
 
-    function textosInterpretacao(anovaLinhas) {
+    /* Interpreta\u00e7\u00e3o t\u00e9cnica com linguagem adequada */
+    function textosF(anovaLinhas, modulo) {
         const out = [];
         (anovaLinhas || []).forEach(l => {
-            const fv = String(l.FV || '').toLowerCase();
-            if (!/tratamento|fator|interaç|bloco|linha|coluna/.test(fv)) return;
-            const fcalc = (typeof formatarNumeroBr === 'function' ? formatarNumeroBr(l['F Calc']) : String(l['F Calc']));
-            const ftab = (typeof formatarNumeroBr === 'function' ? formatarNumeroBr(l['F Tab']) : String(l['F Tab']));
-            if (!fcalc || fcalc === '—' || !ftab || ftab === '—') return;
-            const fNum = parseFloat(String(l['F Calc']).replace(',', '.'));
-            const ftNum = parseFloat(String(l['F Tab']).replace(',', '.'));
+            const fv = String(l.FV || '');
+            const fvL = fv.toLowerCase();
+            if (!/tratamento|fator|interac|intera\u00e7|bloco|linha|coluna/.test(fvL)) return;
+            const fc = typeof formatarNumeroBr==='function' ? formatarNumeroBr(l['F Calc']) : vpt(String(l['F Calc']));
+            const ftb = typeof formatarNumeroBr==='function' ? formatarNumeroBr(l['F Tab']) : vpt(String(l['F Tab']));
+            if (!fc || fc==='\u2014' || !ftb || ftb==='\u2014') return;
+            const fN = parseFloat(String(l['F Calc']).replace(',','.'));
+            const ftN = parseFloat(String(l['F Tab']).replace(',','.'));
             const sig = String(l.Sig || '').toLowerCase();
-            const nivel = sig.includes('1%') ? '1%' : (sig.includes('5%') ? '5%' : null);
-            if (fNum > ftNum && nivel) {
-                out.push({
-                    fonte: String(l.FV),
-                    significativo: true,
-                    fcalc, ftab, nivel,
-                    texto: `Para ${String(l.FV).toLowerCase()}, F calculado (${fcalc}) > F tabelado (${ftab}). Rejeita-se H₀: há diferença significativa a ${nivel}.`
-                });
-            } else if (fNum && ftNum) {
-                out.push({
-                    fonte: String(l.FV),
-                    significativo: false,
-                    fcalc, ftab,
-                    texto: `Para ${String(l.FV).toLowerCase()}, F calculado (${fcalc}) < F tabelado (${ftab}). Não se rejeita H₀.`
-                });
+            const niv = sig.includes('1%') ? '1%' : (sig.includes('5%') ? '5%' : null);
+
+            let txt = '';
+            if (fN > ftN && niv) {
+                if (/intera\u00e7|interac/i.test(fvL)) {
+                    txt = 'Como F calculado ('+fc+') > F tabelado ('+ftb+'), rejeita-se a hip\u00f3tese H0 e aceita-se Ha. Os diferentes n\u00edveis do Fator A influenciaram os resultados dos n\u00edveis do Fator B e vice-versa, no n\u00edvel de probabilidade de '+niv+'.';
+                } else if (/fator a/i.test(fvL)) {
+                    txt = 'Como F calculado ('+fc+') > F tabelado ('+ftb+'), rejeita-se a hip\u00f3tese H0 e aceita-se Ha. Conclui-se que houve diferen\u00e7a estat\u00edstica significativa entre os n\u00edveis do Fator A, no n\u00edvel de probabilidade de '+niv+'.';
+                } else if (/fator b/i.test(fvL)) {
+                    txt = 'Como F calculado ('+fc+') > F tabelado ('+ftb+'), rejeita-se a hip\u00f3tese H0 e aceita-se Ha. Conclui-se que houve diferen\u00e7a estat\u00edstica significativa entre os n\u00edveis do Fator B, no n\u00edvel de probabilidade de '+niv+'.';
+                } else if (/bloco/i.test(fvL)) {
+                    txt = 'Para blocos, F calculado ('+fc+') > F tabelado ('+ftb+'). Houve diferen\u00e7a significativa entre os blocos a '+niv+' de probabilidade, indicando que o controle local foi eficiente.';
+                } else {
+                    txt = 'Como F calculado ('+fc+') > F tabelado ('+ftb+'), rejeita-se a hip\u00f3tese H0 e aceita-se Ha. Conclui-se que houve diferen\u00e7a estat\u00edstica significativa entre pelo menos duas m\u00e9dias dos tratamentos avaliados, no n\u00edvel de probabilidade de '+niv+'. Recomenda-se realizar an\u00e1lise posterior por compara\u00e7\u00e3o de m\u00e9dias ou regress\u00e3o.';
+                }
+                out.push({fonte:fv, sig:true, niv, txt});
+            } else if (fN && ftN) {
+                if (/intera\u00e7|interac/i.test(fvL)) {
+                    txt = 'Como F calculado ('+fc+') < F tabelado ('+ftb+'), n\u00e3o se rejeita H0. Os n\u00edveis do Fator A n\u00e3o influenciaram significativamente os resultados dos n\u00edveis do Fator B.';
+                } else {
+                    txt = 'Como F calculado ('+fc+') < F tabelado ('+ftb+'), n\u00e3o se rejeita H0. N\u00e3o houve diferen\u00e7a estat\u00edstica significativa para '+fv.toLowerCase()+'.';
+                }
+                out.push({fonte:fv, sig:false, txt});
             }
         });
         return out;
     }
 
-    /* === MONTAGEM DO LAUDO === */
     async function gerarLaudo(modulo) {
-        const pacote = (typeof analises !== 'undefined' && analises) ? analises[modulo] : null;
-        if (!pacote || !pacote.anova) {
-            if (typeof showToast === 'function') showToast('Execute uma análise antes de gerar o relatório.', 'erro');
-            return;
+        const pac = (typeof analises!=='undefined'&&analises) ? analises[modulo] : null;
+        if (!pac||!pac.anova) {
+            if (typeof showToast==='function') showToast('Execute uma an\u00e1lise antes de gerar o relat\u00f3rio.','erro'); return;
         }
+        if (typeof mostrarCarregamento==='function') mostrarCarregamento('Gerando relat\u00f3rio', 'Preparando capa, sum\u00e1rio e gr\u00e1ficos vetorizados.');
+        try {
+            let fd=null;
+            try{fd=await Promise.race([carregarFonte(),new Promise(r=>setTimeout(()=>r(false),4000))]);}catch(_){fd=false;}
+            const{jsPDF}=window.jspdf||{};
+            if(!jsPDF){if(typeof showToast==='function')showToast('Biblioteca de PDF n\u00e3o carregou.','erro');return;}
+            const doc=new jsPDF({unit:'mm',format:'a4',compress:true});
+            regFont(doc,fd);
+            const reg = pegarRegressao(pac);
+            const temR = !!(reg&&(reg.tipo==='regressao'||reg.tipo==='regressao_direta'));
 
-        const carregando = typeof mostrarCarregamento === 'function' ? mostrarCarregamento('Gerando relatório executivo', 'Preparando capa, sumário e gráficos vetorizados.') : null;
-
-        let fonteDados = null;
-        try { fonteDados = await Promise.race([carregarFontePdfSolver(), new Promise(r => setTimeout(() => r(false), 4500))]); } catch(_) { fonteDados = false; }
-
-        const { jsPDF } = window.jspdf || {};
-        if (!jsPDF) {
-            if (typeof esconderCarregamento === 'function') esconderCarregamento();
-            if (typeof showToast === 'function') showToast('Biblioteca de PDF não carregou. Recarregue a página.', 'erro');
-            return;
-        }
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
-        registrarFonteNoPdf(doc, fonteDados);
-
-        const { regressao } = pegarPosthoc(pacote);
-        const temRegressao = !!(regressao && regressao.tipo === 'regressao');
-
-        const sumario = [
-            { titulo: 'Resumo executivo', pagina: 2 },
-            { titulo: 'Tabela ANOVA', pagina: 2 }
-        ];
-        if (temRegressao) {
-            sumario.push({ titulo: 'Regressão e dose ótima', pagina: 3 });
-            sumario.push({ titulo: 'Gráfico vetorizado', pagina: 3 });
-        }
-        sumario.push({ titulo: 'Conclusão técnica', pagina: temRegressao ? 4 : 3 });
-
-        montarCapa(doc, modulo, pacote, sumario);
-
-        let y = novaPaginaInterna(doc, modulo, pacote);
-
-        const interpretacoes = textosInterpretacao(pacote.anova.anova || []);
-        const algumSignificativo = interpretacoes.some(i => i.significativo);
-        const tituloP2 = algumSignificativo ? 'Houve efeito significativo' : 'Sem efeito significativo detectado';
-        const subP2 = algumSignificativo
-            ? 'A análise de variância indica diferenças estatísticas relevantes entre as fontes avaliadas.'
-            : 'A análise de variância não indicou diferenças estatísticas significativas entre os tratamentos.';
-
-        y = tituloSecao(doc, 1, 'Interpretação do teste F', tituloP2, y);
-
-        txt(doc, 'normal', 9.5);
-        doc.setTextColor(...COR.textSoft);
-        const linhasIntro = doc.splitTextToSize(subP2, doc.internal.pageSize.getWidth() - 28);
-        doc.text(linhasIntro, 14, y);
-        y += linhasIntro.length * 5 + 4;
-
-        interpretacoes.forEach((it, idx) => {
-            const cor = it.significativo ? (idx % 2 === 0 ? 'green' : 'gold') : 'gold';
-            const titulo = it.fonte;
-            const conteudo = it.significativo
-                ? `F calculado = ${it.fcalc}  ·  F tabelado = ${it.ftab}\n→ Rejeita-se H₀. Diferença significativa a ${it.nivel}.`
-                : `F calculado = ${it.fcalc}  ·  F tabelado = ${it.ftab}\n→ Não se rejeita H₀. Sem diferença significativa.`;
-            cardInfo(doc, 14, y, doc.internal.pageSize.getWidth() - 28, 24, titulo, conteudo, cor);
-            y += 28;
-        });
-
-        if (y > 200) y = novaPaginaInterna(doc, modulo, pacote);
-
-        y += 2;
-        y = tituloSecao(doc, 2, 'Tabela ANOVA', null, y);
-        y = tabelaPremium(doc, pacote.anova.anova || [], y);
-
-        if (temRegressao) {
-            if (y > 175) y = novaPaginaInterna(doc, modulo, pacote);
-            y += 4;
-            y = tituloSecao(doc, 3, 'Regressão e dose ótima', `Modelo ${regressao.modelo || ''} ajustado aos dados experimentais`, y);
-
-            const kpisReg = [
-                { label: 'Modelo', valor: regressao.modelo || '—' },
-                { label: 'Coeficiente R²', valor: regressao.r2 ? String(regressao.r2).replace('.', ',') : '—' },
-                { label: 'Dose ótima', valor: regressao.dose_otima || '—' }
+            const sum = [
+                {titulo:'Interpreta\u00e7\u00e3o do teste F', pagina:2},
+                {titulo:'Quadro de An\u00e1lise de Vari\u00e2ncia', pagina:2}
             ];
-            y = kpisDestacados(doc, kpisReg, y);
+            if (temR) {
+                sum.push({titulo:'Regress\u00e3o e dose \u00f3tima', pagina:3});
+                sum.push({titulo:'Gr\u00e1fico vetorizado', pagina:3});
+            }
+            sum.push({titulo:'Conclus\u00e3o', pagina:temR?4:3});
 
-            txt(doc, 'bold', 7.8);
-            doc.setTextColor(...COR.goldDark);
-            doc.text('EQUAÇÃO AJUSTADA', 14, y + 2, { charSpace: 1.1 });
-            txt(doc, 'bold', 10.4);
-            doc.setTextColor(...COR.ink);
-            doc.text(limparTxt(regressao.equacao || '—'), 14, y + 10);
-            y += 15;
+            montarCapa(doc, modulo, pac, sum);
 
-            if (y > 165) y = novaPaginaInterna(doc, modulo, pacote);
+            /* === P\u00c1GINA 2: Interpreta\u00e7\u00e3o + ANOVA === */
+            let y = novaP(doc, modulo, pac);
+            const interp = textosF(pac.anova.anova||[], modulo);
+            const algSig = interp.some(i=>i.sig);
+            const titP2 = algSig ? 'Houve efeito significativo' : 'Sem efeito significativo detectado';
+            y = titSec(doc, 1, 'Interpreta\u00e7\u00e3o do teste F', titP2, y);
+            ft(doc,'normal',9.2); doc.setTextColor(...COR.textSoft);
+            const subP2 = algSig
+                ? 'A an\u00e1lise de vari\u00e2ncia indica diferen\u00e7as estat\u00edsticas relevantes entre as fontes de varia\u00e7\u00e3o avaliadas.'
+                : 'A an\u00e1lise de vari\u00e2ncia n\u00e3o indicou diferen\u00e7as estat\u00edsticas significativas entre os tratamentos.';
+            const li = doc.splitTextToSize(subP2, doc.internal.pageSize.getWidth()-28);
+            doc.text(li, 14, y); y += li.length*5+4;
 
-            y = tituloSecao(doc, 4, 'Gráfico vetorizado da regressão', null, y);
-            y = graficoVetorizado(doc, regressao.dados_grafico, y);
+            interp.forEach((it, idx) => {
+                if (y > 235) y = novaP(doc, modulo, pac);
+                const cor = it.sig ? (idx%2===0?'green':'gold') : 'gold';
+                y = cardInfo(doc, 14, y, doc.internal.pageSize.getWidth()-28, it.fonte, it.txt, cor);
+            });
+
+            if (y > 200) y = novaP(doc, modulo, pac);
+            y += 2;
+            y = titSec(doc, 2, 'Quadro de An\u00e1lise de Vari\u00e2ncia', null, y);
+            y = tabelaPremium(doc, pac.anova.anova||[], y);
+
+            /* === REGRESS\u00c3O (se houver) === */
+            if (temR) {
+                if (y > 155) y = novaP(doc, modulo, pac);
+                y += 4;
+                y = titSec(doc, 3, 'Regress\u00e3o e dose \u00f3tima', 'Modelo '+lmp(reg.modelo||'')+' ajustado aos dados experimentais', y);
+                const kr = [
+                    {label:'Modelo', valor:lmp(reg.modelo||'\u2014')},
+                    {label:'Coeficiente R\u00b2', valor:vpt(reg.r2||'\u2014')},
+                    {label:'Dose \u00f3tima', valor:vpt(reg.dose_otima||'\u2014')}
+                ];
+                y = kpisBox(doc, kr, y);
+                ft(doc,'bold',7.5); doc.setTextColor(...COR.goldDark);
+                doc.text('EQUA\u00c7\u00c3O AJUSTADA', 14, y+2, {charSpace:1.0});
+                ft(doc,'bold',10); doc.setTextColor(...COR.ink);
+                doc.text(lmp(vpt(reg.equacao||'\u2014')), 14, y+10); y+=15;
+
+                if (reg.anova_reg && reg.anova_reg.length) {
+                    if (y > 195) y = novaP(doc, modulo, pac);
+                    y = tabelaPremium(doc, reg.anova_reg, y);
+                }
+
+                if (y > 155) y = novaP(doc, modulo, pac);
+                y = titSec(doc, 4, 'Gr\u00e1fico vetorizado da regress\u00e3o', null, y);
+                y = graficoVet(doc, reg.dados_grafico, y);
+            }
+
+            /* === CONCLUS\u00c3O === */
+            if (y > 235) y = novaP(doc, modulo, pac);
+            y += 4;
+            const nc = temR ? 5 : 3;
+            y = titSec(doc, nc, 'Conclus\u00e3o', null, y);
+            let conc = '';
+            if (temR && reg.recomendacao_modelo?.mensagem) {
+                conc = vpt(reg.recomendacao_modelo.mensagem);
+            } else if (algSig) {
+                conc = 'A an\u00e1lise de vari\u00e2ncia detectou diferen\u00e7as estat\u00edsticas significativas. Recomenda-se prosseguir com an\u00e1lise posterior por compara\u00e7\u00e3o de m\u00e9dias (Tukey, Duncan ou Dunnett) ou regress\u00e3o, conforme a natureza dos fatores. O CV experimental foi '+vpt(pac.anova.cv||pac.anova.cv_a||'calculado')+', indicando precis\u00e3o experimental adequada.';
+            } else {
+                conc = 'A an\u00e1lise de vari\u00e2ncia n\u00e3o detectou diferen\u00e7as significativas entre os tratamentos. Recomenda-se reavaliar o delineamento experimental, o n\u00famero de repeti\u00e7\u00f5es e a homogeneidade do material biol\u00f3gico.';
+            }
+            ft(doc,'normal',9.2); doc.setTextColor(...COR.textBody);
+            const lc = doc.splitTextToSize(lmp(conc), doc.internal.pageSize.getWidth()-28);
+            doc.text(lc, 14, y); y += lc.length*5+4;
+
+            rodape(doc, modulo, pac);
+            doc.save('laudo_solver_'+modulo+'_'+Date.now()+'.pdf');
+            if (typeof showToast==='function') showToast('Relat\u00f3rio gerado com sucesso.','success');
+        } finally {
+            if (typeof ocultarCarregamento==='function') ocultarCarregamento();
         }
-
-        if (y > 230) y = novaPaginaInterna(doc, modulo, pacote);
-        y += 4;
-        const numConclusao = temRegressao ? 5 : 3;
-        y = tituloSecao(doc, numConclusao, 'Conclusão técnica', null, y);
-
-        let conclusao = '';
-        if (temRegressao && regressao.recomendacao_modelo?.mensagem) {
-            conclusao = regressao.recomendacao_modelo.mensagem;
-        } else if (algumSignificativo) {
-            conclusao = `A análise de variância detectou diferenças estatisticamente significativas. Recomenda-se prosseguir com análise posterior por comparação de médias (Tukey, Duncan ou Dunnett) ou regressão, conforme a natureza dos fatores. O CV experimental foi ${pacote.anova.cv || pacote.anova.cv_a || 'calculado'}, indicando precisão experimental adequada.`;
-        } else {
-            conclusao = `A análise de variância não detectou diferenças estatisticamente significativas entre os tratamentos avaliados. Recomenda-se reavaliar o delineamento experimental, o número de repetições e a homogeneidade do material biológico.`;
-        }
-
-        txt(doc, 'normal', 9.5);
-        doc.setTextColor(...COR.textBody);
-        const linhasConc = doc.splitTextToSize(limparTxt(conclusao), doc.internal.pageSize.getWidth() - 28);
-        doc.text(linhasConc, 14, y);
-        y += linhasConc.length * 5 + 4;
-
-        aplicarRodape(doc, modulo, pacote);
-
-        if (typeof esconderCarregamento === 'function') esconderCarregamento();
-
-        const arquivo = `laudo_solver_${modulo}_${Date.now()}.pdf`;
-        doc.save(arquivo);
-        if (typeof showToast === 'function') showToast('Relatório executivo gerado com sucesso.', 'success');
     }
 
     window.baixarLaudoCompleto = gerarLaudo;
+})();
+</script>
+
+<script id="solver-ui-melhorias-v33">
+(function(){
+    /* =====================================================================
+       SOLVER UI v33 — três melhorias no site:
+       1. Cards visuais de modelo de regressão com preview da curva (SVG)
+       2. Toggle de tema escuro no header
+       3. Onboarding modal por módulo (sob demanda, via botão "?" no header)
+       ===================================================================== */
+
+    /* ============== 1. CARDS DE MODELOS DE REGRESSÃO ============== */
+
+    const MODELOS_INFO = {
+        '1':       { id:'linear',      nome:'Linear',      desc:'Reta crescente ou decrescente',           paramin:2, curva:'linear' },
+        '2':       { id:'quadratica',  nome:'Quadrática',  desc:'Parábola — ideal para dose ótima',        paramin:3, curva:'quadratica' },
+        '3':       { id:'cubica',      nome:'Cúbica',      desc:'Curva flexível com inflexão',             paramin:4, curva:'cubica' },
+        'exponencial':  { nome:'Exponencial', desc:'Crescimento ou decaimento contínuo', paramin:2, curva:'exponencial' },
+        'logaritmica':  { nome:'Logarítmica', desc:'Saturação progressiva (não usar com dose 0)', paramin:2, curva:'logaritmica' }
+    };
+
+    function previewCurva(tipo, cor) {
+        const c = cor || '#3d8e56';
+        const paths = {
+            linear:       'M 4 36 L 56 8',
+            quadratica:   'M 4 36 Q 30 -6 56 28',
+            cubica:       'M 4 32 C 18 4, 38 38, 56 12',
+            exponencial:  'M 4 36 C 22 36, 38 30, 56 6',
+            logaritmica:  'M 4 36 C 12 14, 30 10, 56 8'
+        };
+        return `<svg viewBox="0 0 60 40" width="60" height="40" style="display:block;flex-shrink:0;">
+            <path d="${paths[tipo]||paths.linear}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="4" cy="${tipo==='linear'?36:tipo==='quadratica'?36:36}" r="1.8" fill="#0e2116"/>
+            <circle cx="56" cy="${tipo==='linear'?8:tipo==='quadratica'?28:tipo==='cubica'?12:tipo==='exponencial'?6:8}" r="1.8" fill="#0e2116"/>
+        </svg>`;
+    }
+
+    function montarCardsModelosHtml(idSelect) {
+        return `<div class="solver-modelos-cards" data-target="${idSelect}" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+            ${Object.entries(MODELOS_INFO).map(([valor, info]) => {
+                return `<button type="button" class="solver-modelo-card" data-valor="${valor}" data-tipo="${info.curva}" style="flex:1;min-width:155px;background:#ffffff;border:1.5px solid #e6ece8;border-radius:14px;padding:12px;cursor:pointer;transition:all 180ms ease;text-align:left;display:flex;align-items:center;gap:10px;">
+                    ${previewCurva(info.curva)}
+                    <div style="min-width:0;flex:1;">
+                        <div style="font-size:13px;font-weight:800;color:#0e2116;letter-spacing:-0.01em;">${info.nome}</div>
+                        <div style="font-size:11px;color:#5a6b62;font-weight:500;margin-top:2px;line-height:1.3;">${info.desc}</div>
+                    </div>
+                </button>`;
+            }).join('')}
+        </div>`;
+    }
+
+    function atualizarCardsAtivos(container) {
+        const select = document.getElementById(container.dataset.target);
+        if (!select) return;
+        const valorAtual = select.value;
+        container.querySelectorAll('.solver-modelo-card').forEach(card => {
+            const ativo = card.dataset.valor === valorAtual;
+            card.style.borderColor = ativo ? '#3d8e56' : '#e6ece8';
+            card.style.background = ativo ? '#f5faf6' : '#ffffff';
+            card.style.boxShadow = ativo ? '0 0 0 3px rgba(61,142,86,0.10)' : 'none';
+            const titulo = card.querySelector('div > div:first-child');
+            if (titulo) titulo.style.color = ativo ? '#1b3c28' : '#0e2116';
+        });
+    }
+
+    function instalarCardsNoSelect(select) {
+        if (!select || select.dataset.solverCardsAplicado === 'yes') return;
+        const opcoesValidas = Array.from(select.options).map(o => o.value);
+        const todasOpcoesContempladas = opcoesValidas.every(v => MODELOS_INFO[v]);
+        if (!todasOpcoesContempladas) return;
+        select.dataset.solverCardsAplicado = 'yes';
+        select.style.display = 'none';
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = montarCardsModelosHtml(select.id);
+        const cardsContainer = wrapper.firstElementChild;
+        select.parentNode.insertBefore(cardsContainer, select);
+
+        cardsContainer.querySelectorAll('.solver-modelo-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                if (select.value !== card.dataset.valor) {
+                    card.style.borderColor = '#bfd9c7';
+                    card.style.background = '#fafdf9';
+                }
+            });
+            card.addEventListener('mouseleave', () => atualizarCardsAtivos(cardsContainer));
+            card.addEventListener('click', () => {
+                select.value = card.dataset.valor;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                atualizarCardsAtivos(cardsContainer);
+            });
+        });
+
+        atualizarCardsAtivos(cardsContainer);
+    }
+
+    function aplicarCardsEmTodosSelects() {
+        document.querySelectorAll('select[id^="eq-"]').forEach(instalarCardsNoSelect);
+    }
+
+    /* MutationObserver: capta selects que aparecem depois (renderizados via JS) */
+    const observerCards = new MutationObserver(() => aplicarCardsEmTodosSelects());
+
+    /* ============== 2. DARK MODE TOGGLE ============== */
+
+    const TEMA_KEY = 'solver-tema';
+
+    function aplicarTema(tema) {
+        const root = document.documentElement;
+        if (tema === 'escuro') {
+            root.classList.add('solver-dark');
+        } else {
+            root.classList.remove('solver-dark');
+        }
+        try { localStorage.setItem(TEMA_KEY, tema); } catch(_) {}
+        const btn = document.getElementById('solver-tema-toggle');
+        if (btn) btn.innerHTML = tema === 'escuro'
+            ? '<i class="fa-solid fa-sun"></i>'
+            : '<i class="fa-solid fa-moon"></i>';
+    }
+
+    function temaAtual() {
+        try { return localStorage.getItem(TEMA_KEY) || 'claro'; } catch(_) { return 'claro'; }
+    }
+
+    function injetarCssDark() {
+        if (document.getElementById('solver-dark-css')) return;
+        const css = document.createElement('style');
+        css.id = 'solver-dark-css';
+        css.textContent = `
+.solver-dark { color-scheme: dark; }
+.solver-dark body { background: #0a1812 !important; color: #d5e2da !important; }
+.solver-dark .bg-white { background-color: #122820 !important; }
+.solver-dark .bg-slate-50,
+.solver-dark .bg-slate-100 { background-color: #15302a !important; }
+.solver-dark .bg-agro-50 { background-color: #18352c !important; }
+.solver-dark .border-slate-100,
+.solver-dark .border-slate-200 { border-color: #1f4036 !important; }
+.solver-dark .border-agro-100,
+.solver-dark .border-agro-200 { border-color: #2a5d49 !important; }
+.solver-dark .text-slate-400,
+.solver-dark .text-slate-500,
+.solver-dark .text-slate-600 { color: #92a89c !important; }
+.solver-dark .text-slate-700,
+.solver-dark .text-slate-800,
+.solver-dark .text-slate-900 { color: #d5e2da !important; }
+.solver-dark .text-agro-700,
+.solver-dark .text-agro-800,
+.solver-dark .text-agro-900,
+.solver-dark .text-agro-950 { color: #a8eebd !important; }
+.solver-dark .agro-card { background-color: #122820 !important; border-color: #1f4036 !important; }
+.solver-dark .agro-input { background-color: #15302a !important; border-color: #2a5d49 !important; color: #d5e2da !important; }
+.solver-dark .solver-modelo-card { background-color: #15302a !important; border-color: #2a5d49 !important; }
+.solver-dark .solver-modelo-card > div > div:first-child { color: #d5e2da !important; }
+.solver-dark .solver-modelo-card > div > div:last-child { color: #92a89c !important; }
+.solver-dark .solver-chart-wrap { background-color: #122820 !important; border-color: #1f4036 !important; }
+.solver-dark .solver-chart-wrap canvas { filter: invert(0.92) hue-rotate(180deg) saturate(1.15) brightness(1.05); }
+.solver-dark .solver-chart-wrap > div:first-child > div:first-child > div:first-child { color: #c89a4b !important; }
+.solver-dark .solver-chart-wrap > div:first-child > div:first-child > div:last-child { color: #ffffff !important; }
+.solver-dark .solver-chart-wrap > div:first-child > div:last-child > div:first-child { color: #92a89c !important; }
+.solver-dark .solver-chart-wrap > div:first-child > div:last-child > div:last-child { color: #a8eebd !important; }
+.solver-dark .solver-chart-legenda { border-top-color: #1f4036 !important; }
+.solver-dark .solver-chart-legenda span { color: #d5e2da !important; }
+.solver-dark table th { background-color: #15302a !important; color: #a8eebd !important; }
+.solver-dark table td { color: #d5e2da !important; border-color: #1f4036 !important; }
+.solver-dark .shadow-soft { box-shadow: 0 4px 16px rgba(0,0,0,0.35) !important; }
+#solver-tema-toggle { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10); color: #a8eebd; width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 180ms ease; }
+#solver-tema-toggle:hover { background: rgba(255,255,255,0.10); }
+.solver-dark #solver-tema-toggle { color: #ffd97a; }
+#solver-ajuda-toggle { background: transparent; border: 1px solid rgba(255,255,255,0.10); color: #a8eebd; width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 8px; transition: all 180ms ease; }
+#solver-ajuda-toggle:hover { background: rgba(255,255,255,0.10); }
+`;
+        document.head.appendChild(css);
+    }
+
+    function inserirHeaderControls() {
+        if (document.getElementById('solver-tema-toggle')) return;
+        const sidebar = document.querySelector('aside, [class*="sidebar"]');
+        let alvo = null;
+        const navs = document.querySelectorAll('nav');
+        navs.forEach(n => {
+            if (alvo) return;
+            const tem = n.querySelector('button[onclick*="showModule"]');
+            if (!tem) return;
+            alvo = n.parentElement || n;
+        });
+        if (!alvo) alvo = document.body;
+
+        const btnAjuda = document.createElement('button');
+        btnAjuda.id = 'solver-ajuda-toggle';
+        btnAjuda.setAttribute('aria-label', 'Abrir ajuda do módulo');
+        btnAjuda.innerHTML = '<i class="fa-solid fa-question"></i>';
+        btnAjuda.title = 'Ajuda do módulo';
+        btnAjuda.addEventListener('click', abrirOnboardingModuloAtual);
+
+        const btnTema = document.createElement('button');
+        btnTema.id = 'solver-tema-toggle';
+        btnTema.setAttribute('aria-label', 'Alternar tema claro/escuro');
+        btnTema.title = 'Tema claro/escuro';
+        btnTema.addEventListener('click', () => aplicarTema(temaAtual() === 'escuro' ? 'claro' : 'escuro'));
+
+        const fab = document.createElement('div');
+        fab.id = 'solver-fab-controls';
+        fab.style.cssText = 'position:fixed;top:18px;right:22px;z-index:1500;display:flex;gap:8px;';
+        fab.appendChild(btnAjuda);
+        fab.appendChild(btnTema);
+        document.body.appendChild(fab);
+    }
+
+    /* ============== 3. ONBOARDING DOS MÓDULOS ============== */
+
+    const ONBOARDING = {
+        simples: {
+            titulo: 'Fator único — DIC, DBC e DQL',
+            subtitulo: 'Um único fator de tratamento avaliado em repetições',
+            quando: [
+                'Você tem 1 fator (ex: dose de adubo) avaliado em 3+ tratamentos',
+                'Cada tratamento é repetido em parcelas iguais',
+                'Você quer comparar médias entre tratamentos ou ajustar uma regressão'
+            ],
+            formato: 'Tratamento;Bloco;Valor (DBC) — ou Tratamento;Repetição;Valor (DIC)',
+            exemplo: '1;1;15.3\n1;2;14.8\n2;1;18.2\n2;2;17.9',
+            proximos: 'Após o ANOVA, escolha um teste posterior (Tukey, Duncan) ou regressão se o fator for quantitativo.'
+        },
+        fatorial: {
+            titulo: 'Fatorial duplo — A × B',
+            subtitulo: 'Dois fatores combinados em blocos',
+            quando: [
+                'Você tem 2 fatores (ex: adubo × variedade) em todas as combinações',
+                'Cada combinação A×B é repetida em blocos',
+                'Quer testar efeitos principais e interação entre A e B'
+            ],
+            formato: 'A;B;Bloco;Valor',
+            exemplo: '1;A;1;15.3\n1;B;1;16.1\n2;A;1;18.2\n2;B;1;19.0',
+            proximos: 'Se a interação for significativa, desdobre. Senão, analise cada fator separadamente.'
+        },
+        parcelas: {
+            titulo: 'Parcelas subdivididas',
+            subtitulo: 'Fator A na parcela e fator B na subparcela',
+            quando: [
+                'Você tem 2 fatores mas um deles é mais difícil de mudar (ex: irrigação)',
+                'O fator A vai na parcela maior, B na subparcela menor',
+                'É um split-plot tradicional em blocos casualizados'
+            ],
+            formato: 'A;B;Bloco;Valor',
+            exemplo: 'I1;V1;1;15.3\nI1;V2;1;16.1\nI2;V1;1;18.2\nI2;V2;1;19.0',
+            proximos: 'A análise tem dois erros experimentais (Erro A e Erro B). O ANOVA já considera isso automaticamente.'
+        },
+        regressaodireta: {
+            titulo: 'Regressão direta — dose × resposta',
+            subtitulo: 'Estima dose ótima sem precisar de delineamento completo',
+            quando: [
+                'Você só tem pares de dose e produtividade (sem blocos)',
+                'Quer estimar a dose que maximiza a resposta',
+                'Não precisa de ANOVA tradicional'
+            ],
+            formato: 'Dose;Produtividade (CSV) — ou cole as duas listas direto',
+            exemplo: '0;14.8\n30;18.6\n60;22.4\n90;24.5\n120;23.1',
+            proximos: 'O sistema testa 5 modelos (linear, quadrática, cúbica, exponencial, logarítmica) e recomenda o de melhor ajuste.'
+        }
+    };
+
+    function moduloAtual() {
+        const ativo = document.querySelector('.nav-item.active');
+        if (ativo) {
+            const onclick = ativo.getAttribute('onclick') || '';
+            const m = onclick.match(/showModule\(['"](\w+)['"]\)/);
+            if (m) return m[1];
+        }
+        const visible = document.querySelector('[id^="modulo-"]:not(.hidden)');
+        if (visible) return visible.id.replace('modulo-', '');
+        return 'simples';
+    }
+
+    function abrirOnboardingModuloAtual() {
+        const mod = moduloAtual();
+        abrirOnboarding(mod);
+    }
+
+    function abrirOnboarding(modulo) {
+        const info = ONBOARDING[modulo];
+        if (!info) return;
+        const existente = document.getElementById('solver-onboarding-modal');
+        if (existente) existente.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'solver-onboarding-modal';
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(14,33,22,0.55);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;animation:solverFadeIn 200ms ease;';
+        modal.innerHTML = `
+            <div style="background:#ffffff;border-radius:18px;max-width:600px;width:100%;max-height:90vh;overflow:auto;padding:0;font-family:'Plus Jakarta Sans',sans-serif;animation:solverSlideIn 260ms cubic-bezier(0.22,1,0.36,1);">
+                <div style="background:linear-gradient(135deg,#0e2116 0%,#1f4d34 100%);padding:24px 28px;border-radius:18px 18px 0 0;color:#ffffff;position:relative;">
+                    <button id="solver-onb-close" aria-label="Fechar" style="position:absolute;top:14px;right:16px;background:rgba(255,255,255,0.10);border:none;width:32px;height:32px;border-radius:8px;color:#ffffff;cursor:pointer;font-size:14px;">✕</button>
+                    <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;color:#c89a4b;">GUIA DO MÓDULO</div>
+                    <div style="font-size:22px;font-weight:800;margin-top:6px;">${info.titulo}</div>
+                    <div style="font-size:13px;color:#a8c4b1;margin-top:4px;font-weight:500;">${info.subtitulo}</div>
+                </div>
+                <div style="padding:24px 28px;">
+                    <div style="margin-bottom:20px;">
+                        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:#3d8e56;margin-bottom:10px;">QUANDO USAR</div>
+                        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                            ${info.quando.map(q => `<li style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:#1b3c28;line-height:1.5;"><span style="flex-shrink:0;width:18px;height:18px;border-radius:50%;background:#eaf6ee;color:#3d8e56;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;margin-top:1px;">✓</span><span>${q}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                    <div style="margin-bottom:20px;background:#f5faf6;border:1px solid #dce8e1;border-radius:12px;padding:14px 16px;">
+                        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:#9c7a3a;margin-bottom:6px;">FORMATO DO ARQUIVO</div>
+                        <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#1b3c28;font-weight:600;">${info.formato}</code>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:#3d8e56;margin-bottom:8px;">EXEMPLO DE LINHAS</div>
+                        <pre style="background:#0e2116;color:#a8eebd;border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.55;margin:0;overflow:auto;">${info.exemplo}</pre>
+                    </div>
+                    <div style="background:#fbf8f1;border-left:3px solid #c89a4b;padding:12px 14px;border-radius:0 8px 8px 0;">
+                        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:#9c7a3a;margin-bottom:4px;">PRÓXIMOS PASSOS</div>
+                        <div style="font-size:13px;color:#1b3c28;line-height:1.5;">${info.proximos}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector('#solver-onb-close').addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+        if (!document.getElementById('solver-onb-anim')) {
+            const s = document.createElement('style');
+            s.id = 'solver-onb-anim';
+            s.textContent = '@keyframes solverFadeIn{from{opacity:0}to{opacity:1}}@keyframes solverSlideIn{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}';
+            document.head.appendChild(s);
+        }
+    }
+
+    function abrirOnboardingSeNovoUsuario() {
+        try {
+            if (localStorage.getItem('solver-onboarding-visto') === 'yes') return;
+            setTimeout(() => {
+                abrirOnboarding(moduloAtual());
+                localStorage.setItem('solver-onboarding-visto', 'yes');
+            }, 1200);
+        } catch(_) {}
+    }
+
+    /* ============== BOOT ============== */
+
+    function bootstrap() {
+        injetarCssDark();
+        aplicarTema(temaAtual());
+        inserirHeaderControls();
+        aplicarCardsEmTodosSelects();
+        observerCards.observe(document.body, { childList:true, subtree:true });
+        abrirOnboardingSeNovoUsuario();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrap);
+    else bootstrap();
+
+    window.solverAbrirOnboarding = abrirOnboarding;
 })();
 </script>
 
